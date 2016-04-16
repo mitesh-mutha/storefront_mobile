@@ -10,14 +10,14 @@ const styles = StyleSheet.create({
     }
 });
 
-class Home extends React.Component {
+class FeedPage extends React.Component {
     render(){
         return (
             <View {...this.props}  style={styles.container}>
-                <Text>Home page</Text>
+                <Text>FeedPage page</Text>
             </View>
         );
     }
 }
 
-module.exports = Home;
+module.exports = FeedPage;

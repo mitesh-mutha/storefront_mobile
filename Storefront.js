@@ -1,6 +1,6 @@
 import React, {AppRegistry, Navigator, StyleSheet, Text, View} from 'react-native'
 import {Scene, Reducer, Router, Switch, TabBar, Modal, Schema, Actions} from 'react-native-router-flux'
-import Home from './app/components/Home'
+import FeedPage from './app/components/FeedPage'
 
 
 const styles = StyleSheet.create({
@@ -33,10 +33,9 @@ export default class Storefront extends React.Component {
         return <Router createReducer={reducerCreate}>
             <Scene key="modal" component={Modal} >
                 <Scene key="root" sceneStyle={styles.routerScene} navigationBarStyle={styles.navBar} titleStyle={styles.navTitle} >
-                    <Scene key="home" component={Home} title="Home" initial={true} />
+                    <Scene key="feedpage" component={FeedPage} title="FeedPage" initial={true} />
                 </Scene>
             </Scene>
         </Router>;
     }
 }
-
