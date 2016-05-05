@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
 class FeedPage extends React.Component {
     render(){
         return (
-            <View {...this.props}  style={styles.container}>
+            <View style={styles.container}>
                 <Feed />
             </View>
         );

@@ -1,12 +1,58 @@
-import React, {ListView, View, Text, StyleSheet, ScrollView, Image} from "react-native";
+import React, {ListView, View, Text, StyleSheet, ScrollView, Image, TouchableHighlight} from "react-native";
 import {
   MKButton,
   MKColor,
   MKIconToggle,
   getTheme,
 } from 'react-native-material-kit';
+// var Icon = require('react-native-vector-icons/FontAwesome');
 
 const theme = getTheme();
+
+const style = StyleSheet.create({
+    feedItemStyle: {
+        margin:10,
+        marginBottom:20
+    },
+    feedItemCardStyle: theme.cardStyle,
+    sellerNameStyle: {
+        borderStyle: 'solid',
+        borderBottomColor: 'rgba(0, 0, 0, 0.1)',
+        borderBottomWidth: 1,
+        padding: 15,
+    },
+    feedImageStyle: {
+        flex:1,
+        resizeMode:'contain', 
+        height:200
+    },
+    sellerNameTextStyle: {
+        fontWeight: 'bold',
+        fontSize: 14
+    },
+    itemNameStyle: {
+        padding: 15
+    },
+    itemNameTextStyle: {
+        padding: 15,
+        color: 'rgba(0, 0, 0, 0.54)',
+        padding:0,
+        fontWeight:'bold'
+    },
+    actionButtonContainerStyle: {
+        borderStyle: 'solid',
+        borderTopColor: 'rgba(0, 0, 0, 0.1)',
+        borderTopWidth: 1,
+        padding: 15,
+        flexDirection: 'row',
+        flexWrap: 'nowrap',
+        alignItems: 'flex-start'
+    },
+    actionButtonStyle: {
+        flex: 1,
+        alignSelf: 'stretch'
+    }
+});
 
 var Feed = React.createClass({
 
@@ -57,32 +103,72 @@ var Feed = React.createClass({
         }
     },
 
+    renderLikeButton(liked) {
+        if (liked) {
+            return (
+                <TouchableHighlight style={style.actionButtonStyle}>
+                    <Text>Unlike</Text>
+                </TouchableHighlight>
+            )
+        }
+        else {
+            return (
+                <TouchableHighlight style={style.actionButtonStyle}>
+                    <Text>Like</Text>
+                </TouchableHighlight>
+            )
+        }
+    },
+
+    renderWishlistButton(wished) {
+        if (wished) {
+            return (
+                <TouchableHighlight style={style.actionButtonStyle}>
+                    <Text>Wished</Text>
+                </TouchableHighlight>
+            )
+        }
+        else {
+            return (
+                <TouchableHighlight style={style.actionButtonStyle}>
+                    <Text>Wish</Text>
+                </TouchableHighlight>
+            )
+        }
+    },
+
+    renderShareButton() {
+        return (
+            <TouchableHighlight style={style.actionButtonStyle}>
+                <Text>Share</Text>
+            </TouchableHighlight>
+        )
+    },
+
     _renderRow (feeditem) {
         var base64Icon = 'http://www.getmdl.io/assets/demos/welcome_card.jpg';
         var action = (<Text> My action</Text>);
         return(
-            <View style={{margin:10,marginBottom:20}}>
-            <View style={theme.cardStyle}>
-            <View style={{borderStyle: 'solid',
-    borderBottomColor: 'rgba(0, 0, 0, 0.1)',
-    borderBottomWidth: 1,
-    padding: 15}}>
-              <Text style={{fontWeight:'bold'}}>{feeditem.seller}</Text>
-            </View>
-            <Image source={{uri : feeditem.coverimg}} style={[theme.cardImageStyle,{resizeMode:'contain', height:200}]}/>
-            <View  // TextView padding not handled well on Android https://github.com/facebook/react-native/issues/3233
-              style={{
-                padding : 15,
-              }}
-              >
-              <Text style={[theme.cardContentStyle, {padding:0,fontWeight:'bold'}]}>
-                {feeditem.title}
-              </Text>
-            </View>
-            <View style={theme.cardActionStyle}>
-              
-            </View>
-            </View>
+            <View style = {style.feedItemStyle}>
+                <View style = {style.feedItemCardStyle}>
+                    <View style = {style.sellerNameStyle}>
+                        <Text style = {style.sellerNameTextStyle}>{feeditem.seller}</Text>
+                    </View>
+                    
+                    <Image source={{uri : feeditem.coverimg}} style={style.feedImageStyle}/>
+
+                    <View style={style.itemNameStyle}>
+                        <Text style={style.itemNameTextStyle}>
+                            {feeditem.title}
+                        </Text>
+                    </View>
+                    
+                    <View style={style.actionButtonContainerStyle}>
+                        {this.renderLikeButton(feeditem.liked)}
+                        {this.renderWishlistButton(feeditem.wished)}
+                        {this.renderShareButton()}
+                    </View>
+                </View>
             </View>
         );
     },
