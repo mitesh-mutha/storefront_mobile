@@ -1,5 +1,5 @@
-import React, {View, Text, StyleSheet, Navigator} from "react-native"
-import Feed from "./Feed"
+import React, {View, Text, StyleSheet, Navigator} from "react-native";
+import {Actions} from "react-native-router-flux";
 
 const styles = StyleSheet.create({
     container: {
@@ -11,15 +11,13 @@ const styles = StyleSheet.create({
     }
 });
 
-class FeedPage extends React.Component {
+class ProductPage extends React.Component {
     render(){
-        console.log(Navigator.NavigationBar.Styles.General.NavBarHeight);
         return (
             <View style={styles.container}>
-                <Feed />
             </View>
         );
     }
 }
 
-module.exports = FeedPage;
+module.exports = ProductPage;

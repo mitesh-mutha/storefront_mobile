@@ -1,56 +1,18 @@
 import React, {ListView, View, Text, StyleSheet, ScrollView, Image, TouchableOpacity} from "react-native";
+import {Actions} from "react-native-router-flux";
 
 var EntypoIcons = require('react-native-vector-icons/Entypo');
-var style = require('../styles/FeedPageStyles');
+var style = require('../styles/FeedStyles');
 var MOCKED_FEED_ITEMS ={};
 
 var Feed = React.createClass({
 
     getInitialState() { 
-        /*var MOCKED_FEED_ITEMS = [
-            {
-                type: 'product',
-                title: 'Product A',
-                coverimg: 'http://sourcingandbuying.in/Adminpanel/product_images/g1.jpg',
-                liked: false,
-                wished: false,
-                price: 2853,
-                seller: 'Arnav Jewllers'
-            },
-            {
-                type: 'product',
-                title: 'Product B',
-                coverimg: 'http://sourcingandbuying.in/Adminpanel/product_images/g2.jpg',
-                liked: false,
-                wished: true,
-                price: 2000,
-                seller: 'Arnav Jewllers'
-            },
-            {
-                type: 'product',
-                title: 'Product C',
-                coverimg: 'http://www.chintamanis.in/catalog/view/theme/pav_books/img/high_wedding_jewellery/jadau/jadau_necklace_highend_large.png',
-                liked: true,
-                wished: false,
-                price: 2101,
-                seller: 'Arnav Jewllers'
-            },
-            {
-                type: 'product',
-                title: 'Product D',
-                coverimg: 'http://www.gemnjewelery.com/blog/wp-content/uploads/2015/12/image_3.jpg',
-                liked: true,
-                wished: true,
-                price: 2812,
-                seller: 'Arnav Jewllers'
-            }
-        ];*/
-        
         MOCKED_FEED_ITEMS['product122'] = {
                 id: 122,
                 type: 'product',
                 title: 'Product A',
-                coverimg: 'http://sourcingandbuying.in/Adminpanel/product_images/g1.jpg',
+                coverimg: 'https://s-media-cache-ak0.pinimg.com/736x/ce/22/9e/ce229e3fd9c839247b76332a7c081661.jpg',
                 liked: false,
                 wished: false,
                 price: 2853,
@@ -61,7 +23,7 @@ var Feed = React.createClass({
                 id: 123,
                 type: 'product',
                 title: 'Product B',
-                coverimg: 'http://sourcingandbuying.in/Adminpanel/product_images/g2.jpg',
+                coverimg: 'https://pcjeweller.files.wordpress.com/2013/07/designer-diamond-necklace.jpg',
                 liked: false,
                 wished: true,
                 price: 2000,
@@ -124,14 +86,14 @@ var Feed = React.createClass({
         if (liked) {
             return (
                 <TouchableOpacity style={style.actionButtonWithRightBorderStyle} onPress={()=>this.unlikeFeedItem(itemid, itemtype)}>
-                    <Text style={style.actionTextStyle}><EntypoIcons name="heart-outlined"/></Text>
+                    <Text style={style.actionTextStyle}><EntypoIcons name="heart-outlined" size={24} /></Text>
                 </TouchableOpacity>
             )
         }
         else {
             return (
                 <TouchableOpacity style={style.actionButtonWithRightBorderStyle} onPress={()=>this.likeFeedItem(itemid, itemtype)}>
-                    <Text style={style.actionTextStyle}><EntypoIcons name="heart" /></Text>
+                    <Text style={style.actionTextStyle}><EntypoIcons name="heart" size={24} color='red' /></Text>
                 </TouchableOpacity>
             )
         }
@@ -157,7 +119,7 @@ var Feed = React.createClass({
     renderShareButton() {
         return (
             <TouchableOpacity style={style.actionButtonStyle}>
-                <Text style={style.actionTextStyle}><EntypoIcons name="share-alternative" /> Share</Text>
+                <Text style={style.actionTextStyle}><EntypoIcons name="share" size={24} /></Text>
             </TouchableOpacity>
         )
     },
@@ -174,25 +136,22 @@ var Feed = React.createClass({
     renderProductFeedItem(feeditem) {
         return(
             <View style = {style.feedItemStyle}>
-                <View style = {style.feedItemCardStyle}>
+                {/* <View style = {style.feedItemCardStyle}> */}
                     <View style = {style.sellerNameStyle}>
                         <Text style = {style.sellerNameTextStyle}>{feeditem.seller}</Text>
                     </View>
                     
-                    <Image source={{uri : feeditem.coverimg}} style={style.feedImageStyle}/>
+                    <TouchableOpacity onPress={()=>Actions.productpage({productId:feeditem.id})} >
+                        <Image source={{uri : feeditem.coverimg}} style={style.feedImageStyle}/>
+                    </TouchableOpacity>
 
-                    <View style={style.itemNameStyle}>
-                        <Text style={style.itemNameTextStyle}>
-                            {feeditem.title}
-                        </Text>
-                    </View>
                     
                     <View style={style.actionButtonContainerStyle}>
                         {this.renderLikeButton(feeditem.liked, feeditem.id, feeditem.type )}
                         {this.renderWishlistButton(feeditem.wished)}
                         {this.renderShareButton()}
                     </View>
-                </View>
+                {/* </View> */}
             </View>
         );
     },

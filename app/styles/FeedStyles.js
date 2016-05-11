@@ -6,7 +6,7 @@ const theme = getTheme();
 var FeedPageStyles = StyleSheet.create({
     feedItemStyle: {
         margin:10,
-        marginBottom:20
+        marginBottom:10
     },
     feedItemCardStyle: theme.cardStyle,
     sellerNameStyle: {
@@ -18,7 +18,7 @@ var FeedPageStyles = StyleSheet.create({
     feedImageStyle: {
         flex:1,
         resizeMode:'contain', 
-        height:200
+        height:280
     },
     sellerNameTextStyle: {
         fontWeight: 'bold',
@@ -39,15 +39,15 @@ var FeedPageStyles = StyleSheet.create({
         borderTopWidth: 1,
         flexDirection: 'row',
         flexWrap: 'nowrap',
-        alignItems: 'flex-start',
-        backgroundColor: 'rgba(55, 55, 55, 1);'
+        alignItems: 'flex-start'
+
     },
     actionButtonWithRightBorderStyle: {
         flex: 1,
         padding: 8,
         alignSelf: 'center',
         borderStyle: 'solid',
-        borderRightColor: 'rgba(255, 255, 255, 1)',
+        borderRightColor: 'rgba(0, 0, 0, 0.1)',
         borderRightWidth: 1,
         alignItems: 'center'
     },
@@ -58,7 +58,8 @@ var FeedPageStyles = StyleSheet.create({
         alignItems: 'center'
     },
     actionTextStyle: {
-        color: 'white'
+        color: 'black',
+        fontSize: 14
     }
 });
 
