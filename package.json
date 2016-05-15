@@ -8,8 +8,10 @@
   "dependencies": {
     "react": "^0.14.8",
     "react-native": "^0.23.1",
+    "react-native-carousel-control": "^1.0.1",
     "react-native-material-kit": "^0.3.1",
     "react-native-router-flux": "^3.2.13",
-    "react-native-share": "^1.0.10"
+    "react-native-share": "^1.0.10",
+    "react-native-spring-carousel": "^0.3.3"
   }
 }

@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     color: 'grey'
   },
   routerScene: {
-    paddingTop: 0//Navigator.NavigationBar.Styles.General.NavBarHeight, // some navbar padding to avoid content overlap
+    paddingTop: 8//Navigator.NavigationBar.Styles.General.NavBarHeight, // some navbar padding to avoid content overlap
   },
 })
 
@@ -43,7 +43,7 @@ export default class Storefront extends React.Component {
             <Scene key="modal" component={Modal} >
                 <Scene key="root">
                     <Scene key="feedpage" component={FeedPage} title="FeedPage" initial={true} />
-                    <Scene key="productpage" component={ProductPage} title="ProductPage" />
+                    <Scene key="productpage" component={ProductPage} title="ProductPage" panHandlers={null} />
                 </Scene>
             </Scene>
         </Router>;
