@@ -21,8 +21,11 @@ var FeedPageStyles = StyleSheet.create({
         height:280
     },
     sellerNameTextStyle: {
-        fontWeight: 'bold',
         fontSize: 14
+    },
+    sellerNameTextStyleFontDefault: {
+        fontSize: 14,
+        fontFamily: 'HelveticaNeueMed'
     },
     itemNameStyle: {
         padding: 15
@@ -60,6 +63,16 @@ var FeedPageStyles = StyleSheet.create({
     actionTextStyle: {
         color: 'black',
         fontSize: 14
+    },
+    footer: {
+        height: 45,
+        backgroundColor: 'rgba(255, 255, 255, 1)',
+        flexDirection: 'row',
+        flexWrap: 'nowrap',
+        alignItems: 'flex-start',
+        borderStyle: 'solid',
+        borderTopColor: 'rgba(0, 0, 0, 0.1)',
+        borderTopWidth: 1,
     }
 });
 

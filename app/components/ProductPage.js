@@ -2,6 +2,15 @@ import React, {View, Text, StyleSheet, Navigator, ScrollView, Image, TouchableOp
 import {Actions} from "react-native-router-flux";
 import Carousel from 'react-native-carousel-control';
 import Dimensions from 'Dimensions';
+const MK = require('react-native-material-kit');
+
+const {
+  MKButton,
+  MKColor,
+  getTheme
+} = MK;
+
+const theme = getTheme();
 
 var EntypoIcons = require('react-native-vector-icons/Entypo');
 var productDetails; 
@@ -10,14 +19,18 @@ const style = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 40,
-        backgroundColor: "white",
+        backgroundColor: "grey"
     },
+    productDetails: theme.cardStyle,
     footer: {
-        height: 40,
-        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        height: 45,
+        backgroundColor: 'rgba(255, 255, 255, 1)',
         flexDirection: 'row',
         flexWrap: 'nowrap',
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
+        borderStyle: 'solid',
+        borderTopColor: 'rgba(0, 0, 0, 0.1)',
+        borderTopWidth: 1,
     },
     imgstyle: {
         flex:1,
@@ -27,7 +40,8 @@ const style = StyleSheet.create({
         flex: 1,
         padding: 8,
         alignSelf: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginRight:80
     },
     actionButtonWithRightBorderStyle: {
         flex: 1,
@@ -49,9 +63,25 @@ const style = StyleSheet.create({
         fontSize: 14
     },
     productName: {
-        fontSize:24
+        fontSize:24,
+        color: 'black'
+    },
+    fab: {
+        width: 60,
+        height: 60
+    },
+    subsectionContent: {
+        color: 'black'
+    },
+    subsectionHeading: {
+        
+    },
+    subsectionContainer: {
+        marginBottom: 20
     }
 });
+
+const AccentColoredFab = MKButton.accentColoredFab().withBackgroundColor('#FFFFFF').withStyle(style.fab).build();
 
 var ProductPage = React.createClass({
     getInitialState() {
@@ -75,6 +105,23 @@ var ProductPage = React.createClass({
     likeFeedItem() {
         productDetails.liked = true;
         this.setState({product:productDetails});
+    },
+
+    renderFAButton() {
+        if (this.state.product.liked) {
+            return (
+                <View style={{position:'absolute',right:15,bottom:20}}>
+                    <AccentColoredFab onPress={()=>this.unlikeFeedItem()}><EntypoIcons name="heart-outlined" size={24} /></AccentColoredFab>
+                </View>
+            )
+        }
+        else {
+            return (
+                <View style={{position:'absolute',right:15,bottom:20}}>
+                    <AccentColoredFab  onPress={()=>this.likeFeedItem()}><EntypoIcons name="heart" size={24} color='red' /></AccentColoredFab>
+                </View>
+            )
+        }
     },
 
     renderLikeButton() {
@@ -135,21 +182,48 @@ var ProductPage = React.createClass({
                                 <Image source={{uri : 'https://is4.revolveassets.com/images/p4/n/z/TFLO-WD48_V3.jpg'}} style={style.imgstyle}/>
                             </View>
                     </Carousel>
-
                     <Text style={style.productName}>{this.state.product.name}</Text>
 
-                    <Text>{this.state.product.description}</Text>
-                    <Text>{this.state.product.code}</Text>
+                    <View style={[style.productDetails,{margin:5, padding:8}]}>             
+                        
+                        <View style={style.subsectionContainer}>
+                            <Text style={style.subsectionHeading}>Description</Text>
+                            <Text style={style.subsectionContent}>{this.state.product.description}</Text>
+                        </View>
+
+                        <View style={style.subsectionContainer}>
+                            <Text style={style.subsectionHeading}>Code</Text>
+                            <Text style={style.subsectionContent}>{this.state.product.code}</Text>
+                        </View>
+
+                        <View style={style.subsectionContainer}>
+                            <Text style={style.subsectionHeading}>Color</Text>
+                            <Text style={style.subsectionContent}>Candy Pink</Text>
+                        </View>
+
+                        <View style={style.subsectionContainer}>
+                            <Text style={style.subsectionHeading}>Fabric</Text>
+                            <Text style={style.subsectionContent}>Cotton</Text>
+                        </View>
+
+                        <View style={style.subsectionContainer}>
+                            <Text style={style.subsectionHeading}>Length</Text>
+                            <Text style={style.subsectionContent}>34 inch</Text>
+                        </View>
+                    </View>
+
+                    
 
                 </ScrollView>
+                {this.renderFAButton()}
                 <View style={style.footer}>
                     {this.renderLikeButton()}
-                    {this.renderWishlistButton()}
                     {this.renderShareButton()}
                     <View style={style.priceText}>
                         <Text>{this.state.product.price}</Text>
                     </View>
                 </View>
+
             </View>
         );
     }
