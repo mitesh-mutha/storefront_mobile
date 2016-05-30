@@ -4,6 +4,33 @@ import {Actions} from "react-native-router-flux";
 var EntypoIcons = require('react-native-vector-icons/Entypo');
 var MOCKED_FEED_ITEMS ={};
 
+const style = StyleSheet.create({
+  productFeedItem: {
+    flex: 1,
+    marginBottom: 36
+  },
+  sellerContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    padding: 8,
+    marginLeft: 8
+
+  },
+  sellerAvatar: {
+    height: 32,
+    borderRadius: 16,
+    width: 32
+  },
+  sellerName: {
+    marginLeft: 8,
+    paddingLeft: 16,
+    fontFamily: 'HelveticaNeueMedium',
+    alignSelf: 'center',
+    color: 'black'
+  }
+});
+
 var Feed = React.createClass({
   getInitialState() { 
     MOCKED_FEED_ITEMS['product122'] = {
@@ -58,8 +85,8 @@ var Feed = React.createClass({
 
   renderPostFeedItem(feeditem) {
     return(
-      <View style = {style.feedItemStyle}>
-        <View style = {style.feedItemCardStyle}>
+      <View>
+        <View>
         </View>
       </View>
     );
@@ -67,7 +94,14 @@ var Feed = React.createClass({
 
   renderProductFeedItem(feeditem) {
     return(
-      <View>
+      <View style={style.productFeedItem} >
+
+        <View style={style.sellerContainer}>
+          <Image style={style.sellerAvatar} source={{uri: 'http://placehold.it/24x24'}}/>
+          <Text style={style.sellerName}>{feeditem.seller}</Text>
+        </View>
+
+
       </View>
     );
   },
