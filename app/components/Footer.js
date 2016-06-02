@@ -1,4 +1,5 @@
-import React, {View, StyleSheet, Text} from "react-native";
+import React, {View, StyleSheet, Text, TouchableOpacity} from "react-native";
+import {Actions} from "react-native-router-flux";
 
 var Ionicons = require('react-native-vector-icons/Ionicons');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
@@ -31,25 +32,25 @@ var Footer = React.createClass({
     return (
       <View style={styles.footer}>
 
-        <View style={styles.footerItem}>
+        <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.feedpage()}>
           <Ionicons name="home" size={24} color={colorHome} />
-        </View>
+        </TouchableOpacity>
 
         <View style={styles.footerItem}>
           <MaterialIcons name="add-shopping-cart" size={24} color={colorFollowing} />
         </View>
 
-        <View style={styles.footerItem}>
+        <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.searchpage()}>
           <Ionicons name="search" size={24} color={colorSearch} />
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.footerItem}>
+        <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.followpage()}>
           <MaterialIcons name="store-mall-directory" size={24} color={colorWishlist} />
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.footerItem}>
+        <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.profilepage()}>
           <Ionicons name="person" size={24} color={colorProfile} />
-        </View>
+        </TouchableOpacity>
 
       </View>
     );

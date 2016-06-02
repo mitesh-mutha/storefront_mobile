@@ -1,7 +1,9 @@
 import React, {ListView, View, Text, StyleSheet, ScrollView, Image, TouchableOpacity} from "react-native";
 import {Actions} from "react-native-router-flux";
+import Dimensions from 'Dimensions';
 
 var EntypoIcons = require('react-native-vector-icons/Entypo');
+var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 var MOCKED_FEED_ITEMS ={};
 
 const style = StyleSheet.create({
@@ -15,24 +17,44 @@ const style = StyleSheet.create({
     alignItems: 'flex-start',
     padding: 8,
     marginLeft: 8
-
+  },
+  detailContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginLeft: 8,
+    paddingLeft: 8
   },
   sellerAvatar: {
     height: 32,
     borderRadius: 16,
     width: 32
   },
-  sellerName: {
-    marginLeft: 8,
-    paddingLeft: 16,
+  sellerName: {  
     fontFamily: 'HelveticaNeueMedium',
-    alignSelf: 'center',
     color: 'black'
+  },
+  productName: {
+    fontFamily: 'HelveticaNeueLight'
+  },
+  feedImageStyle: {
+    flex: 1,
+    width: Dimensions.get('window').width,
+    height: 260,
+    alignItems: 'flex-start',
+    alignSelf: 'flex-start'
+  },
+  actionButtonContainer: {
+    marginLeft: 8,
+    flexDirection: 'row'
+  },
+  actionButton: {
+    padding: 8
   }
 });
 
 var Feed = React.createClass({
-  getInitialState() { 
+  getInitialState() {
+    console.log(Dimensions.get('window').width);
     MOCKED_FEED_ITEMS['product122'] = {
       id: 122,
       type: 'product',
@@ -83,6 +105,72 @@ var Feed = React.createClass({
     }
   },
 
+  likeFeedItem(itemid, itemtype) {
+               
+        MOCKED_FEED_ITEMS[itemtype + itemid.toString()].liked = true;
+        
+        var ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 != r2
+        });
+        this.setState({ dataSource: ds.cloneWithRows(MOCKED_FEED_ITEMS) });
+        return;
+    },
+
+    unlikeFeedItem(itemid, itemtype) {
+               
+        MOCKED_FEED_ITEMS[itemtype + itemid.toString()].liked = false;
+        
+        var ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 != r2
+        });
+        this.setState({ dataSource: ds.cloneWithRows(MOCKED_FEED_ITEMS) });
+        return;
+    },
+
+    renderLikeButton(liked, itemid, itemtype) {
+        if (liked) {
+            return (
+              <TouchableOpacity style={style.actionButton} onPress={()=>this.unlikeFeedItem(itemid, itemtype)}>
+                    <EntypoIcons name="heart" size={24} color='red' />
+                </TouchableOpacity>
+                
+            )
+        }
+        else {
+            return (
+              <TouchableOpacity style={style.actionButton} onPress={()=>this.likeFeedItem(itemid, itemtype)}>
+                    <EntypoIcons name="heart-outlined" size={24} />
+                </TouchableOpacity>
+                
+            )
+        }
+    },
+
+    renderWishlistButton(wished, itemid, itemtype) {
+        if (wished) {
+            return (
+                <TouchableOpacity style={style.actionButton}>
+                    <MaterialIcons name="remove-shopping-cart" size={24}/>
+                </TouchableOpacity>
+            )
+        }
+        else {
+            return (
+                <TouchableOpacity style={style.actionButton}>
+                    <MaterialIcons name="add-shopping-cart" size={24} />
+                </TouchableOpacity>
+            )
+        }
+    },
+
+    renderShareButton() {
+      return (
+          <TouchableOpacity style={style.actionButton}>
+            <MaterialIcons name="share" size={24} />
+          </TouchableOpacity>
+        )
+    },
+
   renderPostFeedItem(feeditem) {
     return(
       <View>
@@ -98,7 +186,20 @@ var Feed = React.createClass({
 
         <View style={style.sellerContainer}>
           <Image style={style.sellerAvatar} source={{uri: 'http://placehold.it/24x24'}}/>
-          <Text style={style.sellerName}>{feeditem.seller}</Text>
+          <View style={style.detailContainer}>
+            <Text style={style.sellerName}>{feeditem.seller}</Text>
+            <Text style={style.productName}>{feeditem.title}</Text>
+          </View>
+        </View>
+
+        <TouchableOpacity style={{alignItems:'flex-start', alignSelf: 'flex-start'}} onPress={()=>Actions.productpage({productId:feeditem.id})} >
+            <Image source={{uri : feeditem.coverimg}} style={style.feedImageStyle}/>
+        </TouchableOpacity>
+
+        <View style={style.actionButtonContainer}>
+          {this.renderLikeButton(feeditem.liked, feeditem.id, feeditem.type)}
+          {this.renderWishlistButton(feeditem.wished, feeditem.id, feeditem.type)}
+          {this.renderShareButton()}
         </View>
 
 
