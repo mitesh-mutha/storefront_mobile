@@ -54,7 +54,6 @@ const style = StyleSheet.create({
 
 var Feed = React.createClass({
   getInitialState() {
-    console.log(Dimensions.get('window').width);
     MOCKED_FEED_ITEMS['product122'] = {
       id: 122,
       type: 'product',

@@ -1,16 +1,25 @@
-import React, {View, Text, StyleSheet, ScrollView, Image} from "react-native";
+import React, {View, Text, StyleSheet, ScrollView, Image, TouchableOpacity} from "react-native";
 import Dimensions from 'Dimensions';
+import {Actions} from "react-native-router-flux";
 
 import Footer from "./Footer"
+var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
+var EntypoIcons = require('react-native-vector-icons/Entypo');
 
+const MK = require('react-native-material-kit');
 
+const {
+  MKButton,
+  MKColor,
+  getTheme
+} = MK;
 
 const CARD_PREVIEW_WIDTH = 60;
 const CARD_MARGIN = 5;
 const CARD_WIDTH = Dimensions.get('window').width - (CARD_MARGIN + CARD_PREVIEW_WIDTH) * 2;
 
 const styles = StyleSheet.create({
-    container: {
+  container: {
     flex: 1,        
     backgroundColor: "white",
   },
@@ -20,14 +29,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'nowrap',
     alignItems: 'center',
-    elevation: 2,
-    shadowColor: 'rgba(0, 0, 0, 0.12)',
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    shadowOffset: {
-      height: 1,
-      width: 2,
-    }
+    borderBottomWidth: 1,
+    borderStyle: 'solid',
+    borderBottomColor: 'rgba(0, 0, 0, 0.1)'
   },
   appnamecontainer: {
     padding: 8,
@@ -79,12 +83,58 @@ content: {
         marginBottom: 8
     },
     subsectionContent: {
-       fontFamily: 'HelveticaNeueMed',
-    color: 'black' 
+      fontFamily: 'HelveticaNeueMed',
+      color: 'black',
+      fontSize: 13
+    },
+    footer: {
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+    height: 48,
+    backgroundColor: 'white',
+    alignItems: 'flex-start',
+    borderStyle: 'solid',
+    borderTopColor: 'rgba(0, 0, 0, 0.1)',
+    borderTopWidth: 1
+  },
+  footerItem : {
+    flex: 1,
+    alignItems: 'center',
+    alignSelf: 'center'
+  },
+  actionButtonWithRightBorderStyle: {
+        flex: 1,
+        padding: 8,
+        alignSelf: 'center',
+        borderStyle: 'solid',
+        borderRightColor: 'rgba(0, 0, 0, 0.1)',
+        borderRightWidth: 1,
+        alignItems: 'center'
+    },
+    actionButtonStyle: {
+        flex: 1,
+        padding: 8,
+        alignSelf: 'center',
+        alignItems: 'center'
+    },
+    actionTextStyle: {
+        color: 'black',
+        fontSize: 14
+    },
+    priceText: {
+        flex: 1,
+        padding: 8,
+        alignSelf: 'center',
+        alignItems: 'center',
+        marginRight:80
+    },
+    fab: {
+        width: 60,
+        height: 60
     }
 });
 
-
+const AccentColoredFab = MKButton.accentColoredFab().withBackgroundColor('#FFFFFF').withStyle(styles.fab).build();
 var productDetails; 
 
 var ProductPage = React.createClass({
@@ -100,11 +150,65 @@ var ProductPage = React.createClass({
             console.log(this.state)
         return {product: productDetails}
     },
+    unlikeFeedItem() {
+        productDetails.liked = false;
+        this.setState({product:productDetails});
+    },
+
+    likeFeedItem() {
+        productDetails.liked = true;
+        this.setState({product:productDetails});
+    },
+    renderShareButton() {
+        return (
+            <TouchableOpacity style={styles.actionButtonWithRightBorderStyle}>
+                <Text style={styles.actionTextStyle}><EntypoIcons name="share" size={24} /></Text>
+            </TouchableOpacity>
+        )
+    },
+
+    renderFAButton() {
+        if (this.state.product.liked) {
+            return (
+                <View style={{position:'absolute',right:15,bottom:20}}>
+                    <AccentColoredFab onPress={()=>this.unlikeFeedItem()}><MaterialIcons name="add-shopping-cart" size={24}  color={'red'}/></AccentColoredFab>
+                </View>
+            )
+        }
+        else {
+            return (
+                <View style={{position:'absolute',right:15,bottom:20}}>
+                    <AccentColoredFab  onPress={()=>this.likeFeedItem()}><MaterialIcons name="add-shopping-cart" size={24} /></AccentColoredFab>
+                </View>
+            )
+        }
+    },
+
+    renderLikeButton() {
+        if (this.state.product.liked) {
+            return (
+                <TouchableOpacity style={styles.actionButtonWithRightBorderStyle} onPress={()=>this.unlikeFeedItem()}>
+                    <Text style={styles.actionTextStyle}><EntypoIcons name="heart" size={24} color='red' /></Text>
+                </TouchableOpacity>
+            )
+        }
+        else {
+            return (
+                <TouchableOpacity style={styles.actionButtonWithRightBorderStyle} onPress={()=>this.likeFeedItem()}>
+                    <Text style={styles.actionTextStyle}><EntypoIcons name="heart-outlined" size={24} /></Text>
+                </TouchableOpacity>
+            )
+        }
+    },
+
     render(){
     return (
       <View style={styles.container}>
 
         <View style={styles.header}>
+          <TouchableOpacity style={styles.appnamecontainer} onPress={()=>Actions.feedpage()}>
+            <MaterialIcons name="arrow-back" size={24} color={'black'} />
+          </TouchableOpacity>
           <View style={styles.appnamecontainer}>
             <Text style={styles.appname}>Storefront</Text>
           </View>
@@ -148,7 +252,7 @@ var ProductPage = React.createClass({
                 </View>
 
                 <View style={styles.subsectionContainer}>
-                    <Text style={styles.aboutProductTitle}>About This Product</Text>
+                    <Text style={[styles.aboutProductTitle, {fontSize:15}]}>About This Product</Text>
                 </View>
 
                 <View style={styles.subsectionContainer}>
@@ -175,7 +279,14 @@ var ProductPage = React.createClass({
 
         </ScrollView>
 
-        <Footer page='home'/>
+        {this.renderFAButton()}
+        <View style={styles.footer}>
+          {this.renderLikeButton()}
+          {this.renderShareButton()}
+          <View style={styles.priceText}>
+              <Text>&#8377;{this.state.product.price}</Text>
+          </View>
+        </View>
 
       </View>
         );
