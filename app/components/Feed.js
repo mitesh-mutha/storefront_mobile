@@ -9,7 +9,7 @@ var MOCKED_FEED_ITEMS ={};
 const style = StyleSheet.create({
   productFeedItem: {
     flex: 1,
-    marginBottom: 36
+    marginBottom: 36    
   },
   sellerContainer: {
     flex: 1,
@@ -45,7 +45,11 @@ const style = StyleSheet.create({
   },
   actionButtonContainer: {
     marginLeft: 8,
-    flexDirection: 'row'
+    marginRight: 8,
+    flexDirection: 'row',
+    borderStyle:'solid',
+    borderBottomWidth:1,
+    borderBottomColor: 'rgba(79, 79, 79, 0.1)'
   },
   actionButton: {
     padding: 8
