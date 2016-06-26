@@ -75,7 +75,7 @@ var ProfilePage = React.createClass({
           </View>
         </View>
 
-        <ScrollView style={{flex:1,height:500}}>          
+        <ScrollView style={{flex:1}}>          
 
             <View style={styles.sellerContainer}>
               <View style={{marginLeft: 8, marginRight: 8, marginBottom: 8, alignItems:'center'}}>

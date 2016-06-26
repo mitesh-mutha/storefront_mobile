@@ -36,16 +36,16 @@ var Footer = React.createClass({
           <Ionicons name="home" size={24} color={colorHome} />
         </TouchableOpacity>
 
-        <View style={styles.footerItem}>
-          <MaterialIcons name="add-shopping-cart" size={24} color={colorFollowing} />
-        </View>
+        <TouchableOpacity style={styles.footerItem}>
+          <MaterialIcons name="add-shopping-cart" size={24} color={colorWishlist} />
+        </TouchableOpacity>
 
         <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.searchpage()}>
           <Ionicons name="search" size={24} color={colorSearch} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.followpage()}>
-          <MaterialIcons name="store-mall-directory" size={24} color={colorWishlist} />
+          <MaterialIcons name="store-mall-directory" size={24} color={colorFollowing} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.profilepage()}>

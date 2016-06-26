@@ -6,6 +6,7 @@ import ProductPage from './app/components/ProductPage'
 import SearchPage from './app/components/SearchPage'
 import FollowPage from './app/components/FollowPage'
 import ProfilePage from './app/components/ProfilePage'
+import VendorPage from './app/components/VendorPage'
 
 const reducerCreate = params=>{
   const defaultReducer = Reducer(params);
@@ -25,6 +26,7 @@ export default class Storefront extends React.Component {
           <Scene key="searchpage" component={SearchPage} hideNavBar={true} />
           <Scene key="followpage" component={FollowPage} hideNavBar={true} />
           <Scene key="profilepage" component={ProfilePage} hideNavBar={true} />
+          <Scene key="vendorpage" component={VendorPage} hideNavBar={true} />
         </Scene>
       </Scene>
     </Router>;

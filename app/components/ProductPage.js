@@ -6,14 +6,6 @@ import Footer from "./Footer"
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 var EntypoIcons = require('react-native-vector-icons/Entypo');
 
-const MK = require('react-native-material-kit');
-
-const {
-  MKButton,
-  MKColor,
-  getTheme
-} = MK;
-
 const CARD_PREVIEW_WIDTH = 60;
 const CARD_MARGIN = 5;
 const CARD_WIDTH = Dimensions.get('window').width - (CARD_MARGIN + CARD_PREVIEW_WIDTH) * 2;
@@ -134,7 +126,6 @@ content: {
     }
 });
 
-const AccentColoredFab = MKButton.accentColoredFab().withBackgroundColor('#FFFFFF').withStyle(styles.fab).build();
 var productDetails; 
 
 var ProductPage = React.createClass({
@@ -167,18 +158,22 @@ var ProductPage = React.createClass({
         )
     },
 
-    renderFAButton() {
+    renderWishlistButton() {
         if (this.state.product.liked) {
             return (
                 <View style={{position:'absolute',right:15,bottom:20}}>
-                    <AccentColoredFab onPress={()=>this.unlikeFeedItem()}><MaterialIcons name="add-shopping-cart" size={24}  color={'red'}/></AccentColoredFab>
+                    <View style={{height:60,width:60,borderRadius:30,backgroundColor:'rgba(255, 112, 160, 1)',borderStyle:'solid',borderWidth:1,borderColor:'rgba(0,0,0,0.1)'}}>
+                        <Text style={{marginLeft:15, marginTop: 15}}><MaterialIcons name="add-shopping-cart" size={24} color='white' /></Text>
+                    </View>
                 </View>
             )
         }
         else {
             return (
                 <View style={{position:'absolute',right:15,bottom:20}}>
-                    <AccentColoredFab  onPress={()=>this.likeFeedItem()}><MaterialIcons name="add-shopping-cart" size={24} /></AccentColoredFab>
+                    <View style={{height:60,width:60,borderRadius:30,backgroundColor:'rgba(255, 112, 160, 1)',borderStyle:'solid',borderWidth:1,borderColor:'rgba(0,0,0,0.1)', alignItems:'center'}}>
+                        <Text style={{marginTop: 16}}><MaterialIcons name="add-shopping-cart" size={24} color='white' /></Text>
+                    </View>
                 </View>
             )
         }
@@ -212,7 +207,6 @@ var ProductPage = React.createClass({
           <View style={styles.appnamecontainer}>
             <Text style={styles.appname}>Storefront</Text>
           </View>
-
         </View>
              
         <ScrollView>
@@ -274,12 +268,11 @@ var ProductPage = React.createClass({
                     <Text style={styles.subsectionHeading}>Length</Text>
                     <Text style={styles.subsectionContent}>34 inch</Text>
                 </View>
-
             </View>
 
         </ScrollView>
 
-        {this.renderFAButton()}
+        
         <View style={styles.footer}>
           {this.renderLikeButton()}
           {this.renderShareButton()}
@@ -287,6 +280,7 @@ var ProductPage = React.createClass({
               <Text>&#8377;{this.state.product.price}</Text>
           </View>
         </View>
+        {this.renderWishlistButton()}
 
       </View>
         );

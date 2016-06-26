@@ -1,5 +1,6 @@
-import React, {View, Text, StyleSheet, Navigator, ScrollView, TextInput, Image, ListView} from "react-native"
+import React, {View, Text, StyleSheet, Navigator, ScrollView, TextInput, Image, ListView, TouchableOpacity} from "react-native"
 import Footer from "./Footer"
+import {Actions} from "react-native-router-flux";
 
 var MOCKED_FOLLOW_ITEM ={};
 
@@ -124,7 +125,7 @@ var FollowPage = React.createClass({
 
   _renderRow(resultItem)  {
     return (
-      <View style={{
+      <TouchableOpacity style={{
         flex:1,
         marginLeft:16,
         marginRight:16,
@@ -132,7 +133,7 @@ var FollowPage = React.createClass({
         backgroundColor: 'white',
         borderWidth: 1,
         borderStyle: 'solid',
-        borderColor: 'rgba(0,0,0,0.1)'}}>
+        borderColor: 'rgba(0,0,0,0.1)'}} onPress={()=>Actions.vendorpage()}>
         <View style={styles.sellerContainer}>
           <Image style={styles.sellerAvatar} source={{uri: resultItem.logourl}}/>
           <View style={styles.detailContainer}>
@@ -140,7 +141,7 @@ var FollowPage = React.createClass({
             {this.renderFollowButton(resultItem.id, resultItem.isFollowing)}
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   },
 

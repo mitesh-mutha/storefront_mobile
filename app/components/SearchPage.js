@@ -1,5 +1,6 @@
-import React, {View, Text, StyleSheet, Navigator, ScrollView, TextInput, Image, ListView} from "react-native"
+import React, {View, Text, StyleSheet, Navigator, ScrollView, TextInput, Image, ListView, TouchableOpacity} from "react-native"
 import Footer from "./Footer"
+import {Actions} from "react-native-router-flux";
 
 var MOCKED_SEARCH_ITEM ={};
 
@@ -142,7 +143,7 @@ var SearchPage  = React.createClass({
 
   _renderRow(resultItem)  {
     return (
-      <View style={{
+      <TouchableOpacity style={{
         flex:1,
         marginLeft:16,
         marginRight:16,
@@ -151,7 +152,7 @@ var SearchPage  = React.createClass({
         borderWidth: 1,
         borderStyle: 'solid',
         borderColor: 'rgba(0,0,0,0.1)'
-      }}>
+      }} onPress={()=>Actions.vendorpage()}>
         <View style={styles.sellerContainer}>
           <Image style={styles.sellerAvatar} source={{uri: resultItem.logourl}}/>
           <View style={styles.detailContainer}>
@@ -159,7 +160,7 @@ var SearchPage  = React.createClass({
             {this.renderFollowButton(resultItem.id, resultItem.isFollowing)}
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   },
 

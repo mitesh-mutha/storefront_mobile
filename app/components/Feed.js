@@ -187,13 +187,13 @@ var Feed = React.createClass({
     return(
       <View style={style.productFeedItem} >
 
-        <View style={style.sellerContainer}>
+        <TouchableOpacity style={style.sellerContainer} onPress={()=>Actions.vendorpage()}>
           <Image style={style.sellerAvatar} source={{uri: 'http://placehold.it/24x24'}}/>
           <View style={style.detailContainer}>
             <Text style={style.sellerName}>{feeditem.seller}</Text>
             <Text style={style.productName}>{feeditem.title}</Text>
           </View>
-        </View>
+        </TouchableOpacity>
 
         <TouchableOpacity style={{alignItems:'flex-start', alignSelf: 'flex-start'}} onPress={()=>Actions.productpage({productId:feeditem.id})} >
             <Image source={{uri : feeditem.coverimg}} style={style.feedImageStyle}/>

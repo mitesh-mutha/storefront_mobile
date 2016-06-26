@@ -5,7 +5,6 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 
 // Added by Mitesh Mutha for the React Native Material Design Kit
-import com.github.xinthink.rnmk.ReactMaterialKitPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,8 +36,7 @@ public class MainActivity extends ReactActivity {
     @Override
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
-            new MainReactPackage(),
-            new ReactMaterialKitPackage()
+            new MainReactPackage()
         );
     }
 }
