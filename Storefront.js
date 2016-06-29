@@ -7,6 +7,9 @@ import SearchPage from './app/components/SearchPage'
 import FollowPage from './app/components/FollowPage'
 import ProfilePage from './app/components/ProfilePage'
 import VendorPage from './app/components/VendorPage'
+import OTPLoginPage from './app/components/OTPLoginPage'
+import OTPVerificationPage from './app/components/OTPVerificationPage'
+
 
 const reducerCreate = params=>{
   const defaultReducer = Reducer(params);
@@ -21,7 +24,9 @@ export default class Storefront extends React.Component {
     return <Router createReducer={reducerCreate}>
       <Scene key="modal" component={Modal} >
         <Scene key="root">
-          <Scene key="feedpage" component={FeedPage} hideNavBar={true} initial={true} />
+          <Scene key="otploginpage" component={OTPLoginPage} hideNavBar={true} initial={true} />
+          <Scene key="otpverificationpage" component={OTPVerificationPage} hideNavBar={true}/>
+          <Scene key="feedpage" component={FeedPage} hideNavBar={true} />
           <Scene key="productpage" component={ProductPage} hideNavBar={true} panHandlers={null} />
           <Scene key="searchpage" component={SearchPage} hideNavBar={true} />
           <Scene key="followpage" component={FollowPage} hideNavBar={true} />

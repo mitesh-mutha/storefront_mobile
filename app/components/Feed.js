@@ -11,6 +11,10 @@ const style = StyleSheet.create({
     flex: 1,
     marginBottom: 36    
   },
+  postFeedItem: {
+    flex: 1,
+    marginBottom: 36    
+  },
   sellerContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -47,6 +51,7 @@ const style = StyleSheet.create({
     marginLeft: 8,
     marginRight: 8,
     flexDirection: 'row',
+    flexWrap: 'nowrap',
     borderStyle:'solid',
     borderBottomWidth:1,
     borderBottomColor: 'rgba(79, 79, 79, 0.1)'
@@ -58,6 +63,13 @@ const style = StyleSheet.create({
 
 var Feed = React.createClass({
   getInitialState() {
+    MOCKED_FEED_ITEMS['post111'] = {
+      id: 111,
+      type: 'post',
+      text: 'Arnav jewellers are presenting at the C3P0 stall today. Please come visit us.',
+      liked: false,
+      seller: 'Arnav Jewllers'
+    };
     MOCKED_FEED_ITEMS['product122'] = {
       id: 122,
       type: 'product',
@@ -176,9 +188,26 @@ var Feed = React.createClass({
 
   renderPostFeedItem(feeditem) {
     return(
-      <View>
-        <View>
+      <View style={style.postFeedItem}>
+
+        <TouchableOpacity style={style.sellerContainer} onPress={()=>Actions.vendorpage()}>
+          <Image style={style.sellerAvatar} source={{uri: 'http://placehold.it/24x24'}}/>
+          <View style={style.detailContainer}>
+            <Text style={style.sellerName}>{feeditem.seller}</Text>
+          </View>
+        </TouchableOpacity>
+
+        <View style={[style.actionButtonContainer,{flexDirection:'column', borderBottomWidth:0, marginBottom:8}]}>
+          <Text style={style.productName}>{feeditem.text}</Text>
         </View>
+
+        <View style={style.actionButtonContainer}>
+          {this.renderLikeButton(feeditem.liked, feeditem.id, feeditem.type)}
+          {this.renderShareButton()}
+        </View>
+
+
+
       </View>
     );
   },

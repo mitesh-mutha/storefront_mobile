@@ -1,5 +1,6 @@
 import React, {View, Text, StyleSheet, Navigator, ScrollView, Image, TouchableOpacity} from "react-native"
 import Footer from "./Footer"
+import {Actions} from "react-native-router-flux";
 
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 
@@ -108,7 +109,7 @@ var ProfilePage = React.createClass({
               <MaterialIcons name='person-add' size={16} color='black' /><Text style={{color:'black', fontSize: 16, fontFamily:'HelveticaNeueMedium'}}>     Invite Friends</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={{margin: 16, alignSelf: 'stretch', flexDirection: 'row', alignItems: 'center'}}>
+            <TouchableOpacity style={{margin: 16, alignSelf: 'stretch', flexDirection: 'row', alignItems: 'center'}} onPress={()=>Actions.otploginpage()}>
               <MaterialIcons name='exit-to-app' size={16} color='black' /><Text style={{color:'black', fontSize: 16, fontFamily:'HelveticaNeueMedium'}}>      Log Out</Text>
             </TouchableOpacity>
           
