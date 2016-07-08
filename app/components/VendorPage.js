@@ -1,5 +1,6 @@
 import React, {View, Text, StyleSheet, Navigator, ScrollView, TouchableOpacity} from "react-native"
 import {Actions} from "react-native-router-flux";
+import Communications from 'react-native-communications';
 
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 var Carousel = require('react-native-carousel');
@@ -78,10 +79,10 @@ var VendorPage = React.createClass({
 
           <View style={{flex:1, flexDirection:'row', alignItems:'center', borderStyle:'solid', borderBottomColor:'rgba(79, 79, 79, 0.1)', borderBottomWidth:1}}>
             
-            <View style={{flex:1, alignItems:'center', padding: 8, borderStyle:'solid', borderRightColor:'rgba(79, 79, 79, 0.1)', borderRightWidth:1}}>
+            <TouchableOpacity style={{flex:1, alignItems:'center', padding: 8, borderStyle:'solid', borderRightColor:'rgba(79, 79, 79, 0.1)', borderRightWidth:1}} onPress={() => Communications.phonecall('0123456789', true)}>
               <MaterialIcons name="call" size={24} color='black' />
               <Text style={{marginTop:8, fontFamily:'HelveticaNeueMed', color:'black'}}>Call</Text>
-            </View>
+            </TouchableOpacity>
             
             <View style={{flex:1, alignItems:'center', padding: 8}}>
               <MaterialIcons name="place" size={24} color='black' />
