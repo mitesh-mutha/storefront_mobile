@@ -2,6 +2,7 @@ import React, {View, Text, StyleSheet, Navigator, ScrollView, TextInput, Image, 
 import Footer from "./Footer"
 import {Actions} from "react-native-router-flux";
 
+var Ionicons = require('react-native-vector-icons/Ionicons');
 var MOCKED_SEARCH_ITEM ={};
 
 const styles = StyleSheet.create({
@@ -167,8 +168,8 @@ var SearchPage  = React.createClass({
   renderSearchResults() {
     return (
         <View>
-          <View style={{flex:1, alignSelf:'center', marginTop:8, borderStyle:'solid', borderTopColor:'rgba(67, 164, 229, 1)', borderTopWidth: 2}}>
-            <Text style={{flex:1, marginTop: 8}}>    Browse    </Text>
+          <View style={{flex:1, alignSelf:'center', marginTop:8}}>
+            <Text style={{flex:1, marginTop: 8}}>    Search Results    </Text>
           </View>
           <ListView
             dataSource = {this.state.dataSource}
@@ -180,15 +181,24 @@ var SearchPage  = React.createClass({
   render(){
     return (
       <View style={styles.container}>
-
+        
         <View style={styles.header}>
-          <View style={styles.appnamecontainer}>
-            <Text style={styles.appname}>Storefront</Text>
-          </View>
+          <View style={{
+              flex:1,
+              margin: 16,
+              flexDirection: 'row',
+              flexWrap: "nowrap",
+              alignItems: "center"
+            }}>
+              <Ionicons name="search" size={20} />
+              <TextInput
+                placeholder="Search"
+                style={{height: 40, flex: 1}}/>
+              
+          </View>  
         </View>
 
         <ScrollView style={{flex:1}}>
-          {this.renderSearchBar()}
           {this.renderSearchResults()}
         </ScrollView>
         
