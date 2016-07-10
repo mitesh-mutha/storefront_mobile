@@ -39,7 +39,6 @@ export default class Storefront extends React.Component {
   }
 
   componentDidMount() {
-    console.log(Orientation);
     Orientation.lockToPortrait();
   }
 }
