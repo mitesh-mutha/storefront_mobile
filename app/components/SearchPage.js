@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     marginTop:2,
     marginBottom: 2, 
     color:'white'
-  }
+  },
   notFollowingButtonContainer: {
     flex:1, 
     marginRight: 16, 
@@ -171,15 +171,15 @@ var SearchPage  = React.createClass({
   renderFollowButton(id, isFollowing) {
     if (isFollowing) {
       return (
-        <View style={style.followingButtonContainer}>
-          <Text style={style.followingText}>Following</Text>
+        <View style={styles.followingButtonContainer}>
+          <Text style={styles.followingText}>Following</Text>
         </View>
       )
     }
     else {
       return (
-        <View style={style.notFollowingButtonContainer}>
-          <Text style={style.notFollowingText}>Follow</Text>
+        <View style={styles.notFollowingButtonContainer}>
+          <Text style={styles.notFollowingText}>Follow</Text>
         </View>
       )
     }

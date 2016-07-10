@@ -129,10 +129,10 @@ const styles = StyleSheet.create({
     backgroundColor:'rgba(255, 112, 160, 1)',
     borderStyle:'solid',
     borderWidth:1,
-    borderColor:'rgba(0,0,0,0.1)'
+    borderColor:'rgba(0,0,0,0.1)', 
+    alignItems:'center'
   },
   wishedButtonLabel: {
-    marginLeft:15, 
     marginTop: 15
   },
   notWishedProductButton: {
@@ -146,7 +146,6 @@ const styles = StyleSheet.create({
     alignItems:'center'
   },
   notWishedButtonLabel: {
-    marginLeft:15, 
     marginTop: 15
   },
   productImage: {

@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     marginTop:2,
     marginBottom: 2, 
     color:'white'
-  }
+  },
   notFollowingButtonContainer: {
     flex:1, 
     marginRight: 16, 
@@ -156,15 +156,15 @@ var FollowPage = React.createClass({
   renderFollowButton(id, isFollowing) {
     if (isFollowing) {
       return (
-        <View style={style.followingButtonContainer}>
-          <Text style={style.followingText}>Following</Text>
+        <View style={styles.followingButtonContainer}>
+          <Text style={styles.followingText}>Following</Text>
         </View>
       )
     }
     else {
       return (
-        <View style={style.notFollowingButtonContainer}>
-          <Text style={style.notFollowingText}>Follow</Text>
+        <View style={styles.notFollowingButtonContainer}>
+          <Text style={styles.notFollowingText}>Follow</Text>
         </View>
       )
     }
@@ -172,7 +172,7 @@ var FollowPage = React.createClass({
 
   _renderRow(resultItem)  {
     return (
-      <TouchableOpacity style={style.followItem} onPress={()=>Actions.vendorpage()}>
+      <TouchableOpacity style={styles.followItem} onPress={()=>Actions.vendorpage()}>
         <View style={styles.sellerContainer}>
           <Image style={styles.sellerAvatar} source={{uri: resultItem.logourl}}/>
           <View style={styles.detailContainer}>
@@ -204,7 +204,7 @@ var FollowPage = React.createClass({
           </View>
         </View>
 
-        <ScrollView style={style.followedVendorsContainer}>
+        <ScrollView style={styles.followedVendorsContainer}>
           {this.renderFollowedVendors()}
         </ScrollView>
         

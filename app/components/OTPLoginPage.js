@@ -63,10 +63,10 @@ var OTPLoginPage = React.createClass({
             placeholder="Mobile Number"
             keyboardType="numeric"
             underlineColorAndroid='rgba(67, 164, 229, 1)'
-            style={style.mobileNumInput}/>
+            style={styles.mobileNumInput}/>
           <TouchableOpacity style={styles.loginButton} 
             onPress={()=>Actions.otpverificationpage()}>
-            <Text style={style.loginButtonLabel}>Send OTP</Text>
+            <Text style={styles.loginButtonLabel}>Send OTP</Text>
           </TouchableOpacity>
         </View>
 

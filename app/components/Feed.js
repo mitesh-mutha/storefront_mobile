@@ -6,7 +6,7 @@ var EntypoIcons = require('react-native-vector-icons/Entypo');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 var MOCKED_FEED_ITEMS ={};
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   productFeedItem: {
     flex: 1,
     marginBottom: 36    
@@ -59,13 +59,13 @@ const style = StyleSheet.create({
   postTextContainer: {
     marginLeft: 8,
     marginRight: 8,
-    marginBottom:8
+    marginBottom:8,
     flexDirection:'column',
     flexWrap: 'nowrap',
   },
   postText: {
     fontFamily: 'HelveticaNeueLight'
-  }
+  },
   actionButton: {
     padding: 8
   }
@@ -155,7 +155,7 @@ var Feed = React.createClass({
     renderLikeButton(liked, itemid, itemtype) {
         if (liked) {
             return (
-              <TouchableOpacity style={style.actionButton} onPress={()=>this.unlikeFeedItem(itemid, itemtype)}>
+              <TouchableOpacity style={styles.actionButton} onPress={()=>this.unlikeFeedItem(itemid, itemtype)}>
                     <EntypoIcons name="heart" size={24} color='red' />
                 </TouchableOpacity>
                 
@@ -163,7 +163,7 @@ var Feed = React.createClass({
         }
         else {
             return (
-              <TouchableOpacity style={style.actionButton} onPress={()=>this.likeFeedItem(itemid, itemtype)}>
+              <TouchableOpacity style={styles.actionButton} onPress={()=>this.likeFeedItem(itemid, itemtype)}>
                     <EntypoIcons name="heart-outlined" size={24} />
                 </TouchableOpacity>
                 
@@ -174,14 +174,14 @@ var Feed = React.createClass({
     renderWishlistButton(wished, itemid, itemtype) {
         if (wished) {
             return (
-                <TouchableOpacity style={style.actionButton}>
+                <TouchableOpacity style={styles.actionButton}>
                     <MaterialIcons name="remove-shopping-cart" size={24}/>
                 </TouchableOpacity>
             )
         }
         else {
             return (
-                <TouchableOpacity style={style.actionButton}>
+                <TouchableOpacity style={styles.actionButton}>
                     <MaterialIcons name="add-shopping-cart" size={24} />
                 </TouchableOpacity>
             )
@@ -190,7 +190,7 @@ var Feed = React.createClass({
 
     renderShareButton() {
       return (
-          <TouchableOpacity style={style.actionButton}>
+          <TouchableOpacity style={styles.actionButton}>
             <MaterialIcons name="share" size={24} />
           </TouchableOpacity>
         )
@@ -198,20 +198,20 @@ var Feed = React.createClass({
 
   renderPostFeedItem(feeditem) {
     return(
-      <View style={style.postFeedItem}>
+      <View style={styles.postFeedItem}>
 
-        <TouchableOpacity style={style.sellerContainer} onPress={()=>Actions.vendorpage()}>
-          <Image style={style.sellerAvatar} source={{uri: 'http://placehold.it/24x24'}}/>
-          <View style={style.detailContainer}>
-            <Text style={style.sellerName}>{feeditem.seller}</Text>
+        <TouchableOpacity style={styles.sellerContainer} onPress={()=>Actions.vendorpage()}>
+          <Image style={styles.sellerAvatar} source={{uri: 'http://placehold.it/24x24'}}/>
+          <View style={styles.detailContainer}>
+            <Text style={styles.sellerName}>{feeditem.seller}</Text>
           </View>
         </TouchableOpacity>
 
-        <View style={style.postTextContainer}>
-          <Text style={style.postText}>{feeditem.text}</Text>
+        <View style={styles.postTextContainer}>
+          <Text style={styles.postText}>{feeditem.text}</Text>
         </View>
 
-        <View style={style.actionButtonContainer}>
+        <View style={styles.actionButtonContainer}>
           {this.renderLikeButton(feeditem.liked, feeditem.id, feeditem.type)}
           {this.renderShareButton()}
         </View>
@@ -221,21 +221,21 @@ var Feed = React.createClass({
 
   renderProductFeedItem(feeditem) {
     return(
-      <View style={style.productFeedItem} >
+      <View style={styles.productFeedItem} >
 
-        <TouchableOpacity style={style.sellerContainer} onPress={()=>Actions.vendorpage()}>
-          <Image style={style.sellerAvatar} source={{uri: 'http://placehold.it/24x24'}}/>
-          <View style={style.detailContainer}>
-            <Text style={style.sellerName}>{feeditem.seller}</Text>
-            <Text style={style.productName}>{feeditem.title}</Text>
+        <TouchableOpacity style={styles.sellerContainer} onPress={()=>Actions.vendorpage()}>
+          <Image style={styles.sellerAvatar} source={{uri: 'http://placehold.it/24x24'}}/>
+          <View style={styles.detailContainer}>
+            <Text style={styles.sellerName}>{feeditem.seller}</Text>
+            <Text style={styles.productName}>{feeditem.title}</Text>
           </View>
         </TouchableOpacity>
 
         <TouchableOpacity style={{alignItems:'flex-start', alignSelf: 'flex-start'}} onPress={()=>Actions.productpage({productId:feeditem.id})} >
-            <Image source={{uri : feeditem.coverimg}} style={style.feedImageStyle}/>
+            <Image source={{uri : feeditem.coverimg}} style={styles.feedImageStyle}/>
         </TouchableOpacity>
 
-        <View style={style.actionButtonContainer}>
+        <View style={styles.actionButtonContainer}>
           {this.renderLikeButton(feeditem.liked, feeditem.id, feeditem.type)}
           {this.renderWishlistButton(feeditem.wished, feeditem.id, feeditem.type)}
           {this.renderShareButton()}

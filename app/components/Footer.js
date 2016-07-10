@@ -24,11 +24,11 @@ const styles = StyleSheet.create({
 
 var Footer = React.createClass({
   render() {
-    var colorHome = this.props.page === 'home' ? 'black' : 'grey';
-    var colorFollowing = this.props.page === 'following' ? 'black' : 'grey';
-    var colorSearch = this.props.page === 'search' ? 'black' : 'grey';
-    var colorWishlist = this.props.page === 'wishlist' ? 'black' : 'grey';
-    var colorProfile = this.props.page === 'profile' ? 'black' : 'grey';
+    var colorHome = this.props.page === 'home' ? 'black' : 'silver';
+    var colorFollowing = this.props.page === 'following' ? 'black' : 'silver';
+    var colorSearch = this.props.page === 'search' ? 'black' : 'silver';
+    var colorWishlist = this.props.page === 'wishlist' ? 'black' : 'silver';
+    var colorProfile = this.props.page === 'profile' ? 'black' : 'silver';
     return (
       <View style={styles.footer}>
 
