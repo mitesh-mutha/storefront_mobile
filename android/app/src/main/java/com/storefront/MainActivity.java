@@ -1,10 +1,12 @@
 package com.storefront;
 
 import com.facebook.react.ReactActivity;
+import com.github.yamill.orientation.OrientationPackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 
-// Added by Mitesh Mutha for the React Native Material Design Kit
+import android.content.Intent; // <--- import added by Mitesh Mutha for react-native-orientation
+import android.content.res.Configuration; // <--- import added by Mitesh Mutha for react-native-orientation
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +38,16 @@ public class MainActivity extends ReactActivity {
     @Override
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
-            new MainReactPackage()
+            new MainReactPackage(),
+            new OrientationPackage(this)
         );
+    }
+
+    @Override
+      public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Intent intent = new Intent("onConfigurationChanged");
+        intent.putExtra("newConfig", newConfig);
+        this.sendBroadcast(intent);
     }
 }

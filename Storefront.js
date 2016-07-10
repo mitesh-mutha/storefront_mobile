@@ -10,6 +10,7 @@ import VendorPage from './app/components/VendorPage'
 import OTPLoginPage from './app/components/OTPLoginPage'
 import OTPVerificationPage from './app/components/OTPVerificationPage'
 
+var Orientation = require('react-native-orientation');
 
 const reducerCreate = params=>{
   const defaultReducer = Reducer(params);
@@ -35,5 +36,10 @@ export default class Storefront extends React.Component {
         </Scene>
       </Scene>
     </Router>;
+  }
+
+  componentDidMount() {
+    console.log(Orientation);
+    Orientation.lockToPortrait();
   }
 }
