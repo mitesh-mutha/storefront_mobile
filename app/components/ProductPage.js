@@ -25,31 +25,23 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderBottomColor: 'rgba(0, 0, 0, 0.1)'
   },
-  appnamecontainer: {
+  appNameContainer: {
     padding: 8,
     alignSelf: 'center'
   },
-  appname: {
+  appName: {
     fontSize: 18,
     fontFamily: 'HelveticaNeueMed',
     color: 'black'
   },
-  imgstyle: {
-        flex:1,
-        resizeMode:'contain'
-    },
-content: {
-    alignItems: 'flex-start',
-    flex: 1,
-  },
-  card: {
+  productImageContainer: {
     flex: 1,
     backgroundColor: 'white',
     width: CARD_WIDTH,
     margin: CARD_MARGIN,
     height: CARD_WIDTH
   },
-  scrollcontainer: {
+  productImageScrollContainer: {
     flex: 1,
     backgroundColor: 'white',
   },
@@ -70,16 +62,21 @@ content: {
   subsectionHeading: {
     fontFamily: 'HelveticaNeueLight',
     fontSize:12
-    },
-    subsectionContainer: {
-        marginBottom: 8
-    },
-    subsectionContent: {
-      fontFamily: 'HelveticaNeueMed',
-      color: 'black',
-      fontSize: 13
-    },
-    footer: {
+  },
+  subsectionContainer: {
+    marginBottom: 8
+  },
+  subsectionContent: {
+    fontFamily: 'HelveticaNeueMed',
+    color: 'black',
+    fontSize: 13
+  },
+  descriptionContent: {
+    color: 'black',
+    fontFamily:'HelveticaNeueLight',
+    fontSize:12
+  },
+  footer: {
     flexDirection: 'row',
     flexWrap: 'nowrap',
     height: 48,
@@ -95,35 +92,75 @@ content: {
     alignSelf: 'center'
   },
   actionButtonWithRightBorderStyle: {
-        flex: 1,
-        padding: 8,
-        alignSelf: 'center',
-        borderStyle: 'solid',
-        borderRightColor: 'rgba(0, 0, 0, 0.1)',
-        borderRightWidth: 1,
-        alignItems: 'center'
-    },
-    actionButtonStyle: {
-        flex: 1,
-        padding: 8,
-        alignSelf: 'center',
-        alignItems: 'center'
-    },
-    actionTextStyle: {
-        color: 'black',
-        fontSize: 14
-    },
-    priceText: {
-        flex: 1,
-        padding: 8,
-        alignSelf: 'center',
-        alignItems: 'center',
-        marginRight:80
-    },
-    fab: {
-        width: 60,
-        height: 60
-    }
+    flex: 1,
+    padding: 8,
+    alignSelf: 'center',
+    borderStyle: 'solid',
+    borderRightColor: 'rgba(0, 0, 0, 0.1)',
+    borderRightWidth: 1,
+    alignItems: 'center'
+  },
+  actionButtonStyle: {
+    flex: 1,
+    padding: 8,
+    alignSelf: 'center',
+    alignItems: 'center'
+  },
+  actionTextStyle: {
+    color: 'black',
+    fontSize: 14
+  },
+  priceText: {
+    flex: 1,
+    padding: 8,
+    alignSelf: 'center',
+    alignItems: 'center',
+    marginRight:80
+  },
+  wishlistButtonContainer: {
+    position:'absolute',
+    right:15,
+    bottom:20
+  },
+  wishedProductButton: {
+    height:60,
+    width:60,
+    borderRadius:30,
+    backgroundColor:'rgba(255, 112, 160, 1)',
+    borderStyle:'solid',
+    borderWidth:1,
+    borderColor:'rgba(0,0,0,0.1)'
+  },
+  wishedButtonLabel: {
+    marginLeft:15, 
+    marginTop: 15
+  },
+  notWishedProductButton: {
+    height:60,
+    width:60,
+    borderRadius:30,
+    backgroundColor:'rgba(255, 112, 160, 1)',
+    borderStyle:'solid',
+    borderWidth:1,
+    borderColor:'rgba(0,0,0,0.1)', 
+    alignItems:'center'
+  },
+  notWishedButtonLabel: {
+    marginLeft:15, 
+    marginTop: 15
+  },
+  productImage: {
+    height:300,
+    resizeMode:'contain',
+    flex:1
+  },
+  mainSectionContainer: {
+    marginBottom: 8,
+    borderStyle:'solid',
+    borderBottomWidth:1, 
+    borderBottomColor:'rgba(0,0,0,0.1)', 
+    paddingBottom:8
+  }
 });
 
 var productDetails; 
@@ -159,20 +196,20 @@ var ProductPage = React.createClass({
     },
 
     renderWishlistButton() {
-        if (this.state.product.liked) {
+        if (this.state.product.wished) {
             return (
-                <View style={{position:'absolute',right:15,bottom:20}}>
-                    <View style={{height:60,width:60,borderRadius:30,backgroundColor:'rgba(255, 112, 160, 1)',borderStyle:'solid',borderWidth:1,borderColor:'rgba(0,0,0,0.1)'}}>
-                        <Text style={{marginLeft:15, marginTop: 15}}><MaterialIcons name="add-shopping-cart" size={24} color='white' /></Text>
+                <View style={styles.wishlistButtonContainer}>
+                    <View style={styles.wishedProductButton}>
+                        <Text style={styles.wishedButtonLabel}><MaterialIcons name="add-shopping-cart" size={24} color='white' /></Text>
                     </View>
                 </View>
             )
         }
         else {
             return (
-                <View style={{position:'absolute',right:15,bottom:20}}>
-                    <View style={{height:60,width:60,borderRadius:30,backgroundColor:'rgba(255, 112, 160, 1)',borderStyle:'solid',borderWidth:1,borderColor:'rgba(0,0,0,0.1)', alignItems:'center'}}>
-                        <Text style={{marginTop: 16}}><MaterialIcons name="add-shopping-cart" size={24} color='white' /></Text>
+                <View style={styles.wishlistButtonContainer}>
+                    <View style={styles.notWishedProductButton}>
+                        <Text style={styles.notWishedButtonLabel}><MaterialIcons name="add-shopping-cart" size={24} color='white' /></Text>
                     </View>
                 </View>
             )
@@ -201,17 +238,18 @@ var ProductPage = React.createClass({
       <View style={styles.container}>
 
         <View style={styles.header}>
-          <TouchableOpacity style={styles.appnamecontainer} onPress={()=>Actions.feedpage()}>
+          <TouchableOpacity style={styles.appNameContainer} onPress={()=>Actions.feedpage()}>
             <MaterialIcons name="arrow-back" size={24} color={'black'} />
           </TouchableOpacity>
-          <View style={styles.appnamecontainer}>
-            <Text style={styles.appname}>Storefront</Text>
+          <View style={styles.appNameContainer}>
+            <Text style={styles.appName}>Storefront</Text>
           </View>
         </View>
              
         <ScrollView>
+
             <ScrollView
-                style={styles.scrollcontainer}
+                style={styles.productImageScrollContainer}
                 automaticallyAdjustInsets={false}
                 horizontal={true}
                 decelerationRate={0}
@@ -220,29 +258,24 @@ var ProductPage = React.createClass({
                 contentContainerStyle={styles.content}
                 showsHorizontalScrollIndicator={false}
               >
-                <View style={styles.card}>
-                    <Image style={{height:300,resizeMode:'contain',flex:1}} source={{uri : 'https://is4.revolveassets.com/images/p4/n/z/TFLO-WD48_V3.jpg'}}/>
+                <View style={styles.productImageContainer}>
+                    <Image style={styles.productImage} source={{uri : 'https://is4.revolveassets.com/images/p4/n/z/TFLO-WD48_V3.jpg'}}/>
                 </View>
-                <View style={styles.card}>
-                  <Image style={{height:300,resizeMode:'contain',flex:1}}  source={{uri : 'https://cdnb.lystit.com/photos/c556-2014/06/15/three-floor--kix-dress-mini-dresses-product-1-20821695-3-252296044-normal.jpeg'}}/>
+                <View style={styles.productImageContainer}>
+                  <Image style={styles.productImage}  source={{uri : 'https://cdnb.lystit.com/photos/c556-2014/06/15/three-floor--kix-dress-mini-dresses-product-1-20821695-3-252296044-normal.jpeg'}}/>
                 </View>
-                <View style={styles.card}>
-                  <Image style={{height:300,resizeMode:'contain',flex:1}}  source={{uri : 'https://cdnb.lystit.com/photos/c556-2014/06/15/three-floor--kix-dress-mini-dresses-product-1-20821695-3-252296044-normal.jpeg'}}/>
+                <View style={styles.productImageContainer}>
+                  <Image style={styles.productImage}  source={{uri : 'https://cdnb.lystit.com/photos/c556-2014/06/15/three-floor--kix-dress-mini-dresses-product-1-20821695-3-252296044-normal.jpeg'}}/>
                 </View>
-                <View style={styles.card}>
-                  <Image style={{height:300,resizeMode:'contain',flex:1}}  source={{uri : 'https://is4.revolveassets.com/images/p4/n/z/TFLO-WD48_V3.jpg'}}/>
+                <View style={styles.productImageContainer}>
+                  <Image style={styles.productImage}  source={{uri : 'https://is4.revolveassets.com/images/p4/n/z/TFLO-WD48_V3.jpg'}}/>
                 </View>
             </ScrollView>
 
             <View style={styles.productDetailsContainer} >
-                <View style={styles.subsectionContainer}>
+                <View style={styles.mainSectionContainer}>
                     <Text style={styles.productName}>{this.state.product.name}</Text>
-                    <Text style={[styles.subsectionContent,{fontFamily:'HelveticaNeueLight',fontSize:12}]}>{this.state.product.description}</Text>
-                </View>
-
-                <View style={[styles.subsectionContainer,{borderStyle:'solid',borderBottomWidth:1, borderBottomColor:'rgba(0,0,0,0.1)', paddingBottom:8}]}>
-                    <Text style={styles.subsectionHeading}>Price</Text>
-                    <Text style={styles.subsectionContent}>&#8377;{this.state.product.price}</Text>
+                    <Text style={styles.descriptionContent}>{this.state.product.description}</Text>
                 </View>
 
                 <View style={styles.subsectionContainer}>

@@ -20,11 +20,11 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderBottomColor: 'rgba(0, 0, 0, 0.1)'
   },
-  appnamecontainer: {
+  appNameContainer: {
     padding: 8,
     alignSelf: 'center'
   },
-  appname: {
+  appName: {
     fontSize: 18,
     fontFamily: 'HelveticaNeueMed',
     color: 'black'
@@ -34,6 +34,65 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'red'
+  },
+  scrollContainer: {
+    flex: 1
+  },
+  sellerNameContainer: {
+    flex:1, 
+    alignItems:'center', 
+    borderStyle:'solid', 
+    borderBottomColor:'rgba(79, 79, 79, 0.1)', 
+    borderBottomWidth:1
+  },
+  sellerNameText: {
+    flex:1, 
+    color:'black', 
+    margin:16
+  },
+  vendorActionsContainer: {
+    flex:1, 
+    flexDirection:'row', 
+    alignItems:'center', 
+    borderStyle:'solid', 
+    borderBottomColor:'rgba(79, 79, 79, 0.1)', 
+    borderBottomWidth:1
+  },
+  callActionButton: {
+    flex:1, 
+    alignItems:'center', 
+    padding: 8, 
+    borderStyle:'solid', 
+    borderRightColor:'rgba(79, 79, 79, 0.1)', 
+    borderRightWidth:1
+  },
+  callActionLabel: {
+    marginTop:8, 
+    fontFamily:'HelveticaNeueMed', 
+    color:'black'
+  },
+  mapActionButton: {
+    flex:1, 
+    alignItems:'center', 
+    padding: 8
+  },
+  mapActionLabel: {
+    marginTop:8, 
+    fontFamily:'HelveticaNeueMed', 
+    color:'black'
+  },
+  catalogButton: {
+    flex:1, 
+    alignItems:'center', 
+    borderStyle:'solid', 
+    borderBottomColor:'rgba(79, 79, 79, 0.1)', 
+    borderBottomWidth:1
+  },
+  catalogLabel: {
+    flex:1, 
+    color:'black', 
+    margin:16, 
+    fontFamily:'HelveticaNeueMed'
   }
 });
 
@@ -43,11 +102,11 @@ var VendorPage = React.createClass({
       <View style={styles.container}>
 
         <View style={styles.header}>
-          <TouchableOpacity style={styles.appnamecontainer} onPress={()=>Actions.pop()}>
+          <TouchableOpacity style={styles.appNameContainer} onPress={()=>Actions.pop()}>
             <MaterialIcons name="arrow-back" size={24} color={'black'} />
           </TouchableOpacity>
-          <View style={styles.appnamecontainer}>
-            <Text style={styles.appname}>Storefront</Text>
+          <View style={styles.appNameContainer}>
+            <Text style={styles.appName}>Storefront</Text>
           </View>
         </View>
 
@@ -71,28 +130,28 @@ var VendorPage = React.createClass({
             </View>
         </Carousel>
 
-        <ScrollView style={{flex:1}}>
+        <ScrollView style={styles.scrollContainer}>
 
-          <View style={{flex:1, alignItems:'center', borderStyle:'solid', borderBottomColor:'rgba(79, 79, 79, 0.1)', borderBottomWidth:1}}>
-            <Text style={{flex:1, color:'black', margin:16}}>Arnav Jewellery</Text>
+          <View style={styles.sellerNameContainer}>
+            <Text style={styles.sellerNameText}>Arnav Jewellery</Text>
           </View>
 
-          <View style={{flex:1, flexDirection:'row', alignItems:'center', borderStyle:'solid', borderBottomColor:'rgba(79, 79, 79, 0.1)', borderBottomWidth:1}}>
+          <View style={styles.vendorActionsContainer}>
             
-            <TouchableOpacity style={{flex:1, alignItems:'center', padding: 8, borderStyle:'solid', borderRightColor:'rgba(79, 79, 79, 0.1)', borderRightWidth:1}} onPress={() => Communications.phonecall('0123456789', true)}>
+            <TouchableOpacity style={styles.callActionButton} onPress={() => Communications.phonecall('0123456789', true)}>
               <MaterialIcons name="call" size={24} color='black' />
-              <Text style={{marginTop:8, fontFamily:'HelveticaNeueMed', color:'black'}}>Call</Text>
+              <Text style={styles.callActionLabel}>Call</Text>
             </TouchableOpacity>
             
-            <View style={{flex:1, alignItems:'center', padding: 8}}>
+            <View style={styles.mapActionButton}>
               <MaterialIcons name="place" size={24} color='black' />
-              <Text style={{marginTop:8, fontFamily:'HelveticaNeueMed', color:'black'}}>Map</Text>
+              <Text style={styles.mapActionLabel}>Map</Text>
             </View>
 
           </View>
 
-          <View style={{flex:1, alignItems:'center', borderStyle:'solid', borderBottomColor:'rgba(79, 79, 79, 0.1)', borderBottomWidth:1}}>
-            <Text style={{flex:1, color:'black', margin:16, fontFamily:'HelveticaNeueMed'}}><MaterialIcons name="chrome-reader-mode" size={24} color='black' />    Catalog</Text>
+          <View style={styles.catalogButton}>
+            <Text style={styles.catalogLabel}><MaterialIcons name="chrome-reader-mode" size={24} color='black' />    Catalog</Text>
           </View>
 
         </ScrollView>

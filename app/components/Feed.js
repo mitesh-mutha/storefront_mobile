@@ -56,6 +56,16 @@ const style = StyleSheet.create({
     borderBottomWidth:1,
     borderBottomColor: 'rgba(79, 79, 79, 0.1)'
   },
+  postTextContainer: {
+    marginLeft: 8,
+    marginRight: 8,
+    marginBottom:8
+    flexDirection:'column',
+    flexWrap: 'nowrap',
+  },
+  postText: {
+    fontFamily: 'HelveticaNeueLight'
+  }
   actionButton: {
     padding: 8
   }
@@ -197,17 +207,14 @@ var Feed = React.createClass({
           </View>
         </TouchableOpacity>
 
-        <View style={[style.actionButtonContainer,{flexDirection:'column', borderBottomWidth:0, marginBottom:8}]}>
-          <Text style={style.productName}>{feeditem.text}</Text>
+        <View style={style.postTextContainer}>
+          <Text style={style.postText}>{feeditem.text}</Text>
         </View>
 
         <View style={style.actionButtonContainer}>
           {this.renderLikeButton(feeditem.liked, feeditem.id, feeditem.type)}
           {this.renderShareButton()}
         </View>
-
-
-
       </View>
     );
   },

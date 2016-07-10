@@ -17,11 +17,11 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderBottomColor: 'rgba(0, 0, 0, 0.1)'
   },
-  appnamecontainer: {
+  appNameContainer: {
     padding: 8,
     alignSelf: 'center'
   },
-  appname: {
+  appName: {
     fontSize: 18,
     fontFamily: 'HelveticaNeueMed',
     color: 'black'
@@ -34,8 +34,8 @@ class FeedPage extends React.Component {
       <View style={styles.container}>
 
         <View style={styles.header}>
-          <View style={styles.appnamecontainer}>
-            <Text style={styles.appname}>Storefront</Text>
+          <View style={styles.appNameContainer}>
+            <Text style={styles.appName}>Storefront</Text>
           </View>
         </View>
 

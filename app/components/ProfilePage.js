@@ -19,16 +19,16 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderBottomColor: 'rgba(0, 0, 0, 0.1)'
   },
-  appnamecontainer: {
+  appNameContainer: {
     padding: 8,
     alignSelf: 'center'
   },
-  appname: {
+  appName: {
     fontSize: 18,
     fontFamily: 'HelveticaNeueMed',
     color: 'black'
   },
-  sellerContainer: {
+  userProfileContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -37,21 +37,55 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(79, 79, 79, 0.1)',
     paddingBottom: 8
   },
-  sellerAvatar: {
+  userAvatar: {
     height: 88,
     borderRadius: 44,
     width: 88,
     marginTop:10,
     marginBottom:10
   },
-  sellerName: {  
+  userName: {  
     fontFamily: 'HelveticaNeueMedium',
     color: 'black'
   },
-  detailContainer: {
-    flex:1,
-    alignItems: 'stretch',
-    marginTop: 10
+  statsContainer: {
+    flex:1, 
+    flexDirection:'row', 
+    alignItems:'stretch', 
+    marginTop:22
+  },
+  scrollContainer: {
+    flex: 1
+  },
+  userDetailsContainer: {
+    marginLeft: 8, 
+    marginRight: 8, 
+    marginBottom: 8, 
+    alignItems:'center'
+  },
+  statContainer: {
+    flex:1, 
+    alignItems:'center', 
+    margin: 4
+  },
+  statValue: {
+    fontSize: 20, 
+    fontFamily: 'HelveticaNeueMedium', 
+    color: 'black'
+  },
+  statLabel: {
+    fontSize: 10
+  },
+  profileActions: {
+    margin: 16, 
+    alignSelf: 'stretch', 
+    flexDirection: 'row', 
+    alignItems: 'center'
+  },
+  actionLabel: {
+    color:'black', 
+    fontSize: 16, 
+    fontFamily:'HelveticaNeueMedium'
   }
 });
 
@@ -71,49 +105,43 @@ var ProfilePage = React.createClass({
       <View style={styles.container}>
 
         <View style={styles.header}>
-          <View style={styles.appnamecontainer}>
-            <Text style={styles.appname}>Storefront</Text>
+          <View style={styles.appNameContainer}>
+            <Text style={styles.appName}>Storefront</Text>
           </View>
         </View>
 
-        <ScrollView style={{flex:1}}>          
-
-            <View style={styles.sellerContainer}>
-              <View style={{marginLeft: 8, marginRight: 8, marginBottom: 8, alignItems:'center'}}>
-                <Image style={styles.sellerAvatar} source={{uri: this.state.userProfileImg}}/>
-                <Text style={styles.sellerName}>{this.state.userName}</Text>
+        <ScrollView style={styles.scrollContainer}>          
+          <View style={styles.userProfileContainer}>
+            <View style={styles.userDetailsContainer}>
+              <Image style={styles.userAvatar} source={{uri: this.state.userProfileImg}}/>
+              <Text style={styles.userName}>{this.state.userName}</Text>
+            </View>
+             
+            <View style={styles.statsContainer}>  
+              <View style={styles.statContainer}>
+                <Text style={styles.statValue}>{this.state.numLikedItems}</Text>
+                <Text style={styles.statLabel}>liked</Text>
               </View>
-              <View style={styles.detailContainer}>                
-                <View style={{flex:1, flexDirection:'row', alignItems:'stretch', marginTop:22 }}>
-                  
-                  <View style={{flex:1, alignItems:'center', margin: 4}}>
-                    <Text style={{fontSize: 20, fontFamily: 'HelveticaNeueMedium', color: 'black'}}>{this.state.numLikedItems}</Text>
-                    <Text style={{fontSize: 10}}>liked</Text>
-                  </View>
 
-                  <View style={{flex:1, alignItems:'center', margin: 4}}>
-                    <Text style={{fontSize: 20, fontFamily: 'HelveticaNeueMedium', color: 'black'}}>{this.state.numWishlisted}</Text>
-                    <Text style={{fontSize: 10}}>wishlisted</Text>
-                  </View>
+              <View style={styles.statContainer}>
+                <Text style={styles.statValue}>{this.state.numWishlisted}</Text>
+                <Text style={styles.statLabel}>wishlisted</Text>
+              </View>
 
-                  <View style={{flex:1, alignItems:'center', margin: 4}}>
-                    <Text style={{fontSize: 20, fontFamily: 'HelveticaNeueMedium', color: 'black'}}>{this.state.numFollowing}</Text>
-                    <Text style={{fontSize: 10}}>following</Text>
-                  </View>
-
-                </View>
+              <View style={styles.statContainer}>
+                <Text style={styles.statValue}>{this.state.numFollowing}</Text>
+                <Text style={styles.statLabel}>following</Text>
               </View>
             </View>
+          </View>
+        
+          <TouchableOpacity style={styles.profileActions}>
+            <MaterialIcons name='person-add' size={16} color='black' /><Text style={styles.actionLabel}>     Invite Friends</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity style={{margin: 16, alignSelf: 'stretch', flexDirection: 'row', alignItems: 'center'}}>
-              <MaterialIcons name='person-add' size={16} color='black' /><Text style={{color:'black', fontSize: 16, fontFamily:'HelveticaNeueMedium'}}>     Invite Friends</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={{margin: 16, alignSelf: 'stretch', flexDirection: 'row', alignItems: 'center'}} onPress={()=>Actions.otploginpage()}>
-              <MaterialIcons name='exit-to-app' size={16} color='black' /><Text style={{color:'black', fontSize: 16, fontFamily:'HelveticaNeueMedium'}}>      Log Out</Text>
-            </TouchableOpacity>
-          
-
+          <TouchableOpacity style={styles.profileActions} onPress={()=>Actions.otploginpage()}>
+            <MaterialIcons name='exit-to-app' size={16} color='black' /><Text style={styles.actionLabel}>      Log Out</Text>
+          </TouchableOpacity>
         </ScrollView>
 
         

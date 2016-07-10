@@ -20,15 +20,6 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderBottomColor: 'rgba(0, 0, 0, 0.1)'
   },
-  appnamecontainer: {
-    padding: 8,
-    alignSelf: 'center'
-  },
-  appname: {
-    fontSize: 18,
-    fontFamily: 'HelveticaNeueMed',
-    color: 'black'
-  },
   sellerContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -56,8 +47,78 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 18
   },
-  productName: {
-    fontFamily: 'HelveticaNeueLight'
+  followItem: {
+    flex:1,
+    marginLeft:16,
+    marginRight:16,
+    marginTop: 12,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'rgba(0,0,0,0.1)'
+  },
+  followingButtonContainer: {
+    flex:1, 
+    marginRight: 16, 
+    marginTop:12, 
+    marginBottom:8,
+    borderStyle:'solid',
+    borderColor:'rgba(0,0,0,0.1)',
+    borderWidth:1, 
+    borderRadius:5,
+    alignItems:'center',
+    alignSelf:'stretch',
+    backgroundColor: 'green'
+  },
+  followingText: {
+    flex:1, 
+    marginTop:2,
+    marginBottom: 2, 
+    color:'white'
+  }
+  notFollowingButtonContainer: {
+    flex:1, 
+    marginRight: 16, 
+    marginTop:12, 
+    marginBottom:8,
+    borderStyle:'solid',
+    borderColor:'rgba(0,0,0,0.1)',
+    borderWidth:1, 
+    borderRadius:5,
+    alignItems:'center',
+    alignSelf:'stretch'
+  },
+  notFollowingText: {
+    flex:1, 
+    marginTop:2,
+    marginBottom: 2, 
+    color:'rgba(67, 164, 229, 1)'
+  },
+  followedVendorsContainer: {
+    flex: 1
+  },
+  resultsHeadingContainer: {
+    flex:1, 
+    alignSelf:'center', 
+    marginTop:8
+  },
+  resultsHeadingText: {
+    flex:1, 
+    marginTop: 8
+  },
+  searchHeader: {
+    flex:1,
+    margin: 16,
+    flexDirection: 'row',
+    flexWrap: "nowrap",
+    alignItems: "center"
+  },
+  searchInput: {
+    height: 40, 
+    flex: 1
+  },
+  scrollContainer: {
+    flex:1
   }
 });
 
@@ -107,36 +168,18 @@ var SearchPage  = React.createClass({
     }
   },
 
-  renderSearchBar() {
-    return (
-      <View style={{
-              flex:1,
-              margin: 16, 
-              backgroundColor: 'white',
-              borderWidth: 1,
-              borderStyle: 'solid',
-              borderColor: 'rgba(0,0,0,0.1)'
-            }}>
-              <TextInput
-                placeholder="Search"
-                underlineColorAndroid='white'
-                style={{height: 40}}/>
-      </View>
-    );
-  },
-
   renderFollowButton(id, isFollowing) {
     if (isFollowing) {
       return (
-        <View style={{flex:1, marginRight: 16, marginTop:12, marginBottom:8,borderStyle:'solid',borderColor:'rgba(0,0,0,0.1)',borderWidth:1, borderRadius:5,alignItems:'center',alignSelf:'stretch', backgroundColor:'green'}}>
-          <Text style={{flex:1, marginTop:2,marginBottom: 2, color:'white'}}>Following</Text>
+        <View style={style.followingButtonContainer}>
+          <Text style={style.followingText}>Following</Text>
         </View>
       )
     }
     else {
       return (
-        <View style={{flex:1, marginRight: 16, marginTop:12, marginBottom:8,borderStyle:'solid',borderColor:'rgba(67, 164, 229, 1)',borderWidth:1, borderRadius:5,alignItems:'center',alignSelf:'stretch'}}>
-          <Text style={{flex:1, marginTop:2,marginBottom: 2, color:'rgba(67, 164, 229, 1)'}}>Follow</Text>
+        <View style={style.notFollowingButtonContainer}>
+          <Text style={style.notFollowingText}>Follow</Text>
         </View>
       )
     }
@@ -144,16 +187,7 @@ var SearchPage  = React.createClass({
 
   _renderRow(resultItem)  {
     return (
-      <TouchableOpacity style={{
-        flex:1,
-        marginLeft:16,
-        marginRight:16,
-        marginTop: 12,
-        backgroundColor: 'white',
-        borderWidth: 1,
-        borderStyle: 'solid',
-        borderColor: 'rgba(0,0,0,0.1)'
-      }} onPress={()=>Actions.vendorpage()}>
+      <TouchableOpacity style={styles.followItem} onPress={()=>Actions.vendorpage()}>
         <View style={styles.sellerContainer}>
           <Image style={styles.sellerAvatar} source={{uri: resultItem.logourl}}/>
           <View style={styles.detailContainer}>
@@ -168,8 +202,8 @@ var SearchPage  = React.createClass({
   renderSearchResults() {
     return (
         <View>
-          <View style={{flex:1, alignSelf:'center', marginTop:8}}>
-            <Text style={{flex:1, marginTop: 8}}>    Search Results    </Text>
+          <View style={styles.resultsHeadingContainer}>
+            <Text style={styles.resultsHeadingText}>    Search Results    </Text>
           </View>
           <ListView
             dataSource = {this.state.dataSource}
@@ -183,22 +217,16 @@ var SearchPage  = React.createClass({
       <View style={styles.container}>
         
         <View style={styles.header}>
-          <View style={{
-              flex:1,
-              margin: 16,
-              flexDirection: 'row',
-              flexWrap: "nowrap",
-              alignItems: "center"
-            }}>
+          <View style={styles.searchHeader}>
               <Ionicons name="search" size={20} />
               <TextInput
                 placeholder="Search"
-                style={{height: 40, flex: 1}}/>
+                style={styles.searchInput}/>
               
           </View>  
         </View>
 
-        <ScrollView style={{flex:1}}>
+        <ScrollView style={styles.scrollContainer}>
           {this.renderSearchResults()}
         </ScrollView>
         
