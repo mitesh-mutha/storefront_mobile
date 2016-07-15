@@ -1,6 +1,9 @@
-import React, {ListView, View, Text, StyleSheet, ScrollView, Image, TouchableOpacity} from "react-native";
+import React, {ListView, View, Text, StyleSheet, Image, ScrollView, TouchableOpacity} from "react-native";
 import {Actions} from "react-native-router-flux";
 import Dimensions from 'Dimensions';
+
+var ImageProgress = require('react-native-image-progress');
+var ProgressBar = require('react-native-progress/Bar').default;
 
 var EntypoIcons = require('react-native-vector-icons/Entypo');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
@@ -44,8 +47,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: Dimensions.get('window').width,
     height: 260,
-    alignItems: 'flex-start',
-    alignSelf: 'flex-start'
+    alignSelf: 'center'
   },
   actionButtonContainer: {
     marginLeft: 8,
@@ -231,8 +233,8 @@ var Feed = React.createClass({
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={{alignItems:'flex-start', alignSelf: 'flex-start'}} onPress={()=>Actions.productpage({productId:feeditem.id})} >
-            <Image source={{uri : feeditem.coverimg}} style={styles.feedImageStyle}/>
+        <TouchableOpacity style={{alignItems:'center', alignSelf: 'center'}} onPress={()=>Actions.productpage({productId:feeditem.id})} >
+            <ImageProgress source={{uri : feeditem.coverimg}} style={styles.feedImageStyle} />
         </TouchableOpacity>
 
         <View style={styles.actionButtonContainer}>

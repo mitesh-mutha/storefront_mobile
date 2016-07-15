@@ -3,11 +3,13 @@ import Dimensions from 'Dimensions';
 import {Actions} from "react-native-router-flux";
 
 import Footer from "./Footer"
+
+var ImageProgress = require('react-native-image-progress');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 var EntypoIcons = require('react-native-vector-icons/Entypo');
 
 const CARD_PREVIEW_WIDTH = 60;
-const CARD_MARGIN = 5;
+const CARD_MARGIN = 0;
 const CARD_WIDTH = Dimensions.get('window').width - (CARD_MARGIN + CARD_PREVIEW_WIDTH) * 2;
 
 const styles = StyleSheet.create({
@@ -150,7 +152,6 @@ const styles = StyleSheet.create({
   },
   productImage: {
     height:300,
-    resizeMode:'contain',
     flex:1
   },
   mainSectionContainer: {
@@ -258,16 +259,16 @@ var ProductPage = React.createClass({
                 showsHorizontalScrollIndicator={false}
               >
                 <View style={styles.productImageContainer}>
-                    <Image style={styles.productImage} source={{uri : 'https://is4.revolveassets.com/images/p4/n/z/TFLO-WD48_V3.jpg'}}/>
+                    <ImageProgress resizeMode={'contain'} style={styles.productImage} source={{uri : 'https://is4.revolveassets.com/images/p4/n/z/TFLO-WD48_V3.jpg'}}/>
                 </View>
                 <View style={styles.productImageContainer}>
-                  <Image style={styles.productImage}  source={{uri : 'https://cdnb.lystit.com/photos/c556-2014/06/15/three-floor--kix-dress-mini-dresses-product-1-20821695-3-252296044-normal.jpeg'}}/>
+                  <ImageProgress resizeMode={'contain'} style={styles.productImage}  source={{uri : 'https://cdnb.lystit.com/photos/c556-2014/06/15/three-floor--kix-dress-mini-dresses-product-1-20821695-3-252296044-normal.jpeg'}}/>
                 </View>
                 <View style={styles.productImageContainer}>
-                  <Image style={styles.productImage}  source={{uri : 'https://cdnb.lystit.com/photos/c556-2014/06/15/three-floor--kix-dress-mini-dresses-product-1-20821695-3-252296044-normal.jpeg'}}/>
+                  <ImageProgress resizeMode={'contain'} style={styles.productImage}  source={{uri : 'https://cdnb.lystit.com/photos/c556-2014/06/15/three-floor--kix-dress-mini-dresses-product-1-20821695-3-252296044-normal.jpeg'}}/>
                 </View>
                 <View style={styles.productImageContainer}>
-                  <Image style={styles.productImage}  source={{uri : 'https://is4.revolveassets.com/images/p4/n/z/TFLO-WD48_V3.jpg'}}/>
+                  <ImageProgress resizeMode={'contain'} style={styles.productImage}  source={{uri : 'https://is4.revolveassets.com/images/p4/n/z/TFLO-WD48_V3.jpg'}}/>
                 </View>
             </ScrollView>
 
