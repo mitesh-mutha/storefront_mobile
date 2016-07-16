@@ -1,6 +1,9 @@
-import React, {View, Text, StyleSheet, Navigator, ScrollView, TextInput, Image, ListView, TouchableOpacity} from "react-native"
+import React, {Component} from 'react';
+import {View, Text, StyleSheet, Navigator, ScrollView, TextInput, Image, ListView, TouchableOpacity} from 'react-native';
 import Footer from "./Footer"
 import {Actions} from "react-native-router-flux";
+
+var ImageProgress = require('react-native-image-progress');
 
 var MOCKED_FOLLOW_ITEM ={};
 
@@ -174,7 +177,7 @@ var FollowPage = React.createClass({
     return (
       <TouchableOpacity style={styles.followItem} onPress={()=>Actions.vendorpage()}>
         <View style={styles.sellerContainer}>
-          <Image style={styles.sellerAvatar} source={{uri: resultItem.logourl}}/>
+          <ImageProgress style={styles.sellerAvatar} source={{uri: resultItem.logourl}}/>
           <View style={styles.detailContainer}>
             <Text style={styles.sellerName}>{resultItem.name}</Text>
             {this.renderFollowButton(resultItem.id, resultItem.isFollowing)}

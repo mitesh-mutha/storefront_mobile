@@ -1,4 +1,5 @@
-import React, {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity} from "react-native"
+import React, {Component} from 'react';
+import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity} from 'react-native';
 import {Actions} from "react-native-router-flux";
 
 const styles = StyleSheet.create({
@@ -19,18 +20,18 @@ const styles = StyleSheet.create({
   OTPLoginContainer: {
     flex:1,
     margin: 16, 
-    marginTop: 24,
-    backgroundColor: 'white'
+    marginTop: 16
   },
   loginHeading: {
     flex:1, 
     color:'black',
     fontFamily: 'HelveticaNeueMed', 
-    alignSelf:'center'
+    alignSelf:'center',
+    margin:8,
+    marginBottom: 16
   },
   mobileNumInput: {
-    flex:1, 
-    height: 40, 
+    flex:1,
     marginTop:16
   },
   loginButton: {

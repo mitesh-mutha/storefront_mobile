@@ -1,6 +1,7 @@
-import React, {View, Text, StyleSheet, Navigator} from "react-native"
-import Feed from "./Feed"
-import Footer from "./Footer"
+import React, {Component} from 'react';
+import {View, StyleSheet, Text} from 'react-native';
+import Feed from "./Feed";
+import Footer from "./Footer";
 
 const styles = StyleSheet.create({
   container: {

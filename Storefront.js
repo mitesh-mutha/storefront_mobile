@@ -1,16 +1,15 @@
-import React, {AppRegistry, Navigator, StyleSheet, Text, View} from 'react-native'
-import {Scene, Reducer, Router, Switch, TabBar, Modal, Schema, Actions} from 'react-native-router-flux'
+import React, {Component} from 'react';
+import {View} from 'react-native';
+import {Scene, Reducer, Router, Actions, Modal} from 'react-native-router-flux';
 
-import FeedPage from './app/components/FeedPage'
-import ProductPage from './app/components/ProductPage'
-import SearchPage from './app/components/SearchPage'
-import FollowPage from './app/components/FollowPage'
-import ProfilePage from './app/components/ProfilePage'
-import VendorPage from './app/components/VendorPage'
-import OTPLoginPage from './app/components/OTPLoginPage'
-import OTPVerificationPage from './app/components/OTPVerificationPage'
-
-var Orientation = require('react-native-orientation');
+import FeedPage from './app/components/FeedPage';
+import ProductPage from './app/components/ProductPage';
+import SearchPage from './app/components/SearchPage';
+import FollowPage from './app/components/FollowPage';
+import ProfilePage from './app/components/ProfilePage';
+import VendorPage from './app/components/VendorPage';
+import OTPLoginPage from './app/components/OTPLoginPage';
+import OTPVerificationPage from './app/components/OTPVerificationPage';
 
 const reducerCreate = params=>{
   const defaultReducer = Reducer(params);
@@ -36,9 +35,5 @@ export default class Storefront extends React.Component {
         </Scene>
       </Scene>
     </Router>;
-  }
-
-  componentDidMount() {
-    Orientation.lockToPortrait();
   }
 }

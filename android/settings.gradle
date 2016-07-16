@@ -1,6 +1,5 @@
 rootProject.name = 'Storefront'
 
-include ':react-native-orientation', ':app', ':ReactNativeAndroidSmsListener'
-
-project(':react-native-orientation').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-orientation/android')
-project(':ReactNativeAndroidSmsListener').projectDir = new File(rootProject.projectDir,'../node_modules/react-native-android-sms-listener/android')
+include ':app'
+include ':react-native-vector-icons'
+project(':react-native-vector-icons').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-vector-icons/android')

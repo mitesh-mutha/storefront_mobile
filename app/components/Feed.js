@@ -1,9 +1,9 @@
-import React, {ListView, View, Text, StyleSheet, Image, ScrollView, TouchableOpacity} from "react-native";
-import {Actions} from "react-native-router-flux";
+import React, {Component} from 'react';
+import {ListView, View, Text, StyleSheet, Image, ScrollView, TouchableOpacity} from 'react-native';
 import Dimensions from 'Dimensions';
+import {Actions} from "react-native-router-flux";
 
 var ImageProgress = require('react-native-image-progress');
-var ProgressBar = require('react-native-progress/Bar').default;
 
 var EntypoIcons = require('react-native-vector-icons/Entypo');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
@@ -15,15 +15,12 @@ const styles = StyleSheet.create({
     marginBottom: 36    
   },
   postFeedItem: {
-    flex: 1,
-    marginBottom: 36    
+    marginBottom: 36
   },
   sellerContainer: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-start',
-    padding: 8,
-    marginLeft: 8
+    padding: 8
   },
   detailContainer: {
     flexDirection: 'column',
@@ -63,7 +60,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     marginBottom:8,
     flexDirection:'column',
-    flexWrap: 'nowrap',
+    flexWrap: 'nowrap'
   },
   postText: {
     fontFamily: 'HelveticaNeueLight'

@@ -1,11 +1,11 @@
-import React, {View, Text, StyleSheet, Navigator, ScrollView, TextInput, ListView, TouchableOpacity} from "react-native"
-import Footer from "./Footer"
+import React, {Component} from 'react';
+import {View, Text, StyleSheet, Navigator, ScrollView, TextInput, ListView, TouchableOpacity} from 'react-native';
+import Footer from "./Footer";
 import {Actions} from "react-native-router-flux";
 
-
 var ImageProgress = require('react-native-image-progress');
-
 var Ionicons = require('react-native-vector-icons/Ionicons');
+
 var MOCKED_SEARCH_ITEM ={};
 
 const styles = StyleSheet.create({
@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     marginLeft:16,
     marginRight:16,
     marginTop: 12,
+    marginBottom: 8,
     backgroundColor: 'white',
     borderWidth: 1,
     borderStyle: 'solid',
@@ -101,7 +102,6 @@ const styles = StyleSheet.create({
     flex: 1
   },
   resultsHeadingContainer: {
-    flex:1, 
     alignSelf:'center', 
     marginTop:8
   },
@@ -223,7 +223,7 @@ var SearchPage  = React.createClass({
         
         <View style={styles.header}>
           <View style={styles.searchHeader}>
-              <Ionicons name="search" size={20} />
+              <Ionicons name="md-search" size={20} />
               <TextInput
                 placeholder="Search"
                 style={styles.searchInput}/>
@@ -241,4 +241,5 @@ var SearchPage  = React.createClass({
     );
   }
 });
+
 module.exports = SearchPage;

@@ -1,4 +1,5 @@
-import React, {View, StyleSheet, Text, TouchableOpacity} from "react-native";
+import React, {Component} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Actions} from "react-native-router-flux";
 
 var Ionicons = require('react-native-vector-icons/Ionicons');
@@ -33,7 +34,7 @@ var Footer = React.createClass({
       <View style={styles.footer}>
 
         <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.feedpage()}>
-          <Ionicons name="home" size={24} color={colorHome} />
+          <Ionicons name="md-home" size={24} color={colorHome} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.footerItem}>
@@ -41,7 +42,7 @@ var Footer = React.createClass({
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.searchpage()}>
-          <Ionicons name="search" size={24} color={colorSearch} />
+          <Ionicons name="md-search" size={24} color={colorSearch} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.followpage()}>
@@ -49,7 +50,7 @@ var Footer = React.createClass({
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.profilepage()}>
-          <Ionicons name="person" size={24} color={colorProfile} />
+          <Ionicons name="md-person" size={24} color={colorProfile} />
         </TouchableOpacity>
 
       </View>

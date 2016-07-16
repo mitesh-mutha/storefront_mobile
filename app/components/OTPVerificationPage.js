@@ -1,10 +1,8 @@
-import React, {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity} from "react-native"
+import React, {Component} from 'react';
+import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity} from 'react-native';
 import {Actions} from "react-native-router-flux";
-import SmsListener from 'react-native-android-sms-listener'
 
-var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
-
-var subscription;
+//var subscription;
 
 const styles = StyleSheet.create({
   scrollContainer: {
@@ -42,7 +40,6 @@ const styles = StyleSheet.create({
   },
   OTPInput: {
     flex:1, 
-    height: 40, 
     marginTop:16
   },
   signInButton: {
@@ -55,8 +52,8 @@ const styles = StyleSheet.create({
   signInButtonLabel: {
     flex:1, 
     color:'white', 
-    fontFamily:'HelveticaNeueMed', 
-    margin:8
+    fontFamily:'HelveticaNeueMed',
+    margin:4
   },
   OTPOptionButton: {
     flex:1, 
@@ -116,7 +113,7 @@ var OTPVerificationPage = React.createClass({
   },
 
   componentDidMount() {
-    var that = this;
+    /*var that = this;
     
     subscription = SmsListener.addListener(function(message){
       verificationCodeRegex = /Your Storefront verification code: ([\d]{6})/;
@@ -127,11 +124,11 @@ var OTPVerificationPage = React.createClass({
         that.setState({otpText: verificationCode});
       }
 
-    });
+    });*/
   },
 
   componentWillUnmount() {
-    subscription.remove();
+    //subscription.remove();
   }
 });
 

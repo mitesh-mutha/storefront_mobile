@@ -1,4 +1,5 @@
-import React, {View, Text, StyleSheet, ScrollView, Image, TouchableOpacity} from "react-native";
+import React, {Component} from 'react';
+import {View, Text, StyleSheet, ScrollView, Image, TouchableOpacity} from 'react-native';
 import Dimensions from 'Dimensions';
 import {Actions} from "react-native-router-flux";
 

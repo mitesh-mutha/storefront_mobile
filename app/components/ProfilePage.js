@@ -1,7 +1,9 @@
-import React, {View, Text, StyleSheet, Navigator, ScrollView, Image, TouchableOpacity} from "react-native"
+import React, {Component} from 'react';
+import {View, Text, StyleSheet, Navigator, ScrollView, Image, TouchableOpacity} from 'react-native';
 import Footer from "./Footer"
 import {Actions} from "react-native-router-flux";
 
+var ImageProgress = require('react-native-image-progress');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 
 const styles = StyleSheet.create({
@@ -113,7 +115,7 @@ var ProfilePage = React.createClass({
         <ScrollView style={styles.scrollContainer}>          
           <View style={styles.userProfileContainer}>
             <View style={styles.userDetailsContainer}>
-              <Image style={styles.userAvatar} source={{uri: this.state.userProfileImg}}/>
+              <ImageProgress style={styles.userAvatar} source={{uri: this.state.userProfileImg}}/>
               <Text style={styles.userName}>{this.state.userName}</Text>
             </View>
              
