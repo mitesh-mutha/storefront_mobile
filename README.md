@@ -24,14 +24,3 @@ This repository is for the mobile app for Storefront.
 You may contact the following in case of queries.
 
 * Mitesh Mutha - mitesh.s.mutha@gmail.com 
-
-
-- Finished main Storefront (without the orientation package)
-- Finished OTP Login Page
-- Finished OTP Verification Page
-- Finished the Footer
-- SMS Listener added but build issue as mechanism changed.
-- Once it builds the icons can also be seen.
-- Other pages remaining
-- Leaving it at this state for sometime
-- Will revisit later

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, Navigator, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, Navigator, ScrollView, TouchableOpacity, Linking} from 'react-native';
 import {Actions} from "react-native-router-flux";
 import Communications from 'react-native-communications';
 
@@ -98,6 +98,14 @@ const styles = StyleSheet.create({
 });
 
 var VendorPage = React.createClass({
+  getInitialState() {
+    return {
+      lat: "12.9404395",
+      long: "77.5817127",
+      vendorname: "Arnav Jewellery"
+    }
+  },
+
   render(){
     return (
       <View style={styles.container}>
@@ -144,10 +152,10 @@ var VendorPage = React.createClass({
               <Text style={styles.callActionLabel}>Call</Text>
             </TouchableOpacity>
             
-            <View style={styles.mapActionButton}>
+            <TouchableOpacity style={styles.mapActionButton} onPress={() => Linking.openURL("geo:"+this.state.lat+","+this.state.long+"?q="+this.state.lat+","+this.state.long+"("+this.state.vendorname+")").catch(err => console.error('An error occurred', err)) }>
               <MaterialIcons name="place" size={24} color='black' />
               <Text style={styles.mapActionLabel}>Map</Text>
-            </View>
+            </TouchableOpacity>
 
           </View>
 
