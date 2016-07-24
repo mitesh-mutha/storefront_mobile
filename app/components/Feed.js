@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import {ListView, View, Text, StyleSheet, Image, ScrollView, TouchableOpacity} from 'react-native';
 import Dimensions from 'Dimensions';
 import {Actions} from "react-native-router-flux";
+import Share from "react-native-share";
 
 var ImageProgress = require('react-native-image-progress');
-
+var RNFS = require('react-native-fs');
 var EntypoIcons = require('react-native-vector-icons/Entypo');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 var MOCKED_FEED_ITEMS ={};
@@ -187,9 +188,52 @@ var Feed = React.createClass({
         }
     },
 
-    renderShareButton() {
+    uploadProgress(response) {
+      if (response.contentLength == response.bytesWritten) {
+        
+      } 
+      console.log("progress is "+response.bytesWritten+"/"+response.contentLength); 
+    },
+
+    onShare(imgLink, imgText) {
+      if (!imgLink) {
+        Share.open({
+          share_text: imgText,
+          share_URL: "http://storefront.com",
+          title: "Share Product"
+        },(e) => {
+          console.log(e);
+        });
+        return;
+      }
+
+      this.setState({shareSpinnerVisible: true});
+
+      RNFS.downloadFile({
+        fromUrl: imgLink,
+        toFile: RNFS.ExternalDirectoryPath+"/share_image.jpg",
+        progressDivider: 2,
+        progress: this.uploadProgress
+      }).then((downloadresult) => {
+        
+        Share.open({
+          share_text: imgText+". Find more products on Storefront.",
+          share_URL: "http://storefront.com",
+          share_image_path: RNFS.ExternalDirectoryPath+"/share_image.jpg",
+          title: "Share Product"
+        },(e) => {
+          console.log(e);
+        });
+
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+    },
+
+    renderShareButton(shareImageLink, shareImageText) {
       return (
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity style={styles.actionButton} onPress={() => this.onShare(shareImageLink, shareImageText)}>
             <MaterialIcons name="share" size={24} />
           </TouchableOpacity>
         )
@@ -212,7 +256,7 @@ var Feed = React.createClass({
 
         <View style={styles.actionButtonContainer}>
           {this.renderLikeButton(feeditem.liked, feeditem.id, feeditem.type)}
-          {this.renderShareButton()}
+          {this.renderShareButton(null, feeditem.text+" - "+feeditem.seller)}
         </View>
       </View>
     );
@@ -237,7 +281,7 @@ var Feed = React.createClass({
         <View style={styles.actionButtonContainer}>
           {this.renderLikeButton(feeditem.liked, feeditem.id, feeditem.type)}
           {this.renderWishlistButton(feeditem.wished, feeditem.id, feeditem.type)}
-          {this.renderShareButton()}
+          {this.renderShareButton(feeditem.coverimg, feeditem.title+" - "+feeditem.seller)}
         </View>
 
 
@@ -255,7 +299,7 @@ var Feed = React.createClass({
     else {
       // If we are here there is a problem
     }
-  },  
+  },
     
   render() {
     return (          

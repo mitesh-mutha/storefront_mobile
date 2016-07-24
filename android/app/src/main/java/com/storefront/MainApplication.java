@@ -1,5 +1,8 @@
 package com.storefront;
 
+import com.rnfs.RNFSPackage; // Added by MM for react-native-fs
+import cl.json.RNSharePackage; // Added by MM for react-native-share(mm)
+
 import android.app.Application;
 import android.util.Log;
 
@@ -23,7 +26,9 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage()
+          new MainReactPackage(),
+          new RNFSPackage(),  // Added by MM for react-native-fs
+          new RNSharePackage() // Added by MM for react-native-share(mm)
       );
     }
   };

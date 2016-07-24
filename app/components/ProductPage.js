@@ -2,10 +2,12 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, Image, TouchableOpacity} from 'react-native';
 import Dimensions from 'Dimensions';
 import {Actions} from "react-native-router-flux";
+import Share from "react-native-share";
 
 import Footer from "./Footer"
 
 var ImageProgress = require('react-native-image-progress');
+var RNFS = require('react-native-fs');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 var EntypoIcons = require('react-native-vector-icons/Entypo');
 
@@ -188,11 +190,55 @@ var ProductPage = React.createClass({
         productDetails.liked = true;
         this.setState({product:productDetails});
     },
-    renderShareButton() {
-        return (
-            <TouchableOpacity style={styles.actionButtonWithRightBorderStyle}>
-                <Text style={styles.actionTextStyle}><EntypoIcons name="share" size={24} /></Text>
-            </TouchableOpacity>
+
+    uploadProgress(response) {
+      if (response.contentLength == response.bytesWritten) {
+        
+      } 
+      console.log("progress is "+response.bytesWritten+"/"+response.contentLength); 
+    },
+
+    onShare(imgLink, imgText) {
+      if (!imgLink) {
+        Share.open({
+          share_text: imgText,
+          share_URL: "http://storefront.com",
+          title: "Share Product"
+        },(e) => {
+          console.log(e);
+        });
+        return;
+      }
+
+      this.setState({shareSpinnerVisible: true});
+
+      RNFS.downloadFile({
+        fromUrl: imgLink,
+        toFile: RNFS.ExternalDirectoryPath+"/share_image.jpg",
+        progressDivider: 2,
+        progress: this.uploadProgress
+      }).then((downloadresult) => {
+        
+        Share.open({
+          share_text: imgText+". Find more products on Storefront.",
+          share_URL: "http://storefront.com",
+          share_image_path: RNFS.ExternalDirectoryPath+"/share_image.jpg",
+          title: "Share Product"
+        },(e) => {
+          console.log(e);
+        });
+
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+    },
+
+    renderShareButton(shareImageLink, shareImageText) {
+      return (
+          <TouchableOpacity style={styles.actionButtonWithRightBorderStyle} onPress={() => this.onShare(shareImageLink, shareImageText)}>
+            <Text style={styles.actionTextStyle}><MaterialIcons name="share" size={24} /></Text>
+          </TouchableOpacity>
         )
     },
 
@@ -309,7 +355,7 @@ var ProductPage = React.createClass({
         
         <View style={styles.footer}>
           {this.renderLikeButton()}
-          {this.renderShareButton()}
+          {this.renderShareButton("https://is4.revolveassets.com/images/p4/n/z/TFLO-WD48_V3.jpg",this.state.product.name)}
           <View style={styles.priceText}>
               <Text>&#8377;{this.state.product.price}</Text>
           </View>
