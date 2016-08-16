@@ -30,70 +30,71 @@ const styles = StyleSheet.create({
     fontFamily: 'HelveticaNeueMed',
     color: 'black'
   },
+  scrollContainer: {
+    flex: 1
+  },
   carous: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'red'
   },
-  scrollContainer: {
-    flex: 1
-  },
   sellerNameContainer: {
-    flex:1, 
-    alignItems:'center', 
-    borderStyle:'solid', 
-    borderBottomColor:'rgba(79, 79, 79, 0.1)', 
-    borderBottomWidth:1
+    margin: 8,
+    alignItems:'center'
   },
   sellerNameText: {
-    flex:1, 
-    color:'black', 
-    margin:16
+    color:'black',
+    fontSize: 24
   },
-  vendorActionsContainer: {
-    flex:1, 
-    flexDirection:'row', 
-    alignItems:'center', 
-    borderStyle:'solid', 
-    borderBottomColor:'rgba(79, 79, 79, 0.1)', 
-    borderBottomWidth:1
+  detailsContainer: {
+    flex: 1,
+    marginTop: 24,
+    marginRight: 16,
+    marginLeft: 16
   },
-  callActionButton: {
-    flex:1, 
-    alignItems:'center', 
-    padding: 8, 
-    borderStyle:'solid', 
-    borderRightColor:'rgba(79, 79, 79, 0.1)', 
-    borderRightWidth:1
+  sectionContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+    margin: 8,
   },
-  callActionLabel: {
-    marginTop:8, 
-    fontFamily:'HelveticaNeueMed', 
-    color:'black'
+  sectionHeadingContainer: {
+    flex: 1,
+    margin: 2
   },
-  mapActionButton: {
-    flex:1, 
-    alignItems:'center', 
-    padding: 8
+  sectionTextContainer: {
+    flex: 1,
+    marginLeft: 2,
+    marginRight: 2
   },
-  mapActionLabel: {
-    marginTop:8, 
-    fontFamily:'HelveticaNeueMed', 
-    color:'black'
+  actionIconContainer: {
+    marginLeft: 16,
+    marginRight: 16,
+    marginTop: 8,
+    marginBottom: 8
+  },
+  actionDetailsContainer: {
+    flex: 1
+  },
+  sectionHeadingText: {
+    color: 'black',
+    fontFamily: 'HelveticaNeueMed',
+    fontSize: 12
+  },
+  sectionText: {
+    fontSize: 12
   },
   catalogButton: {
-    flex:1, 
-    alignItems:'center', 
-    borderStyle:'solid', 
-    borderBottomColor:'rgba(79, 79, 79, 0.1)', 
-    borderBottomWidth:1
+    margin: 16,
+    backgroundColor: 'rgba(67, 164, 229, 1)',
+    alignItems: 'center'
   },
   catalogLabel: {
     flex:1, 
-    color:'black', 
-    margin:16, 
-    fontFamily:'HelveticaNeueMed'
+    color:'white', 
+    fontFamily:'HelveticaNeueMed', 
+    margin:8
   }
 });
 
@@ -142,28 +143,53 @@ var VendorPage = React.createClass({
         <ScrollView style={styles.scrollContainer}>
 
           <View style={styles.sellerNameContainer}>
-            <Text style={styles.sellerNameText}>Arnav Jewellery</Text>
+            <Text style={styles.sellerNameText}>{this.state.vendorname}</Text>
           </View>
 
-          <View style={styles.vendorActionsContainer}>
-            
-            <TouchableOpacity style={styles.callActionButton} onPress={() => Communications.phonecall('0123456789', true)}>
-              <MaterialIcons name="call" size={24} color='black' />
-              <Text style={styles.callActionLabel}>Call</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.mapActionButton} onPress={() => Linking.openURL("geo:"+this.state.lat+","+this.state.long+"?q="+this.state.lat+","+this.state.long+"("+this.state.vendorname+")").catch(err => console.error('An error occurred', err)) }>
-              <MaterialIcons name="place" size={24} color='black' />
-              <Text style={styles.mapActionLabel}>Map</Text>
-            </TouchableOpacity>
+          <View style={styles.detailsContainer}>
+
+            <View style={styles.sectionContainer}>
+
+              <View style={styles.actionDetailsContainer}>
+                <View style={styles.sectionHeadingContainer}>
+                  <Text style={styles.sectionHeadingText}>Address</Text>
+                </View>
+
+                <View style={styles.sectionTextContainer}>
+                  <Text style={styles.sectionText}>Jayanagar, Bangalore, Karnataka - 560030</Text>
+                </View>
+              </View>
+              <View style={styles.actionIconContainer}>
+                <MaterialIcons name="place" size={24} color='rgba(67, 164, 229, 1)' />
+              </View>
+
+            </View>
+
+            <View style={styles.sectionContainer}>
+
+              <View style={styles.actionDetailsContainer}>
+                <View style={styles.sectionHeadingContainer}>
+                  <Text style={styles.sectionHeadingText}>Contact Number</Text>
+                </View>
+
+                <View style={styles.sectionTextContainer}>
+                  <Text style={styles.sectionText}>99829842934</Text>
+                </View>
+              </View>
+              <View style={styles.actionIconContainer}>
+                <MaterialIcons name="call" size={24} color='rgba(67, 164, 229, 1)' />
+              </View>
+
+            </View>               
 
           </View>
 
-          <View style={styles.catalogButton}>
-            <Text style={styles.catalogLabel}><MaterialIcons name="chrome-reader-mode" size={24} color='black' />    Catalog</Text>
-          </View>
+          <TouchableOpacity style={styles.catalogButton}>
+              <Text style={styles.catalogLabel}>Catalog</Text>
+          </TouchableOpacity>       
 
         </ScrollView>
+
       </View>
     )
   }
