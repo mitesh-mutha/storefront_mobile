@@ -18,10 +18,11 @@ var OTPLoginPage = React.createClass({
 
   async checkAuthenticationTokenExists() {
     try {
-      const value = await AsyncStorage.getItem("authentication_token");
+      const value = await AsyncStorage.getItem("login_details");
       this.setState({spinnerVisible: false});
       if (value !== null){
-        Actions.feedpage();
+        value = JSON.parse(value);
+        Actions.feedpage({'phone': value.phone, 'authentication_token': value.authentication_token});
       }
     } catch (error) {
       this.setState({spinnerVisible: false});

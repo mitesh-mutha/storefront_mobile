@@ -27,6 +27,15 @@ const Strings = {
   ERROR_STORING_AUTH_TOKEN: "Error",
   ERROR_STORING_AUTH_TOKEN_MSG: "Error storing data. Please try again later.",
 
+  NO_LOGIN_DETAILS: "Error",
+  NO_LOGIN_DETAILS_MSG: "Could not obtain the login details.",
+
+  NO_PRODUCT_DETAILS: "Error",
+  NO_PRODUCT_DETAILS_MSG: "Product details could not be obtained.",
+
+  REQUEST_FAILED: "Error",
+  REQUEST_FAILED_MSG: "Please try again later.",
+
   APP_NAME: "Storefront",
 
   LOGIN: "Login",

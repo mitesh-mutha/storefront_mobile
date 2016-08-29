@@ -3,73 +3,14 @@ import {ListView, View, Text, StyleSheet, Image, ScrollView, TouchableOpacity} f
 import Dimensions from 'Dimensions';
 import {Actions} from "react-native-router-flux";
 import Share from "react-native-share";
+import utility from './../utilities';
+import Strings from './../strings';
 
 var ImageProgress = require('react-native-image-progress');
 var RNFS = require('react-native-fs');
 var EntypoIcons = require('react-native-vector-icons/Entypo');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 var MOCKED_FEED_ITEMS ={};
-
-const styles = StyleSheet.create({
-  productFeedItem: {
-    flex: 1,
-    marginBottom: 36    
-  },
-  postFeedItem: {
-    marginBottom: 36
-  },
-  sellerContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    padding: 8
-  },
-  detailContainer: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    marginLeft: 8,
-    paddingLeft: 8
-  },
-  sellerAvatar: {
-    height: 32,
-    borderRadius: 16,
-    width: 32
-  },
-  sellerName: {  
-    fontFamily: 'HelveticaNeueMedium',
-    color: 'black'
-  },
-  productName: {
-    fontFamily: 'HelveticaNeueLight'
-  },
-  feedImageStyle: {
-    flex: 1,
-    width: Dimensions.get('window').width,
-    height: 260,
-    alignSelf: 'center'
-  },
-  actionButtonContainer: {
-    marginLeft: 8,
-    marginRight: 8,
-    flexDirection: 'row',
-    flexWrap: 'nowrap',
-    borderStyle:'solid',
-    borderBottomWidth:1,
-    borderBottomColor: 'rgba(79, 79, 79, 0.1)'
-  },
-  postTextContainer: {
-    marginLeft: 8,
-    marginRight: 8,
-    marginBottom:8,
-    flexDirection:'column',
-    flexWrap: 'nowrap'
-  },
-  postText: {
-    fontFamily: 'HelveticaNeueLight'
-  },
-  actionButton: {
-    padding: 8
-  }
-});
 
 var Feed = React.createClass({
   getInitialState() {
@@ -127,6 +68,12 @@ var Feed = React.createClass({
         
     return {
       dataSource: ds.cloneWithRows(MOCKED_FEED_ITEMS)
+    }
+  },
+
+  componentDidMount() {
+    if ( !this.props.phone || !this.props.authentication_token ) {
+      utility.showAlertWithOK(Strings.NO_LOGIN_DETAILS, Strings.NO_LOGIN_DETAILS_MSG);
     }
   },
 
@@ -274,7 +221,15 @@ var Feed = React.createClass({
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={{alignItems:'center', alignSelf: 'center'}} onPress={()=>Actions.productpage({productId:feeditem.id})} >
+        <TouchableOpacity style={{alignItems:'center', alignSelf: 'center'}} 
+          onPress={
+            ()=>Actions.productpage({
+              'productId':1,
+              'phone': this.props.phone,
+              'authentication_token': this.props.authentication_token
+            })
+          } 
+        >
             <ImageProgress source={{uri : feeditem.coverimg}} style={styles.feedImageStyle} />
         </TouchableOpacity>
 
@@ -309,6 +264,67 @@ var Feed = React.createClass({
           renderRow = {this._renderRow} />
       </ScrollView>
     );
+  }
+});
+
+const styles = StyleSheet.create({
+  productFeedItem: {
+    flex: 1,
+    marginBottom: 36    
+  },
+  postFeedItem: {
+    marginBottom: 36
+  },
+  sellerContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    padding: 8
+  },
+  detailContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginLeft: 8,
+    paddingLeft: 8
+  },
+  sellerAvatar: {
+    height: 32,
+    borderRadius: 16,
+    width: 32
+  },
+  sellerName: {  
+    fontFamily: 'HelveticaNeueMedium',
+    color: 'black'
+  },
+  productName: {
+    fontFamily: 'HelveticaNeueLight'
+  },
+  feedImageStyle: {
+    flex: 1,
+    width: Dimensions.get('window').width,
+    height: 260,
+    alignSelf: 'center'
+  },
+  actionButtonContainer: {
+    marginLeft: 8,
+    marginRight: 8,
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+    borderStyle:'solid',
+    borderBottomWidth:1,
+    borderBottomColor: 'rgba(79, 79, 79, 0.1)'
+  },
+  postTextContainer: {
+    marginLeft: 8,
+    marginRight: 8,
+    marginBottom:8,
+    flexDirection:'column',
+    flexWrap: 'nowrap'
+  },
+  postText: {
+    fontFamily: 'HelveticaNeueLight'
+  },
+  actionButton: {
+    padding: 8
   }
 });
 

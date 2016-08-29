@@ -34,7 +34,10 @@ var OTPVerificationPage = React.createClass({
   async saveAuthenticationToken(auth_token) {
     try {
       console.log("in saveAuthenticationToken function");
-      await AsyncStorage.setItem("authentication_token", auth_token);
+      await AsyncStorage.setItem("login_details", JSON.stringify({
+        'phone': this.props.mobileNumber,
+        'authentication_token': auth_token
+      }));
       console.log("Saved the authentication_token");
     }
     catch (error) {
@@ -64,7 +67,7 @@ var OTPVerificationPage = React.createClass({
       if (responseJson.status === "success") {
         if (responseJson.authentication_token) {
           this.saveAuthenticationToken(responseJson.authentication_token);
-          Actions.feedpage();  
+          Actions.feedpage({'phone': this.props.mobileNumber, 'authentication_token': responseJson.authentication_token});
         }
         else {
           utility.showAlertWithOK(Strings.NO_TOKEN_IN_RESPONSE, Strings.NO_TOKEN_IN_RESPONSE_MSG);  

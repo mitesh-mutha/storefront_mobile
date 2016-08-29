@@ -40,7 +40,7 @@ class FeedPage extends React.Component {
           </View>
         </View>
 
-        <Feed />
+        <Feed phone={this.props.phone} authentication_token={this.props.authentication_token} />
         
         <Footer page='home'/>
 
