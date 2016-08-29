@@ -33,6 +33,7 @@ var ProductPage = React.createClass({
       console.log(this.state)
       return {product: productDetails, spinnerVisible:false, dataAvailable: false}
     },
+    
     componentDidMount() {
 
       if ( !this.props.phone || !this.props.authentication_token ) {

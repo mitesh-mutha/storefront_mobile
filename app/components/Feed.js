@@ -5,6 +5,8 @@ import {Actions} from "react-native-router-flux";
 import Share from "react-native-share";
 import utility from './../utilities';
 import Strings from './../strings';
+import URL from './../urls';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 var ImageProgress = require('react-native-image-progress');
 var RNFS = require('react-native-fs');
@@ -67,14 +69,55 @@ var Feed = React.createClass({
     });
         
     return {
-      dataSource: ds.cloneWithRows(MOCKED_FEED_ITEMS)
+      dataSource: null,
+      spinnerVisible: false
     }
+  },
+
+  getFeed() {
+    url = URL.API_URL.CUSTOMER_FEED_URL+"?"+
+      "phone="+this.props.phone+"&"+
+      "authentication_token="+this.props.authentication_token+"&"+
+      "timestamp="+"0";
+
+    this.setState({spinnerVisible: true});
+
+    fetch(url,{
+      method: 'GET'
+      })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      this.setState({spinnerVisible: false});
+      if ( responseJson.status && responseJson.status === "success") {
+        
+        MOCKED_FEED_ITEMS ={};
+        for (i=0;i<responseJson.products.length;i++) {
+          responseJson.products[i].type = "product";
+          MOCKED_FEED_ITEMS[responseJson.products[i].id] = responseJson.products[i];
+        }
+
+        var ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 != r2
+        });
+        this.setState({ dataSource: ds.cloneWithRows(MOCKED_FEED_ITEMS) });
+
+      }
+      else if ( responseJson.status && responseJson.status === "Unauthenticated") {
+        utility.showAlertWithOK("Error", "Unauthenticated");
+      }
+    })
+    .catch((error) =>  {
+      this.setState({spinnerVisible: false});
+      utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+    });
   },
 
   componentDidMount() {
     if ( !this.props.phone || !this.props.authentication_token ) {
       utility.showAlertWithOK(Strings.NO_LOGIN_DETAILS, Strings.NO_LOGIN_DETAILS_MSG);
     }
+
+    this.getFeed();
   },
 
   likeFeedItem(itemid, itemtype) {
@@ -216,8 +259,8 @@ var Feed = React.createClass({
         <TouchableOpacity style={styles.sellerContainer} onPress={()=>Actions.vendorpage()}>
           <Image style={styles.sellerAvatar} source={{uri: 'http://placehold.it/24x24'}}/>
           <View style={styles.detailContainer}>
-            <Text style={styles.sellerName}>{feeditem.seller}</Text>
-            <Text style={styles.productName}>{feeditem.title}</Text>
+            <Text style={styles.sellerName}>{feeditem.seller.name}</Text>
+            <Text style={styles.productName}>{feeditem.name}</Text>
           </View>
         </TouchableOpacity>
 
@@ -230,13 +273,13 @@ var Feed = React.createClass({
             })
           } 
         >
-            <ImageProgress source={{uri : feeditem.coverimg}} style={styles.feedImageStyle} />
+            <ImageProgress source={{uri : URL.IMAGES_BASE_URL+feeditem.images[0].url}} style={styles.feedImageStyle} />
         </TouchableOpacity>
 
         <View style={styles.actionButtonContainer}>
           {this.renderLikeButton(feeditem.liked, feeditem.id, feeditem.type)}
           {this.renderWishlistButton(feeditem.wished, feeditem.id, feeditem.type)}
-          {this.renderShareButton(feeditem.coverimg, feeditem.title+" - "+feeditem.seller)}
+          {this.renderShareButton(URL.IMAGES_BASE_URL+feeditem.images[0].url, feeditem.name+" - "+feeditem.seller.name)}
         </View>
 
 
@@ -257,13 +300,24 @@ var Feed = React.createClass({
   },
     
   render() {
-    return (          
+    if (this.state.dataSource !== null) {
+      return (          
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Spinner visible={this.state.spinnerVisible} />
+          <ListView
+            dataSource = {this.state.dataSource}
+            renderRow = {this._renderRow} />
+        </ScrollView>
+      );
+    }
+    else {
+      return (          
       <ScrollView showsVerticalScrollIndicator={false}>
-        <ListView
-          dataSource = {this.state.dataSource}
-          renderRow = {this._renderRow} />
+        <Spinner visible={this.state.spinnerVisible} />
       </ScrollView>
     );
+    }
+    
   }
 });
 
