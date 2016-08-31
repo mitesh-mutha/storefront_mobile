@@ -22,24 +22,40 @@ var productDetails;
 
 var ProductPage = React.createClass({
     getInitialState() {
-      productDetails = {
-        name : 'Product Name',
-        description: 'Description lorem ipsum. lorem ipsum. lorem ipsum.  lorem ipsum. lorem ipsum.',
-        code: 'XYZ000007',
-        price: 350,
-        liked: false,
-        wished: false
-      };
-      console.log(this.state)
-      return {product: productDetails, spinnerVisible:false, dataAvailable: false}
+
+        if ( !this.props.phone || !this.props.authentication_token ) {
+            utility.showAlertWithOK(Strings.NO_LOGIN_DETAILS, Strings.NO_LOGIN_DETAILS_MSG);
+            return;
+        }
+
+        if ( !this.props.product  ) {
+            utility.showAlertWithOK("Error", "No product details");
+            return;
+        }
+
+        productDetails= {
+            'id': this.props.product.id,
+            'name': this.props.product.name,
+            'description': this.props.product.description,
+            'images': this.props.product.images,
+            'seller_name': this.props.product.seller.name,
+            'seller_id': this.props.product.seller.id,
+            'code': this.props.product.universal_code,
+            'price': this.props.product.selling_price,
+            'available': this.props.product.available,
+            'liked': this.props.product.liked,
+            'wished': this.props.product.wished
+        }
+        return {product: productDetails, spinnerVisible:false, shareSpinnerVisible: false}
     },
-    
+
     componentDidMount() {
 
-      if ( !this.props.phone || !this.props.authentication_token ) {
-        utility.showAlertWithOK(Strings.NO_LOGIN_DETAILS, Strings.NO_LOGIN_DETAILS_MSG);
-        return;
-      }
+        /*
+        if ( !this.props.phone || !this.props.authentication_token ) {
+            utility.showAlertWithOK(Strings.NO_LOGIN_DETAILS, Strings.NO_LOGIN_DETAILS_MSG);
+            return;
+        }
 
       // TODO: Only for testing !!
       if ( !this.props.productId ) {
@@ -91,16 +107,50 @@ var ProductPage = React.createClass({
         //utility.showAlertWithOK(Strings.REQUEST_FAILED, Strings.REQUEST_FAILED_MSG);
       });
 
-
+        */
     },
     unlikeFeedItem() {
-        productDetails.liked = false;
-        this.setState({product:productDetails});
+        url = URL.API_URL.PRODUCT_ACTIONS_INITIAL_URL+this.state.product.id+"/unlike?"+
+            "phone="+this.props.phone+"&"+
+            "authentication_token="+this.props.authentication_token;
+
+        fetch(url,{
+            method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            if (responseJson.status === 'success') {
+                productDetails.liked = false;
+                this.setState({ product: productDetails });
+            }
+        })
+        .catch((error) =>  {
+            utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+        });
+
+        return;
     },
 
     likeFeedItem() {
-        productDetails.liked = true;
-        this.setState({product:productDetails});
+        url = URL.API_URL.PRODUCT_ACTIONS_INITIAL_URL+this.state.product.id+"/like?"+
+            "phone="+this.props.phone+"&"+
+            "authentication_token="+this.props.authentication_token;
+
+        fetch(url,{
+            method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            if (responseJson.status === 'success') {
+                productDetails.liked = true;
+                this.setState({ product: productDetails });
+            }
+        })
+        .catch((error) =>  {
+            utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+        });
+
+        return;
     },
 
     uploadProgress(response) {
@@ -111,42 +161,41 @@ var ProductPage = React.createClass({
     },
 
     onShare(imgLink, imgText) {
-      if (this.state.product && this.state.product.images && this.state.product.images[0]
-        && this.state.product.images[0].url)
-        imgLink = URL.IMAGES_BASE_URL+this.state.product.images[0].url;
-      if (!imgLink) {
-        Share.open({
-          share_text: imgText,
-          share_URL: "http://storefront.com",
-          title: "Share Product"
-        },(e) => {
-          console.log(e);
-        });
-        return;
-      }
+        if (!imgLink) {
+            Share.open({
+                share_text: imgText,
+                share_URL: "http://storefront.com",
+                title: "Share Product"
+            },(e) => {
+                console.log(e);
+            });
+            return;
+        }
 
-      this.setState({shareSpinnerVisible: true});
+        this.setState({shareSpinnerVisible: true});
 
-      RNFS.downloadFile({
-        fromUrl: imgLink,
-        toFile: RNFS.ExternalDirectoryPath+"/share_image.jpg",
-        progressDivider: 2,
-        progress: this.uploadProgress
-      }).then((downloadresult) => {
+        RNFS.downloadFile({
+            fromUrl: imgLink,
+            toFile: RNFS.ExternalDirectoryPath+"/share_image.jpg",
+            progressDivider: 2,
+            progress: this.uploadProgress
+        }).then((downloadresult) => {
         
-        Share.open({
-          share_text: imgText+". Find more products on Storefront.",
-          share_URL: "http://storefront.com",
-          share_image_path: RNFS.ExternalDirectoryPath+"/share_image.jpg",
-          title: "Share Product"
-        },(e) => {
-          console.log(e);
-        });
+            this.setState({shareSpinnerVisible: false});
+            Share.open({
+                share_text: imgText+". Find more products on Storefront.",
+                share_URL: "http://storefront.com",
+                share_image_path: RNFS.ExternalDirectoryPath+"/share_image.jpg",
+                title: "Share Product"
+            },(e) => {
+                console.log(e);
+            });
 
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+        })
+        .catch((err) => {
+            this.setState({shareSpinnerVisible: false});
+            console.log(err.message);
+        });
     },
 
     renderShareButton(shareImageLink, shareImageText) {
@@ -220,7 +269,7 @@ var ProductPage = React.createClass({
     },
 
     renderProductDetails() {
-      if ( this.state.dataAvailable ) {
+      //if ( this.state.dataAvailable ) {
       return (
 
         <ScrollView>
@@ -241,26 +290,11 @@ var ProductPage = React.createClass({
                   <Text style={styles.subsectionHeading}>Code</Text>
                   <Text style={styles.subsectionContent}>{this.state.product.code}</Text>
               </View>
-
-              <View style={styles.subsectionContainer}>
-                  <Text style={styles.subsectionHeading}>Color</Text>
-                  <Text style={styles.subsectionContent}>Candy Pink</Text>
-              </View>
-
-              <View style={styles.subsectionContainer}>
-                  <Text style={styles.subsectionHeading}>Fabric</Text>
-                  <Text style={styles.subsectionContent}>Cotton</Text>
-              </View>
-
-              <View style={styles.subsectionContainer}>
-                  <Text style={styles.subsectionHeading}>Length</Text>
-                  <Text style={styles.subsectionContent}>34 inch</Text>
-              </View>
           </View>
 
         </ScrollView>
         )
-      }
+      //}
     },
 
     render(){
@@ -277,6 +311,7 @@ var ProductPage = React.createClass({
         </View>
 
         <Spinner visible={this.state.spinnerVisible} />
+        <Spinner visible={this.state.shareSpinnerVisible} />
                        
         {this.renderProductDetails()}
 

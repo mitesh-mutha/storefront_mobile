@@ -245,7 +245,7 @@ var Feed = React.createClass({
 
                 <TouchableHighlight style={{alignItems:'center', alignSelf: 'center'}} 
                     onPress={()=>Actions.productpage({
-                        'productId':1,
+                        'product': feeditem,
                         'phone': this.props.phone,
                         'authentication_token': this.props.authentication_token})}>
                     <ImageProgress source={{uri : URL.IMAGES_BASE_URL+feeditem.images[0].url}} style={[styles.feedImageStyle,{height: 450}]} />
