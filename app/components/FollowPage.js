@@ -211,7 +211,7 @@ var FollowPage = React.createClass({
           {this.renderFollowedVendors()}
         </ScrollView>
         
-        <Footer page='following'/>
+        <Footer page='following' phone={this.props.phone} authentication_token={this.props.authentication_token}/>
 
       </View>
     );

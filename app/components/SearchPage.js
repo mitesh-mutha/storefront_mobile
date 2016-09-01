@@ -235,7 +235,7 @@ var SearchPage  = React.createClass({
           {this.renderSearchResults()}
         </ScrollView>
         
-        <Footer page='search'/>
+        <Footer page='search' phone={this.props.phone} authentication_token={this.props.authentication_token}/>
 
       </View>
     );

@@ -80,7 +80,7 @@ var ProfilePage = React.createClass({
         </ScrollView>
 
         
-        <Footer page='profile'/>
+        <Footer page='profile' phone={this.props.phone} authentication_token={this.props.authentication_token}/>
 
       </View>
     );
