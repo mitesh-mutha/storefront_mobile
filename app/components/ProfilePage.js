@@ -5,6 +5,7 @@ import {Actions} from "react-native-router-flux";
 import URL from './../urls';
 import utility from './../utilities';
 import Strings from './../strings';
+import Dimensions from 'Dimensions';
 
 var ImageProgress = require('react-native-image-progress');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
@@ -54,7 +55,7 @@ var ProfilePage = React.createClass({
              
             <View style={styles.statsContainer}>  
               <View style={styles.statContainer}>
-                <Text style={styles.statValue}>{this.state.numLikedItems}</Text>
+                <Text style={styles.statValue}>{Dimensions.get('window').width}</Text>
                 <Text style={styles.statLabel}>liked</Text>
               </View>
 

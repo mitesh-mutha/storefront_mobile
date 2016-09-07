@@ -33,7 +33,7 @@ var Footer = React.createClass({
     return (
       <View style={styles.footer}>
 
-        <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.feedpage({'phone': this.props.mobileNumber, 'authentication_token': responseJson.authentication_token})}>
+        <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.feedpage({'phone': this.props.phone, 'authentication_token': this.props.authentication_token})}>
           <Ionicons name="md-home" size={24} color={colorHome} />
         </TouchableOpacity>
 
@@ -41,15 +41,15 @@ var Footer = React.createClass({
           <MaterialIcons name="add-shopping-cart" size={24} color={colorWishlist} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.searchpage({'phone': this.props.mobileNumber, 'authentication_token': responseJson.authentication_token})}>
+        <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.searchpage({'phone': this.props.phone, 'authentication_token': this.props.authentication_token})}>
           <Ionicons name="md-search" size={24} color={colorSearch} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.followpage({'phone': this.props.mobileNumber, 'authentication_token': responseJson.authentication_token})}>
+        <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.followpage({'phone': this.props.phone, 'authentication_token': this.props.authentication_token})}>
           <MaterialIcons name="store-mall-directory" size={24} color={colorFollowing} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.profilepage({'phone': this.props.mobileNumber, 'authentication_token': responseJson.authentication_token})}>
+        <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.profilepage({'phone': this.props.phone, 'authentication_token': this.props.authentication_token})}>
           <Ionicons name="md-person" size={24} color={colorProfile} />
         </TouchableOpacity>
 
