@@ -88,9 +88,39 @@ var OTPVerificationPage = React.createClass({
 
     },
 
+    resendOTP() {
+        url = URL.API_URL.OTP_RELOGIN_URL+"?phone="+this.props.mobileNumber;
+
+        this.setState({spinnerVisible: true});
+
+        fetch(url,{
+            method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+
+            this.setState({spinnerVisible: false});
+
+            if (responseJson.status === "success") {
+                Utility.showAlertWithOK("Success", "OTP resent to the mobile number");
+            }
+            else  {
+                Utility.showAlertWithOK(Strings.OTP_LOGIN_REQUEST_FAILED, Strings.OTP_LOGIN_REQUEST_FAILED_MSG);    
+            }
+
+        })
+        .catch((error) =>  {
+
+            this.setState({spinnerVisible: false});
+            Utility.showAlertWithOK(Strings.OTP_LOGIN_REQUEST_FAILED, Strings.OTP_LOGIN_REQUEST_FAILED_MSG);
+            console.error(error)
+
+        });
+    },
+
     render(){
         return (
-            <ScrollView style={styles.scrollContainer}>
+            <ScrollView style={styles.scrollContainer} keyboardShouldPersistTaps={true}>
 
                 <Spinner visible={this.state.spinnerVisible} />
 
@@ -117,7 +147,7 @@ var OTPVerificationPage = React.createClass({
                         <Text style={styles.signInButtonLabel}>{Strings.SIGN_IN}</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=>this.resendOTP()}>
                         <Text style={styles.OTPOptionButton}>{Strings.RESEND_OTP}</Text>
                     </TouchableOpacity>
               

@@ -27,7 +27,7 @@ var Feed = React.createClass({
         url = URL.API_URL.CUSTOMER_FEED_URL+"?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token+"&"+
-            "timestamp="+"0";
+            "current_time="+"0";
 
         this.setState({spinnerVisible: true});
 
@@ -157,9 +157,6 @@ var Feed = React.createClass({
     },
 
     uploadProgress(response) {
-        if (response.contentLength == response.bytesWritten) {
-        } 
-        console.log("progress is "+response.bytesWritten+"/"+response.contentLength); 
     },
 
     onShare(imgLink, imgText) {
@@ -232,11 +229,34 @@ var Feed = React.createClass({
     },
 
     renderProductFeedItem(feeditem) {
+        
+        if (!feeditem.seller.logo || feeditem.seller.logo === "") {
+            index = feeditem.seller.name.indexOf(' ');
+            if (index >= 0 && (index+1) < feeditem.seller.name.length ) {
+                initials =  feeditem.seller.name.charAt(0) + feeditem.seller.name.charAt(index+1);
+            }
+            else if ( feeditem.seller.name.length >= 2 ) {
+                initials = feeditem.seller.name.charAt(0)+feeditem.seller.name.charAt(1)
+            }
+            else {
+                initials = " "
+            }
+            seller_logo_url = "https://placeholdit.imgix.net/~text?txtsize=16&bg=000000&txtclr=ffffff&txt="+initials+"&w=32&h=32&txttrack=0&txtpad=1"
+        }
+        else {
+            seller_logo_url = feeditem.seller.logo
+        }
+
+
         return(
             <View style={styles.productFeedItem} >
 
-                <TouchableOpacity style={styles.sellerContainer} onPress={()=>Actions.vendorpage()}>
-                    <Image style={styles.sellerAvatar} source={{uri: 'http://placehold.it/24x24'}}/>
+                <TouchableOpacity style={styles.sellerContainer} onPress={()=>Actions.vendorpage({
+                    'seller_id': feeditem.seller.id,
+                    'phone': this.props.phone,
+                    'authentication_token': this.props.authentication_token
+                })}>
+                    <Image style={styles.sellerAvatar} source={{uri: seller_logo_url}}/>
                     <View style={styles.detailContainer}>
                         <Text style={styles.sellerName}>{feeditem.seller.name}</Text>
                         <Text style={styles.productName}>{feeditem.name}</Text>

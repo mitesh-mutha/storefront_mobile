@@ -2,11 +2,160 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet, Navigator, ScrollView, TextInput, ListView, TouchableOpacity} from 'react-native';
 import Footer from "./Footer";
 import {Actions} from "react-native-router-flux";
+import utility from './../utilities';
+import Strings from './../strings';
+import URL from './../urls';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 var ImageProgress = require('react-native-image-progress');
 var Ionicons = require('react-native-vector-icons/Ionicons');
 
-var MOCKED_SEARCH_ITEM ={};
+var SEARCH_ITEM ={};
+
+var SearchPage  = React.createClass({
+  getInitialState() {        
+    return {
+      dataSource: null,
+      searchString: "",
+      spinnerVisible: false
+    }
+  },
+
+  followSeller(id){
+    
+  },
+
+  unfollowSeller(id) {
+
+  },
+
+  renderFollowButton(id, isFollowing) {
+    if (isFollowing) {
+      return (
+        <TouchableOpacity style={styles.followingButtonContainer} onPress={()=>this.unfollowSeller(id)}>
+          <Text style={styles.followingText}>Following</Text>
+        </TouchableOpacity>
+      )
+    }
+    else {
+      return (
+        <TouchableOpacity style={styles.notFollowingButtonContainer} onPress={()=>this.followSeller(id)}>
+          <Text style={styles.notFollowingText}>Follow</Text>
+        </TouchableOpacity>
+      )
+    }
+  },
+
+  _renderRow(resultItem)  {
+    return (
+      <TouchableOpacity style={styles.followItem} onPress={()=>Actions.vendorpage()}>
+        <View style={styles.sellerContainer}>
+          <ImageProgress style={styles.sellerAvatar} 
+            source={{uri: resultItem.logo}} />
+
+          <View style={styles.detailContainer}>
+            <Text style={styles.sellerName}>{resultItem.name}</Text>
+            {this.renderFollowButton(resultItem.id, resultItem.followed)}
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
+  },
+
+  renderSearchResults() {
+    if ( this.state.dataSource !== null ) {
+      return (
+        <View>
+          <View style={styles.resultsHeadingContainer}>
+            <Text style={styles.resultsHeadingText}>    Search Results    </Text>
+          </View>
+          <ListView
+            dataSource = {this.state.dataSource}
+            renderRow = {this._renderRow} />
+        </View>
+      )
+    }    
+  },
+
+  updateListDataSource() {
+    var ds = new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 != r2
+    });
+    this.setState({ dataSource: ds.cloneWithRows(SEARCH_ITEM) });
+  },
+
+  onSearchTextChange(text) {
+    this.setState({searchString: text})
+
+    if (text === "" ) {
+      SEARCH_ITEM = {};
+      this.updateListDataSource();
+      return;
+    }
+      
+
+    url = URL.API_URL.SELLER_SEARCH_URL+"?"+
+            "phone="+this.props.phone+"&"+
+            "authentication_token="+this.props.authentication_token+"&"+
+            "q="+this.state.searchString;
+
+        this.setState({spinnerVisible: true});
+
+        fetch(url,{
+            method: 'GET'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            this.setState({spinnerVisible: false});
+            this.refs.SearchInput.focus();
+            if ( responseJson.status && responseJson.status === "success") {
+        
+                SEARCH_ITEM ={};
+                for (i=0;i<responseJson.sellers.length;i++) {
+                    SEARCH_ITEM[responseJson.sellers[i].name] = responseJson.sellers[i]; // TODO:Change to id
+                }
+
+                this.updateListDataSource();
+
+            }
+            else if ( responseJson.status && responseJson.status === "Unauthenticated") {
+                utility.showAlertWithOK("Error", "Unauthenticated");
+            }
+        })
+        .catch((error) =>  {
+            this.setState({spinnerVisible: false});
+            this.refs.SearchInput.focus();
+            utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+        });
+
+  },
+
+  render(){
+    return (
+      <View style={styles.container}>
+        
+        <View style={styles.header}>
+          <View style={styles.searchHeader}>
+              <Ionicons name="md-search" size={20} />
+              <TextInput
+                ref="SearchInput"
+                placeholder="Search"
+                style={styles.searchInput}
+                onChangeText={(text) => this.onSearchTextChange(text)}
+                value={this.state.searchString}/>
+          </View>  
+        </View>
+
+        <ScrollView style={styles.scrollContainer}  keyboardShouldPersistTaps={true} >
+          {this.renderSearchResults()}
+        </ScrollView>
+        
+        <Footer page='search' phone={this.props.phone} authentication_token={this.props.authentication_token}/>
+
+      </View>
+    );
+  }
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -122,123 +271,6 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flex:1
-  }
-});
-
-var SearchPage  = React.createClass({
-  getInitialState() {
-    MOCKED_SEARCH_ITEM['vendor1'] = {
-      id: 1,
-      name: 'Arnav Jewellery',
-      logourl: 'https://s-media-cache-ak0.pinimg.com/236x/58/80/1d/58801d3dcda64bc4d890e65bdcab8db7.jpg',
-      isFollowing: true
-    };
-
-    MOCKED_SEARCH_ITEM['vendor2'] = {
-      id: 2,
-      name: 'Geode Jewellery',
-      logourl: 'https://s-media-cache-ak0.pinimg.com/236x/58/80/1d/58801d3dcda64bc4d890e65bdcab8db7.jpg',
-      isFollowing: false
-    };
-
-    MOCKED_SEARCH_ITEM['vendor3'] = {
-      id: 3,
-      name: 'Geode Jewellery',
-      logourl: 'https://s-media-cache-ak0.pinimg.com/236x/58/80/1d/58801d3dcda64bc4d890e65bdcab8db7.jpg',
-      isFollowing: true
-    };
-
-    MOCKED_SEARCH_ITEM['vendor4'] = {
-      id: 4,
-      name: 'Geode Jewellery',
-      logourl: 'https://s-media-cache-ak0.pinimg.com/236x/58/80/1d/58801d3dcda64bc4d890e65bdcab8db7.jpg',
-      isFollowing: false
-    };
-
-    MOCKED_SEARCH_ITEM['vendor5'] = {
-      id: 5,
-      name: 'Arnav Jewellery',
-      logourl: 'https://s-media-cache-ak0.pinimg.com/236x/58/80/1d/58801d3dcda64bc4d890e65bdcab8db7.jpg',
-      isFollowing: true
-    };
-        
-    var ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 != r2
-    });
-        
-    return {
-      dataSource: ds.cloneWithRows(MOCKED_SEARCH_ITEM)
-    }
-  },
-
-  renderFollowButton(id, isFollowing) {
-    if (isFollowing) {
-      return (
-        <View style={styles.followingButtonContainer}>
-          <Text style={styles.followingText}>Following</Text>
-        </View>
-      )
-    }
-    else {
-      return (
-        <View style={styles.notFollowingButtonContainer}>
-          <Text style={styles.notFollowingText}>Follow</Text>
-        </View>
-      )
-    }
-  },
-
-  _renderRow(resultItem)  {
-    return (
-      <TouchableOpacity style={styles.followItem} onPress={()=>Actions.vendorpage()}>
-        <View style={styles.sellerContainer}>
-          <ImageProgress style={styles.sellerAvatar} 
-            source={{uri: resultItem.logourl}} />
-
-          <View style={styles.detailContainer}>
-            <Text style={styles.sellerName}>{resultItem.name}</Text>
-            {this.renderFollowButton(resultItem.id, resultItem.isFollowing)}
-          </View>
-        </View>
-      </TouchableOpacity>
-    )
-  },
-
-  renderSearchResults() {
-    return (
-        <View>
-          <View style={styles.resultsHeadingContainer}>
-            <Text style={styles.resultsHeadingText}>    Search Results    </Text>
-          </View>
-          <ListView
-            dataSource = {this.state.dataSource}
-            renderRow = {this._renderRow} />
-        </View>
-      )
-  },
-
-  render(){
-    return (
-      <View style={styles.container}>
-        
-        <View style={styles.header}>
-          <View style={styles.searchHeader}>
-              <Ionicons name="md-search" size={20} />
-              <TextInput
-                placeholder="Search"
-                style={styles.searchInput}/>
-              
-          </View>  
-        </View>
-
-        <ScrollView style={styles.scrollContainer}>
-          {this.renderSearchResults()}
-        </ScrollView>
-        
-        <Footer page='search' phone={this.props.phone} authentication_token={this.props.authentication_token}/>
-
-      </View>
-    );
   }
 });
 

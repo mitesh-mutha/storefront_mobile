@@ -93,7 +93,7 @@ var OTPLoginPage = React.createClass({
     render(){
 
         return (
-            <ScrollView style={styles.scrollcontainer}>
+            <ScrollView style={styles.scrollcontainer} keyboardShouldPersistTaps={true}>
 
                 <Spinner visible={this.state.spinnerVisible} />
 

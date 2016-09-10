@@ -8,6 +8,7 @@ import SearchPage from './app/components/SearchPage';
 import FollowPage from './app/components/FollowPage';
 import ProfilePage from './app/components/ProfilePage';
 import VendorPage from './app/components/VendorPage';
+import CatalogPage from './app/components/CatalogPage';
 import OTPLoginPage from './app/components/OTPLoginPage';
 import OTPVerificationPage from './app/components/OTPVerificationPage';
 
@@ -32,6 +33,7 @@ export default class Storefront extends React.Component {
           <Scene key="followpage" component={FollowPage} hideNavBar={true} />
           <Scene key="profilepage" component={ProfilePage} hideNavBar={true} />
           <Scene key="vendorpage" component={VendorPage} hideNavBar={true} />
+          <Scene key="catalogpage" component={CatalogPage} hideNavBar={true} />
         </Scene>
       </Scene>
     </Router>;
