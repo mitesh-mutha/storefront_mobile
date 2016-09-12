@@ -22,7 +22,7 @@ var SearchPage  = React.createClass({
   },
 
   followSeller(id){
-    
+
   },
 
   unfollowSeller(id) {
@@ -48,7 +48,11 @@ var SearchPage  = React.createClass({
 
   _renderRow(resultItem)  {
     return (
-      <TouchableOpacity style={styles.followItem} onPress={()=>Actions.vendorpage()}>
+      <TouchableOpacity style={styles.followItem} onPress={()=>Actions.vendorpage({
+            'seller_id': resultItem.id,
+            'phone': this.props.phone,
+            'authentication_token': this.props.authentication_token
+        })}>
         <View style={styles.sellerContainer}>
           <ImageProgress style={styles.sellerAvatar} 
             source={{uri: resultItem.logo}} />
@@ -112,7 +116,7 @@ var SearchPage  = React.createClass({
         
                 SEARCH_ITEM ={};
                 for (i=0;i<responseJson.sellers.length;i++) {
-                    SEARCH_ITEM[responseJson.sellers[i].name] = responseJson.sellers[i]; // TODO:Change to id
+                    SEARCH_ITEM[responseJson.sellers[i].id] = responseJson.sellers[i]; // TODO:Change to id
                 }
 
                 this.updateListDataSource();

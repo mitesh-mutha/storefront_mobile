@@ -27,7 +27,7 @@ var Feed = React.createClass({
         url = URL.API_URL.CUSTOMER_FEED_URL+"?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token+"&"+
-            "current_time="+"0";
+            "current_time="+Date.now();
 
         this.setState({spinnerVisible: true});
 

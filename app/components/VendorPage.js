@@ -14,6 +14,7 @@ var Carousel = require('react-native-carousel');
 var VendorPage = React.createClass({
     getInitialState() {
         return ({seller:{
+            "id": this.props.seller_id,
             "name": "Kuber Jewelers ",
             "fb_link": null,
             "website": null,
@@ -23,10 +24,14 @@ var VendorPage = React.createClass({
             "contact_number": null,
             "latitude_and_longitude": null,
             "followed": true
-        }});
+        },
+        spinnerVisible: false
+    });
     },
 
   componentDidMount() {
+
+    this.setState({spinnerVisible: true});
 
     url = URL.API_URL.SELLER_DETAILS_URL+"/"+this.props.seller_id+"?"+
         "phone="+this.props.phone+"&"+
@@ -37,6 +42,7 @@ var VendorPage = React.createClass({
     })
     .then((response) => response.json())
     .then((responseJson) => {
+        this.setState({spinnerVisible: false});
         if (responseJson.status === 'success') {
             this.setState({seller: responseJson.sellers});
         }
@@ -45,6 +51,7 @@ var VendorPage = React.createClass({
         }
     })
     .catch((error) =>  {
+        this.setState({spinnerVisible: false});
         utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
     });
     return;
@@ -83,7 +90,8 @@ var VendorPage = React.createClass({
             return;
         if (!this.state.seller.contact_number)
             return;
-        Communications.phoneCall(this.state.seller.contact_number);
+        
+        Communications.phonecall(this.state.seller.contact_number, false);
     },
 
     openAddressLocation() {
@@ -252,6 +260,8 @@ var VendorPage = React.createClass({
                         <Text style={styles.appName}>Storefront</Text>
                     </View>
                 </View>
+
+                <Spinner visible={this.state.spinnerVisible} />
 
                 {this.renderStoreImages()}
 

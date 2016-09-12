@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, ScrollView} from 'react-native';
+import {Actions} from "react-native-router-flux";
+
+var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 
 const styles = StyleSheet.create({
   container: {
