@@ -278,7 +278,11 @@ var VendorPage = React.createClass({
                         {this.renderAddressSection()}
                     </View>
 
-                    <TouchableOpacity style={styles.catalogButton} onPress={()=>Actions.catalogpage({'phone': this.props.phone, 'authentication_token': this.props.authentication_token})}>
+                    <TouchableOpacity style={styles.catalogButton} onPress={()=>Actions.catalogpage({
+                        'phone': this.props.phone, 
+                        'authentication_token': this.props.authentication_token,
+                        'seller_id': this.props.seller_id
+                    })}>
                         <Text style={styles.catalogLabel}>Catalog</Text>
                     </TouchableOpacity>       
 

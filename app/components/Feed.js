@@ -23,6 +23,13 @@ var Feed = React.createClass({
         }
     },
 
+    updateFeedListViewSource() {
+        var ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 != r2
+        });
+        this.setState({ dataSource: ds.cloneWithRows(FEED_PRODUCT_ITEMS) });
+    },
+
     getFeed() {
         url = URL.API_URL.CUSTOMER_FEED_URL+"?"+
             "phone="+this.props.phone+"&"+
@@ -45,14 +52,12 @@ var Feed = React.createClass({
                     FEED_PRODUCT_ITEMS[responseJson.products[i].id] = responseJson.products[i];
                 }
 
-                var ds = new ListView.DataSource({
-                    rowHasChanged: (r1, r2) => r1 != r2
-                });
-                this.setState({ dataSource: ds.cloneWithRows(FEED_PRODUCT_ITEMS) });
+                this.updateFeedListViewSource();
 
             }
             else if ( responseJson.status && responseJson.status === "Unauthenticated") {
-                utility.showAlertWithOK("Error", "Unauthenticated");
+                utility.clearLoginDetails();
+                utility.showAlertWithOK(Strings.ERROR, Strings.UNAUTHENTICATED);
             }
         })
         .catch((error) =>  {
@@ -82,10 +87,7 @@ var Feed = React.createClass({
             if (responseJson.status === 'success') {
                 if (itemtype == 'product') {
                     FEED_PRODUCT_ITEMS[itemid].liked = true;
-                    var ds = new ListView.DataSource({
-                        rowHasChanged: (r1, r2) => r1 != r2
-                    });
-                    this.setState({ dataSource: ds.cloneWithRows(FEED_PRODUCT_ITEMS) });
+                    this.updateFeedListViewSource();
                 }
             }
         })
@@ -109,10 +111,7 @@ var Feed = React.createClass({
             if (responseJson.status === 'success') {
                 if (itemtype == 'product') {
                     FEED_PRODUCT_ITEMS[itemid].liked = false;
-                    var ds = new ListView.DataSource({
-                        rowHasChanged: (r1, r2) => r1 != r2
-                    });
-                    this.setState({ dataSource: ds.cloneWithRows(FEED_PRODUCT_ITEMS) });
+                    this.updateFeedListViewSource();
                 }
             }
         })
@@ -139,31 +138,94 @@ var Feed = React.createClass({
         }
     },
 
+    wishlistFeedItem(itemid) {
+        url = URL.API_URL.PRODUCT_ACTIONS_INITIAL_URL+itemid+"/wishlist?"+
+            "phone="+this.props.phone+"&"+
+            "authentication_token="+this.props.authentication_token;
+
+        fetch(url,{
+            method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            if (responseJson.status === 'success') {
+                FEED_PRODUCT_ITEMS[itemid].wishlisted = true;
+                this.updateFeedListViewSource();
+            }
+        })
+        .catch((error) =>  {
+            utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+        });
+        return;
+    },
+
+    unwishlistFeedItem(itemid) {
+        url = URL.API_URL.PRODUCT_ACTIONS_INITIAL_URL+itemid+"/unwishlist?"+
+            "phone="+this.props.phone+"&"+
+            "authentication_token="+this.props.authentication_token;
+
+        fetch(url,{
+            method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            if (responseJson.status === 'success') {
+                FEED_PRODUCT_ITEMS[itemid].wishlisted = false;
+                this.updateFeedListViewSource();
+            }
+        })
+        .catch((error) =>  {
+            utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+        });
+        return;
+    },
+
     renderWishlistButton(wished, itemid, itemtype) {
         if (wished) {
             return (
-                <TouchableOpacity style={styles.actionButton}>
+                <TouchableOpacity style={styles.actionButton} onPress={()=>this.unwishlistFeedItem(itemid)}>
                     <MaterialIcons name="remove-shopping-cart" size={24}/>
                 </TouchableOpacity>
             )
         }
         else {
             return (
-                <TouchableOpacity style={styles.actionButton}>
+                <TouchableOpacity style={styles.actionButton} onPress={()=>this.wishlistFeedItem(itemid)}>
                     <MaterialIcons name="add-shopping-cart" size={24} />
                 </TouchableOpacity>
             )
         }
     },
 
+    informServerAboutShare(itemid, itemtype) {
+        if ( itemtype === 'product' ) {
+            url = URL.API_URL.PRODUCT_ACTIONS_INITIAL_URL+itemid+"/share?"+
+                "phone="+this.props.phone+"&"+
+                "authentication_token="+this.props.authentication_token;
+        }
+        else {
+            url = URL.API_URL.POST_ACTIONS_INITIAL_URL+itemid+"/share?"+
+                "phone="+this.props.phone+"&"+
+                "authentication_token="+this.props.authentication_token;   
+        }
+
+        fetch(url,{
+            method: 'POST'
+        })
+        .then((response) => {})
+        .catch((error) =>  {
+        });
+        return;
+    },
+
     uploadProgress(response) {
     },
 
-    onShare(imgLink, imgText) {
+    onShare(itemtype, itemid, imgLink, imgText) {
         if (!imgLink) {
             Share.open({
                 share_text: imgText,
-                share_URL: "http://storefront.com",
+                share_URL: "http://storefrontindia.com",
                 title: "Share Product"
             },(e) => {
                 console.log(e);
@@ -172,6 +234,9 @@ var Feed = React.createClass({
         }
 
         this.setState({shareSpinnerVisible: true});
+
+        
+        this.informServerAboutShare(itemid, itemtype);       
 
         RNFS.downloadFile({
             fromUrl: imgLink,
@@ -183,7 +248,7 @@ var Feed = React.createClass({
             this.setState({shareSpinnerVisible: false});
             Share.open({
                 share_text: imgText+". Find more products on Storefront.",
-                share_URL: "http://storefront.com",
+                share_URL: "http://storefrontindia.com",
                 share_image_path: RNFS.ExternalDirectoryPath+"/share_image.jpg",
                 title: "Share Product"
             },(e) => {
@@ -197,9 +262,9 @@ var Feed = React.createClass({
         });
     },
 
-    renderShareButton(shareImageLink, shareImageText) {
+    renderShareButton(itemtype, itemid, shareImageLink, shareImageText) {
         return (
-            <TouchableOpacity style={styles.actionButton} onPress={() => this.onShare(shareImageLink, shareImageText)}>
+            <TouchableOpacity style={styles.actionButton} onPress={() => this.onShare(itemtype, itemid, shareImageLink, shareImageText)}>
                 <MaterialIcons name="share" size={24} />
             </TouchableOpacity>
         )
@@ -222,31 +287,37 @@ var Feed = React.createClass({
 
                 <View style={styles.actionButtonContainer}>
                     {this.renderLikeButton(feeditem.liked, feeditem.id, feeditem.type)}
-                    {this.renderShareButton(null, feeditem.text+" - "+feeditem.seller)}
+                    {this.renderShareButton(feeditem.type, feeditem.id, null, feeditem.text+" - "+feeditem.seller)}
                 </View>
             </View>
         );
     },
 
-    renderProductFeedItem(feeditem) {
-        
+    getSellerLogoUrl(feeditem) {
         if (!feeditem.seller.logo || feeditem.seller.logo === "") {
             index = feeditem.seller.name.indexOf(' ');
             if (index >= 0 && (index+1) < feeditem.seller.name.length ) {
                 initials =  feeditem.seller.name.charAt(0) + feeditem.seller.name.charAt(index+1);
             }
             else if ( feeditem.seller.name.length >= 2 ) {
-                initials = feeditem.seller.name.charAt(0)+feeditem.seller.name.charAt(1)
+                initials = feeditem.seller.name.charAt(0)+feeditem.seller.name.charAt(1);
             }
             else {
-                initials = " "
+                initials = " ";
             }
-            seller_logo_url = "https://placeholdit.imgix.net/~text?txtsize=16&bg=000000&txtclr=ffffff&txt="+initials+"&w=32&h=32&txttrack=0&txtpad=1"
+            return "https://placeholdit.imgix.net/~text?txtsize=16&bg=000000&txtclr=ffffff&txt="+initials+"&w=32&h=32&txttrack=0&txtpad=1";
         }
         else {
-            seller_logo_url = feeditem.seller.logo
+            return feeditem.seller.logo;
         }
+    },
 
+    renderProductFeedItem(feeditem) {
+        
+        seller_logo_url = this.getSellerLogoUrl(feeditem);
+
+        //img_height = Math.ceil((Dimensions.get('window').width/feeditem.aspect_ratio));
+        img_height = 450;
 
         return(
             <View style={styles.productFeedItem} >
@@ -265,16 +336,17 @@ var Feed = React.createClass({
 
                 <TouchableHighlight style={{alignItems:'center', alignSelf: 'center'}} 
                     onPress={()=>Actions.productpage({
-                        'product': feeditem,
+                        'product_id': feeditem.id,
                         'phone': this.props.phone,
                         'authentication_token': this.props.authentication_token})}>
-                    <ImageProgress source={{uri : URL.IMAGES_BASE_URL+feeditem.images[0].url}} style={[styles.feedImageStyle,{height: 450}]} />
+                    <ImageProgress source={{uri : URL.IMAGES_BASE_URL+feeditem.images[0].url}} 
+                        style={[styles.feedImageStyle,{height: img_height}]} />
                 </TouchableHighlight>
 
                 <View style={styles.actionButtonContainer}>
                     {this.renderLikeButton(feeditem.liked, feeditem.id, feeditem.type)}
-                    {this.renderWishlistButton(feeditem.wished, feeditem.id, feeditem.type)}
-                    {this.renderShareButton(URL.IMAGES_BASE_URL+feeditem.images[0].url, feeditem.name+" - "+feeditem.seller.name)}
+                    {this.renderWishlistButton(feeditem.wishlisted, feeditem.id, feeditem.type)}
+                    {this.renderShareButton(feeditem.type, feeditem.id, URL.IMAGES_BASE_URL+feeditem.images[0].url, feeditem.name+" - "+feeditem.seller.name)}
                 </View>
 
 
@@ -320,7 +392,7 @@ var Feed = React.createClass({
 const styles = StyleSheet.create({
   productFeedItem: {
     flex: 1,
-    marginBottom: 36    
+    marginBottom: 36
   },
   postFeedItem: {
     marginBottom: 36

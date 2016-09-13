@@ -45,7 +45,15 @@ const Strings = {
   SIGN_IN: "Sign In",
 
   RESEND_OTP: "Resend OTP",
-  DIFFERENT_NUMBER: "Different number?"
+  DIFFERENT_NUMBER: "Different number?",
+
+  OTP_RESENT: "OTP resent to the mobile number",
+
+  ERROR: "Error",
+  SUCCESS: "Success",
+  UNAUTHENTICATED_MSG: "Unauthenticated",
+
+  INVITE_FRIENDS_TEXT: "Hey, download Storefront app and discover great new products from exclusive sellers."
 }
 
 module.exports = Strings

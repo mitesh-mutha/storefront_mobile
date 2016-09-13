@@ -33,12 +33,12 @@ var OTPVerificationPage = React.createClass({
 
     async saveAuthenticationToken(auth_token) {
         try {
-            console.log("in saveAuthenticationToken function");
+
             await AsyncStorage.setItem("login_details", JSON.stringify({
                 'phone': this.props.mobileNumber,
                 'authentication_token': auth_token
             }));
-            console.log("Saved the authentication_token");
+            
         }
         catch (error) {
             utility.showAlertWithOK(Strings.ERROR_STORING_AUTH_TOKEN, Strings.ERROR_STORING_AUTH_TOKEN_MSG);  
@@ -102,10 +102,10 @@ var OTPVerificationPage = React.createClass({
             this.setState({spinnerVisible: false});
 
             if (responseJson.status === "success") {
-                Utility.showAlertWithOK("Success", "OTP resent to the mobile number");
+                utility.showAlertWithOK(Strings.SUCCESS, Strings.OTP_RESENT);
             }
             else  {
-                Utility.showAlertWithOK(Strings.OTP_LOGIN_REQUEST_FAILED, Strings.OTP_LOGIN_REQUEST_FAILED_MSG);    
+                utility.showAlertWithOK(Strings.OTP_LOGIN_REQUEST_FAILED, Strings.OTP_LOGIN_REQUEST_FAILED_MSG);    
             }
 
         })

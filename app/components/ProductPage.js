@@ -28,11 +28,12 @@ var ProductPage = React.createClass({
             return;
         }
 
-        if ( !this.props.product  ) {
+        if ( !this.props.product_id  ) {
             utility.showAlertWithOK("Error", "No product details");
             return;
         }
 
+        /*
         productDetails= {
             'id': this.props.product.id,
             'name': this.props.product.name,
@@ -44,30 +45,25 @@ var ProductPage = React.createClass({
             'price': this.props.product.selling_price,
             'available': this.props.product.available,
             'liked': this.props.product.liked,
-            'wished': this.props.product.wished
+            'wishlisted': this.props.product.wishlisted
         }
-        return {product: productDetails, spinnerVisible:false, shareSpinnerVisible: false}
+        */
+        return {product: null, spinnerVisible:false, shareSpinnerVisible: false}
     },
 
     componentDidMount() {
 
-        /*
+        
         if ( !this.props.phone || !this.props.authentication_token ) {
             utility.showAlertWithOK(Strings.NO_LOGIN_DETAILS, Strings.NO_LOGIN_DETAILS_MSG);
             return;
         }
 
-      // TODO: Only for testing !!
-      if ( !this.props.productId ) {
-        url = URL.API_URL.PRODUCT_DETAILS_URL + "1?"+
+      
+        url = URL.API_URL.PRODUCT_DETAILS_URL + this.props.product_id + "?"+
         "phone="+this.props.phone+
         "&authentication_token="+this.props.authentication_token;
-      }
-      else {
-        url = URL.API_URL.PRODUCT_DETAILS_URL + this.props.productId + "?"+
-        "phone="+this.props.phone+
-        "&authentication_token="+this.props.authentication_token;
-      }
+      
 
       this.setState({spinnerVisible: true});
 
@@ -81,18 +77,7 @@ var ProductPage = React.createClass({
 
         if (responseJson.status === "success") {
           this.setState({
-            product: {
-              'name': responseJson.name,
-              'description': responseJson.description,
-              'images': responseJson.images,
-              'seller_name': responseJson.seller_name,
-              'seller_id': responseJson.seller_id,
-              'code': responseJson.universal_code,
-              'price': responseJson.selling_price,
-              'available': responseJson.available,
-              'liked': false,
-              'wished': false
-            },
+            product: responseJson.product,
             dataAvailable: true
           })
         }
@@ -106,9 +91,8 @@ var ProductPage = React.createClass({
         utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         //utility.showAlertWithOK(Strings.REQUEST_FAILED, Strings.REQUEST_FAILED_MSG);
       });
-
-        */
     },
+
     unlikeFeedItem() {
         url = URL.API_URL.PRODUCT_ACTIONS_INITIAL_URL+this.state.product.id+"/unlike?"+
             "phone="+this.props.phone+"&"+
@@ -207,7 +191,9 @@ var ProductPage = React.createClass({
     },
 
     renderWishlistButton() {
-        if (this.state.product.wished) {
+        if (!this.state.product)
+          return;
+        if (this.state.product.wishlisted) {
             return (
                 <View style={styles.wishlistButtonContainer}>
                     <View style={styles.wishedProductButton}>
@@ -245,8 +231,9 @@ var ProductPage = React.createClass({
     },
 
     renderProductImages()  {
-      if ( !this.state.product.images )
+      if ( !this.state.product || !this.state.product.images )
         return;
+
       let imgView = this.state.product.images.map((a, i) => {
         return <View key={i} style={styles.productImageContainer}>
             <ImageProgress resizeMode={'contain'} style={styles.productImage} source={{uri : URL.IMAGES_BASE_URL+a.url}}/>
@@ -269,9 +256,11 @@ var ProductPage = React.createClass({
     },
 
     renderProductDetails() {
-      //if ( this.state.dataAvailable ) {
-      return (
+    
+      if (!this.state.product)
+        return;
 
+      return (
         <ScrollView>
 
           {this.renderProductImages()}
@@ -288,13 +277,29 @@ var ProductPage = React.createClass({
 
               <View style={styles.subsectionContainer}>
                   <Text style={styles.subsectionHeading}>Code</Text>
-                  <Text style={styles.subsectionContent}>{this.state.product.code}</Text>
+                  <Text style={styles.subsectionContent}>{this.state.product.universal_code}</Text>
               </View>
           </View>
 
         </ScrollView>
         )
-      //}
+      
+    },
+
+    renderProductActionsFooter() {
+
+      if ( !this.state.product )
+        return;
+
+      return (
+      <View style={styles.footer}>
+          {this.renderLikeButton()}
+          {this.renderShareButton(this.state.product.images[0],this.state.product.name)}
+          <View style={styles.priceText}>
+              <Text>&#8377;{this.state.product.selling_price}</Text>
+          </View>
+        </View>
+        );
     },
 
     render(){
@@ -313,18 +318,10 @@ var ProductPage = React.createClass({
         <Spinner visible={this.state.spinnerVisible} />
         <Spinner visible={this.state.shareSpinnerVisible} />
                        
-        {this.renderProductDetails()}
-
-
-        
-        <View style={styles.footer}>
-          {this.renderLikeButton()}
-          {this.renderShareButton("",this.state.product.name)}
-          <View style={styles.priceText}>
-              <Text>&#8377;{this.state.product.price}</Text>
-          </View>
-        </View>
+        {this.renderProductDetails()}  
+        {this.renderProductActionsFooter()}
         {this.renderWishlistButton()}
+
 
       </View>
         );
@@ -381,7 +378,6 @@ const styles = StyleSheet.create({
     marginLeft: 16
   },
   subsectionHeading: {
-    fontFamily: 'HelveticaNeueLight',
     fontSize:12
   },
   subsectionContainer: {
@@ -394,7 +390,6 @@ const styles = StyleSheet.create({
   },
   descriptionContent: {
     color: 'black',
-    fontFamily:'HelveticaNeueLight',
     fontSize:12
   },
   footer: {

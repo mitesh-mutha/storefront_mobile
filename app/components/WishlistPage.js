@@ -1,21 +1,22 @@
 import React, {Component} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, ScrollView, ListView, Image, TouchableHighlight} from 'react-native';
 import {Actions} from "react-native-router-flux";
+import Footer from "./Footer";
 import Dimensions from 'Dimensions';
-var ImageProgress = require('react-native-image-progress');
 import Spinner from 'react-native-loading-spinner-overlay';
 import Share from "react-native-share";
 import utility from './../utilities';
 import Strings from './../strings';
 import URL from './../urls';
 
+var ImageProgress = require('react-native-image-progress');
 var RNFS = require('react-native-fs');
 var EntypoIcons = require('react-native-vector-icons/Entypo');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 
-var CATALOG_ITEMS = {};
+var WISHLISTED_ITEMS = {};
 
-var CatalogPage  = React.createClass({
+var WishlistPage  = React.createClass({
 
     getInitialState() {
         return ({
@@ -25,7 +26,7 @@ var CatalogPage  = React.createClass({
     },
 
     componentDidMount() {
-        url = URL.API_URL.SELLER_PRODUCTS_URL+"/"+this.props.seller_id+"/products?"+
+        url = URL.API_URL.CUSTOMER_WISHLISTED_PRODUCTS_URL+"?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token+"&"+
             "page=1";
@@ -39,16 +40,16 @@ var CatalogPage  = React.createClass({
         .then((responseJson) => {
             this.setState({spinnerVisible: false});
             if ( responseJson.status && responseJson.status === "success") {
-
-                CATALOG_ITEMS ={};
+                
+                WISHLISTED_ITEMS ={};
                 for (i=0;i<responseJson.products.length;i++) {
-                    CATALOG_ITEMS[responseJson.products[i].id] = responseJson.products[i];
+                    WISHLISTED_ITEMS[responseJson.products[i].id] = responseJson.products[i];
                 }
 
                 var ds = new ListView.DataSource({
                     rowHasChanged: (r1, r2) => r1 != r2
                 });
-                this.setState({ dataSource: ds.cloneWithRows(CATALOG_ITEMS) });
+                this.setState({ dataSource: ds.cloneWithRows(WISHLISTED_ITEMS) });
 
             }
             else if ( responseJson.status && responseJson.status === "Unauthenticated") {
@@ -62,7 +63,7 @@ var CatalogPage  = React.createClass({
     },
 
     likeFeedItem(itemid, itemtype) {
-        url = URL.API_URL.PRODUCT_ACTIONS_INITIAL_URL+itemid+"/like?"+
+        url = URL.API_URL.CUSTOMER_WISHLISTED_PRODUCTS_URL+"?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token;
 
@@ -72,11 +73,11 @@ var CatalogPage  = React.createClass({
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.status === 'success') {
-                CATALOG_ITEMS[itemid].liked = true;
+                WISHLISTED_ITEMS[itemid].liked = true;
                 var ds = new ListView.DataSource({
                     rowHasChanged: (r1, r2) => r1 != r2
                 });
-                this.setState({ dataSource: ds.cloneWithRows(CATALOG_ITEMS) });
+                this.setState({ dataSource: ds.cloneWithRows(WISHLISTED_ITEMS) });
             }
         })
         .catch((error) =>  {
@@ -97,11 +98,11 @@ var CatalogPage  = React.createClass({
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.status === 'success') {
-                CATALOG_ITEMS[itemid].liked = false;
+                WISHLISTED_ITEMS[itemid].liked = false;
                 var ds = new ListView.DataSource({
                     rowHasChanged: (r1, r2) => r1 != r2
                 });
-                this.setState({ dataSource: ds.cloneWithRows(CATALOG_ITEMS) });
+                this.setState({ dataSource: ds.cloneWithRows(WISHLISTED_ITEMS) });
             }
         })
         .catch((error) =>  {
@@ -306,9 +307,6 @@ var CatalogPage  = React.createClass({
             <View style={styles.container}>
 
                 <View style={styles.header}>
-                    <TouchableOpacity style={styles.appNameContainer} onPress={()=>Actions.pop()}>
-                        <MaterialIcons name="arrow-back" size={24} color={'black'} />
-                    </TouchableOpacity>
                     <View style={styles.appNameContainer}>
                         <Text style={styles.appName}>Storefront</Text>
                     </View>
@@ -320,6 +318,7 @@ var CatalogPage  = React.createClass({
                     {this.renderListView()}
                 </ScrollView>
 
+                <Footer page='wishlist' phone={this.props.phone} authentication_token={this.props.authentication_token} />
             </View>
         );
     }
@@ -397,4 +396,4 @@ const styles = StyleSheet.create({
     }
 });
 
-module.exports = CatalogPage;
+module.exports = WishlistPage;

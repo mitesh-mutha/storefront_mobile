@@ -37,7 +37,7 @@ var Footer = React.createClass({
           <Ionicons name="md-home" size={24} color={colorHome} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.footerItem}>
+        <TouchableOpacity style={styles.footerItem} onPress={()=>Actions.wishlistpage({'phone': this.props.phone, 'authentication_token': this.props.authentication_token})}>
           <MaterialIcons name="add-shopping-cart" size={24} color={colorWishlist} />
         </TouchableOpacity>
 
