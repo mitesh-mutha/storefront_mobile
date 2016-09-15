@@ -39,5 +39,23 @@ module.exports = {
         .catch((error) =>  {
         });
         return;
-    }
+    },
+    getSellerLogoUrl(name, logo){
+        if (!logo || logo === "") {
+            index = name.indexOf(' ');
+            if (index >= 0 && (index+1) < name.length ) {
+                initials =  name.charAt(0) + name.charAt(index+1);
+            }
+            else if ( name.length >= 2 ) {
+                initials = name.charAt(0)+name.charAt(1);
+            }
+            else {
+                initials = " ";
+            }
+            return "https://placeholdit.imgix.net/~text?txtsize=40&bg=000000&txtclr=ffffff&txt="+initials.toUpperCase()+"&w=68&h=68&txttrack=3&txtpad=3";
+        }
+        else {
+            return logo;
+        }
+    },
 }

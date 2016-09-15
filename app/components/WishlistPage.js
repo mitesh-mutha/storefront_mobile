@@ -263,7 +263,7 @@ var WishlistPage  = React.createClass({
 
     _renderRow(feeditem) {
         
-        seller_logo_url = this.getSellerLogoUrl(feeditem);
+        seller_logo_url = utility.getSellerLogoUrl(feeditem.seller.name, feeditem.seller.logo);
 
         //img_height = Math.ceil((Dimensions.get('window').width/feeditem.aspect_ratio));
         img_height = 450;

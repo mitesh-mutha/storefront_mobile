@@ -238,31 +238,11 @@ var CatalogPage  = React.createClass({
                 <MaterialIcons name="share" size={24} />
             </TouchableOpacity>
         )
-    },
-
-    getSellerLogoUrl(feeditem) {
-        if (!feeditem.seller.logo || feeditem.seller.logo === "") {
-            index = feeditem.seller.name.indexOf(' ');
-            if (index >= 0 && (index+1) < feeditem.seller.name.length ) {
-                initials =  feeditem.seller.name.charAt(0) + feeditem.seller.name.charAt(index+1);
-            }
-            else if ( feeditem.seller.name.length >= 2 ) {
-                initials = feeditem.seller.name.charAt(0)+feeditem.seller.name.charAt(1);
-            }
-            else {
-                initials = " ";
-            }
-            return "https://placeholdit.imgix.net/~text?txtsize=16&bg=000000&txtclr=ffffff&txt="+initials+"&w=32&h=32&txttrack=0&txtpad=1";
-        }
-        else {
-            return feeditem.seller.logo;
-        }
-    },
-    
+    },   
 
     _renderRow(feeditem) {
-        
-        seller_logo_url = this.getSellerLogoUrl(feeditem);
+
+        seller_logo_url = utility.getSellerLogoUrl(feeditem.seller.name, feeditem.seller.logo);
 
         //img_height = Math.ceil((Dimensions.get('window').width/feeditem.aspect_ratio));
         img_height = 450;
