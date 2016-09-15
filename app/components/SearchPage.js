@@ -21,8 +21,12 @@ var SearchPage  = React.createClass({
     }
   },
 
-  followSeller(id){
+  componentDidMount() {
+    this.fetchSearchResults("");
+  },
 
+  followSeller(id){
+    
   },
 
   unfollowSeller(id) {
@@ -90,20 +94,11 @@ var SearchPage  = React.createClass({
     this.setState({ dataSource: ds.cloneWithRows(SEARCH_ITEM) });
   },
 
-  onSearchTextChange(text) {
-    this.setState({searchString: text});
-
-    if (text === "" ) {
-      SEARCH_ITEM = {};
-      this.updateListDataSource();
-      return;
-    }
-      
-
+  fetchSearchResults(searchText) {
     url = URL.API_URL.SELLER_SEARCH_URL+"?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token+"&"+
-            "q="+text;
+            "q="+searchText;
 
         this.setState({spinnerVisible: true});
 
@@ -133,7 +128,11 @@ var SearchPage  = React.createClass({
             this.refs.SearchInput.focus();
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+  },
 
+  onSearchTextChange(text) {
+    this.setState({searchString: text});
+    this.fetchSearchResults(text);
   },
 
   render(){
