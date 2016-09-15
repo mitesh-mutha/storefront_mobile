@@ -32,22 +32,6 @@ var ProductPage = React.createClass({
             utility.showAlertWithOK("Error", "No product details");
             return;
         }
-
-        /*
-        productDetails= {
-            'id': this.props.product.id,
-            'name': this.props.product.name,
-            'description': this.props.product.description,
-            'images': this.props.product.images,
-            'seller_name': this.props.product.seller.name,
-            'seller_id': this.props.product.seller.id,
-            'code': this.props.product.universal_code,
-            'price': this.props.product.selling_price,
-            'available': this.props.product.available,
-            'liked': this.props.product.liked,
-            'wishlisted': this.props.product.wishlisted
-        }
-        */
         return {product: null, spinnerVisible:false, shareSpinnerVisible: false}
     },
 
@@ -76,8 +60,9 @@ var ProductPage = React.createClass({
         this.setState({spinnerVisible: false});
 
         if (responseJson.status === "success") {
+          productDetails = responseJson.product;
           this.setState({
-            product: responseJson.product,
+            product: productDetails,
             dataAvailable: true
           })
         }
@@ -144,11 +129,13 @@ var ProductPage = React.createClass({
       console.log("progress is "+response.bytesWritten+"/"+response.contentLength); 
     },
 
-    onShare(imgLink, imgText) {
+    onShare(itemtype, itemid, imgLink, imgText) {
+        utility.informServerAboutShare(itemid, itemtype, this.props.phone, this.props.authentication_token);
+
         if (!imgLink) {
             Share.open({
                 share_text: imgText,
-                share_URL: "http://storefront.com",
+                share_URL: "http://storefrontindia.com",
                 title: "Share Product"
             },(e) => {
                 console.log(e);
@@ -156,7 +143,7 @@ var ProductPage = React.createClass({
             return;
         }
 
-        this.setState({shareSpinnerVisible: true});
+        this.setState({shareSpinnerVisible: true});               
 
         RNFS.downloadFile({
             fromUrl: imgLink,
@@ -168,7 +155,7 @@ var ProductPage = React.createClass({
             this.setState({shareSpinnerVisible: false});
             Share.open({
                 share_text: imgText+". Find more products on Storefront.",
-                share_URL: "http://storefront.com",
+                share_URL: "http://storefrontindia.com",
                 share_image_path: RNFS.ExternalDirectoryPath+"/share_image.jpg",
                 title: "Share Product"
             },(e) => {
@@ -182,12 +169,54 @@ var ProductPage = React.createClass({
         });
     },
 
-    renderShareButton(shareImageLink, shareImageText) {
+    renderShareButton(itemtype, itemid, shareImageLink, shareImageText) {
       return (
-          <TouchableOpacity style={styles.actionButtonWithRightBorderStyle} onPress={() => this.onShare(shareImageLink, shareImageText)}>
+          <TouchableOpacity style={styles.actionButtonWithRightBorderStyle} onPress={() => this.onShare(itemtype, itemid, shareImageLink, shareImageText)}>
             <Text style={styles.actionTextStyle}><MaterialIcons name="share" size={24} /></Text>
           </TouchableOpacity>
         )
+    },
+
+    wishlistProduct(itemid) {
+        url = URL.API_URL.PRODUCT_ACTIONS_INITIAL_URL+itemid+"/wishlist?"+
+            "phone="+this.props.phone+"&"+
+            "authentication_token="+this.props.authentication_token;
+
+        fetch(url,{
+            method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            if (responseJson.status === 'success') {
+                productDetails.wishlisted = true;
+                this.setState({ product: productDetails });
+            }
+        })
+        .catch((error) =>  {
+            utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+        });
+        return;
+    },
+
+    unwishlistProduct(itemid) {
+        url = URL.API_URL.PRODUCT_ACTIONS_INITIAL_URL+itemid+"/unwishlist?"+
+            "phone="+this.props.phone+"&"+
+            "authentication_token="+this.props.authentication_token;
+
+        fetch(url,{
+            method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            if (responseJson.status === 'success') {
+                productDetails.wishlisted = false;
+                this.setState({ product: productDetails });
+            }
+        })
+        .catch((error) =>  {
+            utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+        });
+        return;
     },
 
     renderWishlistButton() {
@@ -196,18 +225,18 @@ var ProductPage = React.createClass({
         if (this.state.product.wishlisted) {
             return (
                 <View style={styles.wishlistButtonContainer}>
-                    <View style={styles.wishedProductButton}>
-                        <Text style={styles.wishedButtonLabel}><MaterialIcons name="add-shopping-cart" size={24} color='white' /></Text>
-                    </View>
+                    <TouchableOpacity style={styles.wishedProductButton} onPress={()=>this.unwishlistProduct(this.state.product.id)}>
+                              <Text style={styles.wishedButtonLabel}><MaterialIcons name="remove-shopping-cart" size={24} color='white' /></Text>
+                    </TouchableOpacity>
                 </View>
             )
         }
         else {
             return (
                 <View style={styles.wishlistButtonContainer}>
-                    <View style={styles.notWishedProductButton}>
+                    <TouchableOpacity style={styles.notWishedProductButton} onPress={()=>this.wishlistProduct(this.state.product.id)}>
                         <Text style={styles.notWishedButtonLabel}><MaterialIcons name="add-shopping-cart" size={24} color='white' /></Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>
             )
         }
@@ -294,7 +323,7 @@ var ProductPage = React.createClass({
       return (
       <View style={styles.footer}>
           {this.renderLikeButton()}
-          {this.renderShareButton(this.state.product.images[0],this.state.product.name)}
+          {this.renderShareButton("product", this.state.product.id, this.state.product.images[0],this.state.product.name)}
           <View style={styles.priceText}>
               <Text>&#8377;{this.state.product.selling_price}</Text>
           </View>

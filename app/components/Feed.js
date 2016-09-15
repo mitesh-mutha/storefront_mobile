@@ -197,31 +197,12 @@ var Feed = React.createClass({
         }
     },
 
-    informServerAboutShare(itemid, itemtype) {
-        if ( itemtype === 'product' ) {
-            url = URL.API_URL.PRODUCT_ACTIONS_INITIAL_URL+itemid+"/share?"+
-                "phone="+this.props.phone+"&"+
-                "authentication_token="+this.props.authentication_token;
-        }
-        else {
-            url = URL.API_URL.POST_ACTIONS_INITIAL_URL+itemid+"/share?"+
-                "phone="+this.props.phone+"&"+
-                "authentication_token="+this.props.authentication_token;   
-        }
-
-        fetch(url,{
-            method: 'POST'
-        })
-        .then((response) => {})
-        .catch((error) =>  {
-        });
-        return;
-    },
-
     uploadProgress(response) {
     },
 
     onShare(itemtype, itemid, imgLink, imgText) {
+        utility.informServerAboutShare(itemid, itemtype, this.props.phone, this.props.authentication_token);
+
         if (!imgLink) {
             Share.open({
                 share_text: imgText,
@@ -233,10 +214,7 @@ var Feed = React.createClass({
             return;
         }
 
-        this.setState({shareSpinnerVisible: true});
-
-        
-        this.informServerAboutShare(itemid, itemtype);       
+        this.setState({shareSpinnerVisible: true});               
 
         RNFS.downloadFile({
             fromUrl: imgLink,
@@ -305,6 +283,7 @@ var Feed = React.createClass({
             else {
                 initials = " ";
             }
+            initials = initials.toUpperCase();
             return "https://placeholdit.imgix.net/~text?txtsize=16&bg=000000&txtclr=ffffff&txt="+initials+"&w=32&h=32&txttrack=0&txtpad=1";
         }
         else {

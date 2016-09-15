@@ -110,11 +110,13 @@ var CatalogPage  = React.createClass({
         return;
     },
 
-    onShare(imgLink, imgText) {
+    onShare(itemtype, itemid, imgLink, imgText) {
+        utility.informServerAboutShare(itemid, itemtype, this.props.phone, this.props.authentication_token);
+
         if (!imgLink) {
             Share.open({
                 share_text: imgText,
-                share_URL: "http://storefront.com",
+                share_URL: "http://storefrontindia.com",
                 title: "Share Product"
             },(e) => {
                 console.log(e);
@@ -122,7 +124,7 @@ var CatalogPage  = React.createClass({
             return;
         }
 
-        this.setState({shareSpinnerVisible: true});
+        this.setState({shareSpinnerVisible: true});               
 
         RNFS.downloadFile({
             fromUrl: imgLink,
@@ -134,7 +136,7 @@ var CatalogPage  = React.createClass({
             this.setState({shareSpinnerVisible: false});
             Share.open({
                 share_text: imgText+". Find more products on Storefront.",
-                share_URL: "http://storefront.com",
+                share_URL: "http://storefrontindia.com",
                 share_image_path: RNFS.ExternalDirectoryPath+"/share_image.jpg",
                 title: "Share Product"
             },(e) => {
@@ -230,31 +232,37 @@ var CatalogPage  = React.createClass({
         }
     },
 
-    renderShareButton(shareImageLink, shareImageText) {
+    renderShareButton(itemtype, itemid, shareImageLink, shareImageText) {
         return (
-            <TouchableOpacity style={styles.actionButton} onPress={() => this.onShare(shareImageLink, shareImageText)}>
+            <TouchableOpacity style={styles.actionButton} onPress={() => this.onShare(itemtype, itemid, shareImageLink, shareImageText)}>
                 <MaterialIcons name="share" size={24} />
             </TouchableOpacity>
         )
     },
 
-    _renderRow(feeditem) {
+    getSellerLogoUrl(feeditem) {
         if (!feeditem.seller.logo || feeditem.seller.logo === "") {
             index = feeditem.seller.name.indexOf(' ');
             if (index >= 0 && (index+1) < feeditem.seller.name.length ) {
                 initials =  feeditem.seller.name.charAt(0) + feeditem.seller.name.charAt(index+1);
             }
             else if ( feeditem.seller.name.length >= 2 ) {
-                initials = feeditem.seller.name.charAt(0)+feeditem.seller.name.charAt(1)
+                initials = feeditem.seller.name.charAt(0)+feeditem.seller.name.charAt(1);
             }
             else {
-                initials = " "
+                initials = " ";
             }
-            seller_logo_url = "https://placeholdit.imgix.net/~text?txtsize=16&bg=000000&txtclr=ffffff&txt="+initials+"&w=32&h=32&txttrack=0&txtpad=1"
+            return "https://placeholdit.imgix.net/~text?txtsize=16&bg=000000&txtclr=ffffff&txt="+initials+"&w=32&h=32&txttrack=0&txtpad=1";
         }
         else {
-            seller_logo_url = feeditem.seller.logo
+            return feeditem.seller.logo;
         }
+    },
+    
+
+    _renderRow(feeditem) {
+        
+        seller_logo_url = this.getSellerLogoUrl(feeditem);
 
         //img_height = Math.ceil((Dimensions.get('window').width/feeditem.aspect_ratio));
         img_height = 450;

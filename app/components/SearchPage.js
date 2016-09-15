@@ -46,7 +46,28 @@ var SearchPage  = React.createClass({
     }
   },
 
+  getSellerLogoURL(resultItem){
+    if (!resultItem.logo || resultItem.logo === "") {
+        index = resultItem.name.indexOf(' ');
+        if (index >= 0 && (index+1) < resultItem.name.length ) {
+            initials =  resultItem.name.charAt(0) + resultItem.name.charAt(index+1);
+        }
+        else if ( resultItem.name.length >= 2 ) {
+            initials = resultItem.name.charAt(0)+resultItem.name.charAt(1);
+        }
+        else {
+            initials = " ";
+        }
+        return "https://placeholdit.imgix.net/~text?txtsize=40&bg=000000&txtclr=ffffff&txt="+initials.toUpperCase()+"&w=68&h=68&txttrack=3&txtpad=3";
+    }
+    else {
+        return resultItem.logo;
+    }
+  },
+
   _renderRow(resultItem)  {
+    seller_logo_url = this.getSellerLogoURL(resultItem);
+
     return (
       <TouchableOpacity style={styles.followItem} onPress={()=>Actions.vendorpage({
             'seller_id': resultItem.id,
@@ -55,7 +76,7 @@ var SearchPage  = React.createClass({
         })}>
         <View style={styles.sellerContainer}>
           <ImageProgress style={styles.sellerAvatar} 
-            source={{uri: resultItem.logo}} />
+            source={{uri: seller_logo_url}} />
 
           <View style={styles.detailContainer}>
             <Text style={styles.sellerName}>{resultItem.name}</Text>

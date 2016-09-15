@@ -29,5 +29,6 @@ const AVATAR_URL = {
 module.exports = {
   API_BASE_URL,
   API_URL,
-  IMAGES_BASE_URL
+  IMAGES_BASE_URL,
+  AVATAR_URL
 }
