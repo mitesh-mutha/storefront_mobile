@@ -91,7 +91,7 @@ var SearchPage  = React.createClass({
   },
 
   onSearchTextChange(text) {
-    this.setState({searchString: text})
+    this.setState({searchString: text});
 
     if (text === "" ) {
       SEARCH_ITEM = {};
@@ -103,7 +103,7 @@ var SearchPage  = React.createClass({
     url = URL.API_URL.SELLER_SEARCH_URL+"?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token+"&"+
-            "q="+this.state.searchString;
+            "q="+text;
 
         this.setState({spinnerVisible: true});
 
