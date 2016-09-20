@@ -60,19 +60,21 @@ var FollowPage = React.createClass({
         });
     },
 
+    
+
     renderFollowButton(id, isFollowing) {
         if (isFollowing) {
             return (
-                <View style={styles.followingButtonContainer}>
+                <TouchableOpacity style={styles.followingButtonContainer} onPress={()=>this.unfollowSeller(id)}>
                     <Text style={styles.followingText}>Following</Text>
-                </View>
+                </TouchableOpacity>
             )
         }
         else {
             return (
-                <View style={styles.notFollowingButtonContainer}>
+                <TouchableOpacity style={styles.notFollowingButtonContainer} onPress={()=>this.followSeller(id)}>
                     <Text style={styles.notFollowingText}>Follow</Text>
-                </View>
+                </TouchableOpacity>
             )
         }
     },

@@ -13,27 +13,83 @@ var Ionicons = require('react-native-vector-icons/Ionicons');
 var SEARCH_ITEM ={};
 
 var SearchPage  = React.createClass({
-  getInitialState() {        
-    return {
-      dataSource: null,
-      searchString: "",
-      spinnerVisible: false
-    }
-  },
+    getInitialState() {        
+        return {
+            dataSource: null,
+            searchString: "",
+            spinnerVisible: false
+        }
+    },
 
-  componentDidMount() {
-    this.fetchSearchResults("");
-  },
+    componentDidMount() {
+        this.fetchSearchResults("");
+    },
 
-  followSeller(id){
-    
-  },
+    followSeller(id){
+        url = URL.API_URL.SELLER_ACTIONS_INTIAL_URL + id + "/follow?"+
+            "phone="+this.props.phone+"&"+
+            "authentication_token="+this.props.authentication_token;
 
-  unfollowSeller(id) {
+        this.setState({spinnerVisible: true}); 
 
-  },
+        fetch(url,{
+            method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
 
-  renderFollowButton(id, isFollowing) {
+            this.setState({spinnerVisible: false});
+
+            if (responseJson.status === "success") {
+                productDetails = responseJson.product;
+                this.setState({
+                    product: productDetails,
+                    dataAvailable: true
+                })
+            }
+            else if (responseJson.status === "Error") {
+                utility.showAlertWithOK(Strings.NO_PRODUCT_DETAILS, Strings.NO_PRODUCT_DETAILS_MSG);
+            }
+        })
+        .catch((error) =>  {
+            this.setState({spinnerVisible: false});
+            utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+        });
+    },
+
+    unfollowSeller(id) {
+        url = URL.API_URL.SELLER_ACTIONS_INTIAL_URL + id + "/unfollow?"+
+            "phone="+this.props.phone+"&"+
+            "authentication_token="+this.props.authentication_token;
+
+        this.setState({spinnerVisible: true}); 
+        
+        fetch(url,{
+            method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+
+            this.setState({spinnerVisible: false});
+
+            if (responseJson.status === "success") {
+                productDetails = responseJson.product;
+                this.setState({
+                    product: productDetails,
+                    dataAvailable: true
+                })
+            }
+            else if (responseJson.status === "Error") {
+                utility.showAlertWithOK(Strings.NO_PRODUCT_DETAILS, Strings.NO_PRODUCT_DETAILS_MSG);
+            }
+        })
+        .catch((error) =>  {
+            this.setState({spinnerVisible: false});
+            utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+        });
+    },
+
+    renderFollowButton(id, isFollowing) {
     if (isFollowing) {
       return (
         <TouchableOpacity style={styles.followingButtonContainer} onPress={()=>this.unfollowSeller(id)}>

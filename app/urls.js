@@ -18,6 +18,7 @@ const API_URL= {
   CUSTOMER_SELLERS_URL: API_BASE_URL + "customer/sellers",
   CUSTOMER_DETAILS_URL: API_BASE_URL + "customer",
   POST_ACTIONS_INITIAL_URL: API_BASE_URL + "product/",
+  SELLER_ACTIONS_INITIAL_URL: API_BASE_URL + "seller/"
 }
 
 const AVATAR_URL = {
