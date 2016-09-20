@@ -20,7 +20,9 @@ var CatalogPage  = React.createClass({
     getInitialState() {
         return ({
             dataSource: null,
-            spinnerVisible: false
+            spinnerVisible: false,
+            pageNumber: 1,
+            appendingInProcess: false
         });
     },
 
@@ -28,7 +30,7 @@ var CatalogPage  = React.createClass({
         url = URL.API_URL.SELLER_PRODUCTS_URL+"/"+this.props.seller_id+"/products?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token+"&"+
-            "page=1";
+            "page="+this.state.pageNumber;
 
         this.setState({spinnerVisible: true});
 
@@ -161,11 +163,11 @@ var CatalogPage  = React.createClass({
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.status === 'success') {
-                FEED_PRODUCT_ITEMS[itemid].wishlisted = true;
+                CATALOG_ITEMS[itemid].wishlisted = true;
                 var ds = new ListView.DataSource({
                     rowHasChanged: (r1, r2) => r1 != r2
                 });
-                this.setState({ dataSource: ds.cloneWithRows(FEED_PRODUCT_ITEMS) });
+                this.setState({ dataSource: ds.cloneWithRows(CATALOG_ITEMS) });
             }
         })
         .catch((error) =>  {
@@ -185,11 +187,11 @@ var CatalogPage  = React.createClass({
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.status === 'success') {
-                FEED_PRODUCT_ITEMS[itemid].wishlisted = false;
+                CATALOG_ITEMS[itemid].wishlisted = false;
                 var ds = new ListView.DataSource({
                     rowHasChanged: (r1, r2) => r1 != r2
                 });
-                this.setState({ dataSource: ds.cloneWithRows(FEED_PRODUCT_ITEMS) });
+                this.setState({ dataSource: ds.cloneWithRows(CATALOG_ITEMS) });
             }
         })
         .catch((error) =>  {
@@ -253,14 +255,14 @@ var CatalogPage  = React.createClass({
                 <View style={styles.sellerContainer}>
                     <Image style={styles.sellerAvatar} source={{uri: seller_logo_url}}/>
                     <View style={styles.detailContainer}>
-                        <Text style={styles.sellerName}>{feeditem.seller.name}</Text>
+                        <Text style={styles.sellerName}>{feeditem.seller.name} {this.state.pageNumber}</Text>
                         <Text style={styles.productName}>{feeditem.name}</Text>
                     </View>
                 </View>
 
                 <TouchableHighlight style={{alignItems:'center', alignSelf: 'center'}} 
                     onPress={()=>Actions.productpage({
-                        'product': feeditem,
+                        'product_id': feeditem.id,
                         'phone': this.props.phone,
                         'authentication_token': this.props.authentication_token})}>
                     <ImageProgress source={{uri : URL.IMAGES_BASE_URL+feeditem.images[0].url}} 
@@ -276,12 +278,63 @@ var CatalogPage  = React.createClass({
         )
     },
 
+    appendDataToList() {
+        if (!this.state.appendingInProcess) {
+            this.setState({appendingInProcess: true});
+            currentPage = this.state.pageNumber + 1;
+            url = URL.API_URL.SELLER_PRODUCTS_URL+"/"+this.props.seller_id+"/products?"+
+                "phone="+this.props.phone+"&"+
+                "authentication_token="+this.props.authentication_token+"&"+
+                "page="+currentPage;
+
+            //this.setState({spinnerVisible: true});
+
+            fetch(url,{
+                method: 'GET'
+            })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                //this.setState({spinnerVisible: false});
+                if ( responseJson.status && responseJson.status === "success") {
+
+                    if (responseJson.products.length != 0) {
+                        for (i=0;i<responseJson.products.length;i++) {
+                            CATALOG_ITEMS[responseJson.products[i].id] = responseJson.products[i];
+                        }
+
+                        var ds = new ListView.DataSource({
+                            rowHasChanged: (r1, r2) => r1 != r2
+                        });
+                        this.setState({ dataSource: ds.cloneWithRows(CATALOG_ITEMS), pageNumber: currentPage });
+                    }     
+
+                }
+                else if ( responseJson.status && responseJson.status === "Unauthenticated") {
+                    utility.showAlertWithOK("Error", "Unauthenticated");
+                }
+                this.setState({appendingInProcess: false});
+            })
+            .catch((error) =>  {
+                //this.setState({spinnerVisible: false});
+                utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+                this.setState({appendingInProcess: false});
+            });
+        }
+    },
+
+    _onEndReached() {
+        this.appendDataToList();
+    },
+
     renderListView() {
         if (this.state.dataSource !== null) {
             return(
                 <ListView
+                    style={{flex:1}}
                     dataSource = {this.state.dataSource}
-                    renderRow = {this._renderRow} />
+                    renderRow = {this._renderRow}
+                    onEndReached = {this._onEndReached}
+                    onEndReachedThreshold = {1500}/>
                 );
             }
         else {
@@ -304,10 +357,7 @@ var CatalogPage  = React.createClass({
 
                 <Spinner visible={this.state.spinnerVisible} />
                 
-                <ScrollView>
-                    {this.renderListView()}
-                </ScrollView>
-
+                {this.renderListView()}
             </View>
         );
     }
