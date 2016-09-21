@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, ScrollView, ListView, Image, TouchableHighlight} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, ScrollView, ListView, Image, TouchableHighlight, ActivityIndicator} from 'react-native';
 import {Actions} from "react-native-router-flux";
 import Dimensions from 'Dimensions';
 var ImageProgress = require('react-native-image-progress');
@@ -13,7 +13,8 @@ var RNFS = require('react-native-fs');
 var EntypoIcons = require('react-native-vector-icons/Entypo');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 
-var CATALOG_ITEMS = {};
+var CATALOG_ITEMS = [];
+var CATALOG_ITEMS_MAPPING = {};
 
 var CatalogPage  = React.createClass({
 
@@ -24,6 +25,14 @@ var CatalogPage  = React.createClass({
             pageNumber: 1,
             appendingInProcess: false
         });
+    },
+
+    updateListDataSource() {
+        var ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 != r2
+        });
+        this.setState({ dataSource: ds.cloneWithRows([]) });
+        this.setState({ dataSource: ds.cloneWithRows(CATALOG_ITEMS) });
     },
 
     componentDidMount() {
@@ -42,16 +51,14 @@ var CatalogPage  = React.createClass({
             this.setState({spinnerVisible: false});
             if ( responseJson.status && responseJson.status === "success") {
 
-                CATALOG_ITEMS ={};
+                CATALOG_ITEMS =[];
+                CATALOG_ITEMS_MAPPING = {};
                 for (i=0;i<responseJson.products.length;i++) {
-                    CATALOG_ITEMS[responseJson.products[i].id] = responseJson.products[i];
+                    CATALOG_ITEMS[i] = responseJson.products[i];
+                    CATALOG_ITEMS_MAPPING[responseJson.products[i].id] = i;
                 }
 
-                var ds = new ListView.DataSource({
-                    rowHasChanged: (r1, r2) => r1 != r2
-                });
-                this.setState({ dataSource: ds.cloneWithRows(CATALOG_ITEMS) });
-
+                this.updateListDataSource();
             }
             else if ( responseJson.status && responseJson.status === "Unauthenticated") {
                 utility.showAlertWithOK("Error", "Unauthenticated");
@@ -74,11 +81,8 @@ var CatalogPage  = React.createClass({
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.status === 'success') {
-                CATALOG_ITEMS[itemid].liked = true;
-                var ds = new ListView.DataSource({
-                    rowHasChanged: (r1, r2) => r1 != r2
-                });
-                this.setState({ dataSource: ds.cloneWithRows(CATALOG_ITEMS) });
+                CATALOG_ITEMS[CATALOG_ITEMS_MAPPING[itemid]].liked = true;
+                this.updateListDataSource();
             }
         })
         .catch((error) =>  {
@@ -99,11 +103,8 @@ var CatalogPage  = React.createClass({
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.status === 'success') {
-                CATALOG_ITEMS[itemid].liked = false;
-                var ds = new ListView.DataSource({
-                    rowHasChanged: (r1, r2) => r1 != r2
-                });
-                this.setState({ dataSource: ds.cloneWithRows(CATALOG_ITEMS) });
+                CATALOG_ITEMS[CATALOG_ITEMS_MAPPING[itemid]].liked = false;
+                this.updateListDataSource();
             }
         })
         .catch((error) =>  {
@@ -163,11 +164,8 @@ var CatalogPage  = React.createClass({
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.status === 'success') {
-                CATALOG_ITEMS[itemid].wishlisted = true;
-                var ds = new ListView.DataSource({
-                    rowHasChanged: (r1, r2) => r1 != r2
-                });
-                this.setState({ dataSource: ds.cloneWithRows(CATALOG_ITEMS) });
+                CATALOG_ITEMS[CATALOG_ITEMS_MAPPING[itemid]].wishlisted = true;
+                this.updateListDataSource();
             }
         })
         .catch((error) =>  {
@@ -187,11 +185,8 @@ var CatalogPage  = React.createClass({
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.status === 'success') {
-                CATALOG_ITEMS[itemid].wishlisted = false;
-                var ds = new ListView.DataSource({
-                    rowHasChanged: (r1, r2) => r1 != r2
-                });
-                this.setState({ dataSource: ds.cloneWithRows(CATALOG_ITEMS) });
+                CATALOG_ITEMS[CATALOG_ITEMS_MAPPING[itemid]].wishlisted = false;
+                this.updateListDataSource();
             }
         })
         .catch((error) =>  {
@@ -298,14 +293,19 @@ var CatalogPage  = React.createClass({
                 if ( responseJson.status && responseJson.status === "success") {
 
                     if (responseJson.products.length != 0) {
+                        orig_items_length = CATALOG_ITEMS.length;
                         for (i=0;i<responseJson.products.length;i++) {
-                            CATALOG_ITEMS[responseJson.products[i].id] = responseJson.products[i];
-                        }
 
-                        var ds = new ListView.DataSource({
-                            rowHasChanged: (r1, r2) => r1 != r2
-                        });
-                        this.setState({ dataSource: ds.cloneWithRows(CATALOG_ITEMS), pageNumber: currentPage });
+                            if ( responseJson.products[i].id in CATALOG_ITEMS_MAPPING ) {
+                                CATALOG_ITEMS[CATALOG_ITEMS_MAPPING[responseJson.products[i].id]] = responseJson.products[i];
+                            }
+                            else {
+                                CATALOG_ITEMS[(orig_items_length+i)] = responseJson.products[i];
+                                CATALOG_ITEMS_MAPPING[responseJson.products[i].id] = (orig_items_length+i);    
+                            }                            
+                        }
+                        this.updateListDataSource();
+                        this.setState({pageNumber: currentPage});
                     }     
 
                 }
@@ -342,6 +342,22 @@ var CatalogPage  = React.createClass({
         }
     },
 
+    renderLoadingMessage() {
+        if (this.state.appendingInProcess) {
+            return ( 
+                <View style={{flex: 1, alignItems: 'flex-end'}}>
+                    <ActivityIndicator
+                        animating={true}
+                        style={{height: 40, justifyContent: 'center', flex: 1}}
+                        size="large" />
+                </View>
+            );
+        }
+        else {
+            return;
+        }
+    },
+
     render(){
         return (
             <View style={styles.container}>
@@ -353,6 +369,7 @@ var CatalogPage  = React.createClass({
                     <View style={styles.appNameContainer}>
                         <Text style={styles.appName}>Storefront</Text>
                     </View>
+                    {this.renderLoadingMessage()}
                 </View>
 
                 <Spinner visible={this.state.spinnerVisible} />
@@ -417,7 +434,7 @@ const styles = StyleSheet.create({
     feedImageStyle: {
         flex: 1,
         width: Dimensions.get('window').width,
-            height: 300,
+        height: 300,
         alignSelf: 'center',
         resizeMode: 'contain'
     },    
@@ -432,6 +449,11 @@ const styles = StyleSheet.create({
     },
     actionButton: {
         padding: 8
+    },
+    loadingDataContainer: {
+        alignItems: 'center',
+        marginLeft: 8,
+        marginRight: 8
     }
 });
 
