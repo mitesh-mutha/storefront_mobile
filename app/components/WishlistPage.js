@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, ScrollView, ListView, Image, TouchableHighlight} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, ScrollView, ListView, Image, TouchableHighlight, ActivityIndicator} from 'react-native';
 import {Actions} from "react-native-router-flux";
 import Footer from "./Footer";
 import Dimensions from 'Dimensions';
@@ -14,22 +14,33 @@ var RNFS = require('react-native-fs');
 var EntypoIcons = require('react-native-vector-icons/Entypo');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 
-var WISHLISTED_ITEMS = {};
+var WISHLISTED_ITEMS = [];
+var WISHLISTED_ITEMS_MAPPING = {};
 
 var WishlistPage  = React.createClass({
 
     getInitialState() {
         return ({
             dataSource: null,
-            spinnerVisible: false
+            spinnerVisible: false,
+            pageNumber: 1,
+            appendingInProcess: false
         });
+    },
+
+    updateListDataSource() {
+        var ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 != r2
+        });
+        this.setState({ dataSource: ds.cloneWithRows([]) });
+        this.setState({ dataSource: ds.cloneWithRows(WISHLISTED_ITEMS) });
     },
 
     componentDidMount() {
         url = URL.API_URL.CUSTOMER_WISHLISTED_PRODUCTS_URL+"?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token+"&"+
-            "page=1";
+            "page="+this.state.pageNumber;
 
         this.setState({spinnerVisible: true});
 
@@ -41,16 +52,14 @@ var WishlistPage  = React.createClass({
             this.setState({spinnerVisible: false});
             if ( responseJson.status && responseJson.status === "success") {
                 
-                WISHLISTED_ITEMS ={};
+		WISHLISTED_ITEMS =[];
+                WISHLISTED_ITEMS_MAPPING ={};
                 for (i=0;i<responseJson.products.length;i++) {
-                    WISHLISTED_ITEMS[responseJson.products[i].id] = responseJson.products[i];
+                    WISHLISTED_ITEMS[i] = responseJson.products[i];
+                    WISHLISTED_ITEMS_MAPPING[responseJson.products[i].id] = i;
                 }
 
-                var ds = new ListView.DataSource({
-                    rowHasChanged: (r1, r2) => r1 != r2
-                });
-                this.setState({ dataSource: ds.cloneWithRows(WISHLISTED_ITEMS) });
-
+                this.updateListDataSource();
             }
             else if ( responseJson.status && responseJson.status === "Unauthenticated") {
                 utility.showAlertWithOK("Error", "Unauthenticated");
@@ -73,11 +82,8 @@ var WishlistPage  = React.createClass({
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.status === 'success') {
-                WISHLISTED_ITEMS[itemid].liked = true;
-                var ds = new ListView.DataSource({
-                    rowHasChanged: (r1, r2) => r1 != r2
-                });
-                this.setState({ dataSource: ds.cloneWithRows(WISHLISTED_ITEMS) });
+                WISHLISTED_ITEMS[WISHLISTED_ITEMS_MAPPING[itemid]].liked = true;
+                this.updateListDataSource();
             }
         })
         .catch((error) =>  {
@@ -98,11 +104,8 @@ var WishlistPage  = React.createClass({
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.status === 'success') {
-                WISHLISTED_ITEMS[itemid].liked = false;
-                var ds = new ListView.DataSource({
-                    rowHasChanged: (r1, r2) => r1 != r2
-                });
-                this.setState({ dataSource: ds.cloneWithRows(WISHLISTED_ITEMS) });
+                WISHLISTED_ITEMS[WISHLISTED_ITEMS_MAPPING[itemid]].liked = false;
+                this.updateListDataSource();
             }
         })
         .catch((error) =>  {
@@ -162,11 +165,8 @@ var WishlistPage  = React.createClass({
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.status === 'success') {
-                FEED_PRODUCT_ITEMS[itemid].wishlisted = true;
-                var ds = new ListView.DataSource({
-                    rowHasChanged: (r1, r2) => r1 != r2
-                });
-                this.setState({ dataSource: ds.cloneWithRows(FEED_PRODUCT_ITEMS) });
+                WISHLISTED_ITEMS[WISHLISTED_ITEMS_MAPPING[itemid]].wishlisted = true;
+                this.updateListDataSource();
             }
         })
         .catch((error) =>  {
@@ -186,11 +186,8 @@ var WishlistPage  = React.createClass({
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.status === 'success') {
-                FEED_PRODUCT_ITEMS[itemid].wishlisted = false;
-                var ds = new ListView.DataSource({
-                    rowHasChanged: (r1, r2) => r1 != r2
-                });
-                this.setState({ dataSource: ds.cloneWithRows(FEED_PRODUCT_ITEMS) });
+                WISHLISTED_ITEMS[WISHLISTED_ITEMS_MAPPING[itemid]].wishlisted = false;
+                this.updateListDataSource();
             }
         })
         .catch((error) =>  {
@@ -241,28 +238,8 @@ var WishlistPage  = React.createClass({
         )
     },
 
-   getSellerLogoUrl(feeditem) {
-        if (!feeditem.seller.logo || feeditem.seller.logo === "") {
-            index = feeditem.seller.name.indexOf(' ');
-            if (index >= 0 && (index+1) < feeditem.seller.name.length ) {
-                initials =  feeditem.seller.name.charAt(0) + feeditem.seller.name.charAt(index+1);
-            }
-            else if ( feeditem.seller.name.length >= 2 ) {
-                initials = feeditem.seller.name.charAt(0)+feeditem.seller.name.charAt(1);
-            }
-            else {
-                initials = " ";
-            }
-            return "https://placeholdit.imgix.net/~text?txtsize=16&bg=000000&txtclr=ffffff&txt="+initials+"&w=32&h=32&txttrack=0&txtpad=1";
-        }
-        else {
-            return feeditem.seller.logo;
-        }
-    },
-    
-
     _renderRow(feeditem) {
-        
+
         seller_logo_url = utility.getSellerLogoUrl(feeditem.seller.name, feeditem.seller.logo);
 
         //img_height = Math.ceil((Dimensions.get('window').width/feeditem.aspect_ratio));
@@ -281,7 +258,7 @@ var WishlistPage  = React.createClass({
 
                 <TouchableHighlight style={{alignItems:'center', alignSelf: 'center'}} 
                     onPress={()=>Actions.productpage({
-                        'product': feeditem,
+                        'product_id': feeditem.id,
                         'phone': this.props.phone,
                         'authentication_token': this.props.authentication_token})}>
                     <ImageProgress source={{uri : URL.IMAGES_BASE_URL+feeditem.images[0].url}} 
@@ -297,14 +274,86 @@ var WishlistPage  = React.createClass({
         )
     },
 
+    appendDataToList() {
+        if (!this.state.appendingInProcess) {
+            this.setState({appendingInProcess: true});
+            currentPage = this.state.pageNumber + 1;
+            url = URL.API_URL.CUSTOMER_WISHLISTED_PRODUCTS_URL+"?"+
+                "phone="+this.props.phone+"&"+
+                "authentication_token="+this.props.authentication_token+"&"+
+                "page="+currentPage;
+
+            //this.setState({spinnerVisible: true});
+
+            fetch(url,{
+                method: 'GET'
+            })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                //this.setState({spinnerVisible: false});
+                if ( responseJson.status && responseJson.status === "success") {
+
+                    if (responseJson.products.length != 0) {
+                        orig_items_length = WISHLISTED_ITEMS.length;
+                        for (i=0;i<responseJson.products.length;i++) {
+
+                            if ( responseJson.products[i].id in WISHLISTED_ITEMS_MAPPING ) {
+                                WISHLISTED_ITEMS[WISHLISTED_ITEMS_MAPPING[responseJson.products[i].id]] = responseJson.products[i];
+                            }
+                            else {
+                                WISHLISTED_ITEMS[(orig_items_length+i)] = responseJson.products[i];
+                                WISHLISTED_ITEMS_MAPPING[responseJson.products[i].id] = (orig_items_length+i);    
+                            }                            
+                        }
+                        this.updateListDataSource();
+                        this.setState({pageNumber: currentPage});
+                    }     
+
+                }
+                else if ( responseJson.status && responseJson.status === "Unauthenticated") {
+                    utility.showAlertWithOK("Error", "Unauthenticated");
+                }
+                this.setState({appendingInProcess: false});
+            })
+            .catch((error) =>  {
+                //this.setState({spinnerVisible: false});
+                utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+                this.setState({appendingInProcess: false});
+            });
+        }
+    },
+
+    _onEndReached() {
+        this.appendDataToList();
+    },
+
     renderListView() {
         if (this.state.dataSource !== null) {
             return(
                 <ListView
+                    style={{flex:1}}
                     dataSource = {this.state.dataSource}
-                    renderRow = {this._renderRow} />
+                    renderRow = {this._renderRow}
+                    onEndReached = {this._onEndReached}
+                    onEndReachedThreshold = {1500}/>
                 );
             }
+        else {
+            return;
+        }
+    },
+
+    renderLoadingMessage() {
+        if (this.state.appendingInProcess) {
+            return ( 
+                <View style={{flex: 1, alignItems: 'flex-end'}}>
+                    <ActivityIndicator
+                        animating={true}
+                        style={{height: 40, justifyContent: 'center', flex: 1}}
+                        size="large" />
+                </View>
+            );
+        }
         else {
             return;
         }
@@ -318,14 +367,12 @@ var WishlistPage  = React.createClass({
                     <View style={styles.appNameContainer}>
                         <Text style={styles.appName}>Storefront</Text>
                     </View>
+                    {this.renderLoadingMessage()}
                 </View>
 
                 <Spinner visible={this.state.spinnerVisible} />
                 
-                <ScrollView>
                     {this.renderListView()}
-                </ScrollView>
-
                 <Footer page='wishlist' phone={this.props.phone} authentication_token={this.props.authentication_token} />
             </View>
         );
@@ -401,6 +448,11 @@ const styles = StyleSheet.create({
     },
     actionButton: {
         padding: 8
+    },
+    loadingDataContainer: {
+        alignItems: 'center',
+        marginLeft: 8,
+        marginRight: 8
     }
 });
 

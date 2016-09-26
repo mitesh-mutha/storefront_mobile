@@ -2,13 +2,13 @@ import React, {Component} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, ScrollView, ListView, Image, TouchableHighlight, ActivityIndicator} from 'react-native';
 import {Actions} from "react-native-router-flux";
 import Dimensions from 'Dimensions';
-var ImageProgress = require('react-native-image-progress');
 import Spinner from 'react-native-loading-spinner-overlay';
 import Share from "react-native-share";
 import utility from './../utilities';
 import Strings from './../strings';
 import URL from './../urls';
 
+var ImageProgress = require('react-native-image-progress');
 var RNFS = require('react-native-fs');
 var EntypoIcons = require('react-native-vector-icons/Entypo');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
@@ -250,7 +250,7 @@ var CatalogPage  = React.createClass({
                 <View style={styles.sellerContainer}>
                     <Image style={styles.sellerAvatar} source={{uri: seller_logo_url}}/>
                     <View style={styles.detailContainer}>
-                        <Text style={styles.sellerName}>{feeditem.seller.name} {this.state.pageNumber}</Text>
+                        <Text style={styles.sellerName}>{feeditem.seller.name}</Text>
                         <Text style={styles.productName}>{feeditem.name}</Text>
                     </View>
                 </View>
@@ -267,7 +267,7 @@ var CatalogPage  = React.createClass({
                 <View style={styles.actionButtonContainer}>
                     {this.renderLikeButton(feeditem.liked, feeditem.id)}
                     {this.renderWishlistButton(feeditem.wishlisted, feeditem.id)}
-                    {this.renderShareButton(URL.IMAGES_BASE_URL+feeditem.images[0].url, feeditem.name+" - "+feeditem.seller.name)}
+                    {this.renderShareButton("product", feeditem.id, URL.IMAGES_BASE_URL+feeditem.images[0].url, feeditem.name+" - "+feeditem.seller.name)}
                 </View>
             </View>
         )
