@@ -12,14 +12,18 @@ var ImageProgress = require('react-native-image-progress');
 var RNFS = require('react-native-fs');
 var EntypoIcons = require('react-native-vector-icons/Entypo');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
-var FEED_PRODUCT_ITEMS = {};
+
+var FEED_ITEMS = [];
+var FEED_ITEMS_MAPPING = {};
 
 var Feed = React.createClass({
     getInitialState() {        
         return {
             dataSource: null,
             spinnerVisible: false,
-            shareSpinnerVisible: false
+            shareSpinnerVisible: false,
+            pageNumber: 1,
+            appendingInProcess: false
         }
     },
 
@@ -27,14 +31,16 @@ var Feed = React.createClass({
         var ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 != r2
         });
-        this.setState({ dataSource: ds.cloneWithRows(FEED_PRODUCT_ITEMS) });
+        //this.setState({ dataSource: ds.cloneWithRows([]) });
+        this.setState({ dataSource: ds.cloneWithRows(FEED_ITEMS) });
     },
 
     getFeed() {
         url = URL.API_URL.CUSTOMER_FEED_URL+"?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token+"&"+
-            "current_time="+Date.now();
+            "current_time="+Date.now()+
+            "page="+this.state.pageNumber;
 
         this.setState({spinnerVisible: true});
 
@@ -46,14 +52,20 @@ var Feed = React.createClass({
             this.setState({spinnerVisible: false});
             if ( responseJson.status && responseJson.status === "success") {
         
-                FEED_PRODUCT_ITEMS ={};
+                FEED_ITEMS = [];
+                FEED_ITEMS_MAPPING ={};
                 for (i=0;i<responseJson.products.length;i++) {
                     responseJson.products[i].type = "product";
-                    FEED_PRODUCT_ITEMS[responseJson.products[i].id] = responseJson.products[i];
+                    FEED_ITEMS[i] = responseJson.products[i];
+                    FEED_ITEMS_MAPPING["product"+responseJson.products[i].id] = i;
                 }
-
+                orig_items_length = FEED_ITEMS.length;
+                for (i=0;i<responseJson.posts.length;i++) {
+                    responseJson.posts[i].type = "post";
+                    FEED_ITEMS[i+orig_items_length] = responseJson.posts[i];
+                    FEED_ITEMS_MAPPING["post"+responseJson.posts[i].id] = i;
+                }
                 this.updateFeedListViewSource();
-
             }
             else if ( responseJson.status && responseJson.status === "Unauthenticated") {
                 utility.clearLoginDetails();
@@ -75,9 +87,14 @@ var Feed = React.createClass({
     },
 
     likeFeedItem(itemid, itemtype) {
-        url = URL.API_URL.PRODUCT_ACTIONS_INITIAL_URL+itemid+"/like?"+
-            "phone="+this.props.phone+"&"+
-            "authentication_token="+this.props.authentication_token;
+        if (itemtype == 'product') 
+            url = URL.API_URL.PRODUCT_ACTIONS_INITIAL_URL+itemid+"/like?"+
+                "phone="+this.props.phone+"&"+
+                "authentication_token="+this.props.authentication_token;
+        else
+            url = URL.API_URL.POST_ACTIONS_INITIAL_URL+itemid+"/like?"+
+                "phone="+this.props.phone+"&"+
+                "authentication_token="+this.props.authentication_token;
 
         fetch(url,{
             method: 'POST'
@@ -86,7 +103,11 @@ var Feed = React.createClass({
         .then((responseJson) => {
             if (responseJson.status === 'success') {
                 if (itemtype == 'product') {
-                    FEED_PRODUCT_ITEMS[itemid].liked = true;
+                    FEED_ITEMS[FEED_ITEMS_MAPPING["product"+itemid]].liked = true;
+                    this.updateFeedListViewSource();
+                }
+                if (itemtype == 'post') {
+                    FEED_ITEMS[FEED_ITEMS_MAPPING["post"+itemid]].liked = true;
                     this.updateFeedListViewSource();
                 }
             }
@@ -99,9 +120,14 @@ var Feed = React.createClass({
     },
 
     unlikeFeedItem(itemid, itemtype) {
-        url = URL.API_URL.PRODUCT_ACTIONS_INITIAL_URL+itemid+"/unlike?"+
-            "phone="+this.props.phone+"&"+
-            "authentication_token="+this.props.authentication_token;
+        if (itemtype == 'product')
+            url = URL.API_URL.PRODUCT_ACTIONS_INITIAL_URL+itemid+"/unlike?"+
+                "phone="+this.props.phone+"&"+
+                "authentication_token="+this.props.authentication_token;
+        else
+            url = URL.API_URL.POST_ACTIONS_INITIAL_URL+itemid+"/unlike?"+
+                "phone="+this.props.phone+"&"+
+                "authentication_token="+this.props.authentication_token;
 
         fetch(url,{
             method: 'POST'
@@ -110,7 +136,11 @@ var Feed = React.createClass({
         .then((responseJson) => {
             if (responseJson.status === 'success') {
                 if (itemtype == 'product') {
-                    FEED_PRODUCT_ITEMS[itemid].liked = false;
+                    FEED_ITEMS[FEED_ITEMS_MAPPING["product"+itemid]].liked = false;
+                    this.updateFeedListViewSource();
+                }
+                if (itemtype == 'post') {
+                    FEED_ITEMS[FEED_ITEMS_MAPPING["post"+itemid]].liked = false;
                     this.updateFeedListViewSource();
                 }
             }
@@ -149,7 +179,7 @@ var Feed = React.createClass({
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.status === 'success') {
-                FEED_PRODUCT_ITEMS[itemid].wishlisted = true;
+                FEED_ITEMS[FEED_ITEMS_MAPPING["product"+itemid]].wishlisted = true;
                 this.updateFeedListViewSource();
             }
         })
@@ -170,7 +200,7 @@ var Feed = React.createClass({
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.status === 'success') {
-                FEED_PRODUCT_ITEMS[itemid].wishlisted = false;
+                FEED_ITEMS[FEED_ITEMS_MAPPING["product"+itemid]].wishlisted = false;
                 this.updateFeedListViewSource();
             }
         })
@@ -249,19 +279,27 @@ var Feed = React.createClass({
     },
 
     renderPostFeedItem(feeditem) {
+        seller_logo_url = utility.getSellerLogoUrl(feeditem.seller.name, feeditem.seller.logo);
+        img_height = Dimensions.get('window').width/feeditem.aspect_ratio;
         return(
             <View style={styles.postFeedItem}>
 
-                <TouchableOpacity style={styles.sellerContainer} onPress={()=>Actions.vendorpage()}>
-                    <Image style={styles.sellerAvatar} source={{uri: 'http://placehold.it/24x24'}}/>
+                <TouchableOpacity style={styles.sellerContainer} onPress={()=>Actions.vendorpage({
+                    'seller_id': feeditem.seller.id,
+                    'phone': this.props.phone,
+                    'authentication_token': this.props.authentication_token
+                })}>
+                    <Image style={styles.sellerAvatar} source={{uri: seller_logo_url}}/>
                     <View style={styles.detailContainer}>
-                        <Text style={styles.sellerName}>{feeditem.seller}</Text>
+                        <Text style={styles.sellerName}>{feeditem.seller.name}</Text>
                     </View>
                 </TouchableOpacity>
 
                 <View style={styles.postTextContainer}>
-                    <Text style={styles.postText}>{feeditem.text}</Text>
+                    <Text style={styles.postText}>{feeditem.description}</Text>
                 </View>
+                <ImageProgress source={{uri : URL.IMAGES_BASE_URL+feeditem.images[0].url}} 
+                        style={[styles.feedImageStyle,{height: img_height}]} />
 
                 <View style={styles.actionButtonContainer}>
                     {this.renderLikeButton(feeditem.liked, feeditem.id, feeditem.type)}
@@ -274,10 +312,7 @@ var Feed = React.createClass({
     renderProductFeedItem(feeditem) {
         
         seller_logo_url = utility.getSellerLogoUrl(feeditem.seller.name, feeditem.seller.logo);
-
-        //img_height = Math.ceil((Dimensions.get('window').width/feeditem.aspect_ratio));
-        img_height = 450;
-
+        img_height = Dimensions.get('window').width/feeditem.aspect_ratio;
         return(
             <View style={styles.productFeedItem} >
 
@@ -322,27 +357,99 @@ var Feed = React.createClass({
         }
         else {
             // If we are here there is a problem
+            return (
+                <View>
+                </View>
+            );
         }
+    },
+
+    appendDataToList() {
+        if (!this.state.appendingInProcess) {
+            this.setState({appendingInProcess: true});
+            this.props.loadingFunc(true);
+            currentPage = this.state.pageNumber + 1;
+            
+            url = URL.API_URL.CUSTOMER_FEED_URL+"?"+
+                "phone="+this.props.phone+"&"+
+                "authentication_token="+this.props.authentication_token+"&"+
+                "page="+currentPage;
+
+            fetch(url,{
+                method: 'GET'
+            })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                
+                if ( responseJson.status && responseJson.status === "success") {
+                    
+                    if (responseJson.products.length != 0) {
+                        
+                        orig_items_length = FEED_ITEMS.length;
+                        for (i=0;i<responseJson.products.length;i++) {
+                            responseJson.products[i].type = "product";
+                            if ( responseJson.products[i].id in FEED_ITEMS_MAPPING ) {
+                                FEED_ITEMS[FEED_ITEMS_MAPPING["product"+responseJson.products[i].id]] = responseJson.products[i];
+                            }
+                            else {
+                                FEED_ITEMS[(orig_items_length+i)] = responseJson.products[i];
+                                FEED_ITEMS_MAPPING["product"+responseJson.products[i].id] = (orig_items_length+i);    
+                            }                            
+                        }
+                        orig_items_length = FEED_ITEMS.length;
+                        for (i=0;i<responseJson.posts.length;i++) {
+                            responseJson.posts[i].type = "post";
+                            if ( responseJson.posts[i].id in FEED_ITEMS_MAPPING ) {
+                                FEED_ITEMS[FEED_ITEMS_MAPPING["post"+responseJson.posts[i].id]] = responseJson.posts[i];
+                            }
+                            else {
+                                FEED_ITEMS[(orig_items_length+i)] = responseJson.posts[i];
+                                FEED_ITEMS_MAPPING["post"+responseJson.posts[i].id] = (orig_items_length+i);    
+                            }                            
+                        }
+                        this.updateFeedListViewSource();
+                        this.setState({pageNumber: currentPage});                        
+                    }
+                }
+                else if ( responseJson.status && responseJson.status === "Unauthenticated") {
+                    utility.showAlertWithOK("Error", "Unauthenticated");
+                }
+                this.setState({appendingInProcess: false});
+                this.props.loadingFunc(false);                
+            })
+            .catch((error) =>  {
+                utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+                this.setState({appendingInProcess: false});
+                this.props.loadingFunc(false);
+            });
+        }
+    },
+
+    _onEndReached() {
+        this.appendDataToList();
+        //this.updateFeedListViewSource();
     },
     
     render() {
         if (this.state.dataSource !== null) {
             return (          
-                <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={{flex:1}}>
                     <Spinner visible={this.state.spinnerVisible} />
                     <Spinner visible={this.state.shareSpinnerVisible} />
                     <ListView
+                        style= {{flex:1}}
                         dataSource = {this.state.dataSource}
-                        renderRow = {this._renderRow} />
-                </ScrollView>
+                        renderRow = {this._renderRow}
+                        onEndReached = {this._onEndReached}/>
+                </View>
             );
         }
         else {
             return (          
-                <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={{flex:1}}>
                     <Spinner visible={this.state.spinnerVisible} />
                     <Spinner visible={this.state.shareSpinnerVisible} />
-                </ScrollView>
+                </View>
             );
         }
     }
@@ -350,7 +457,6 @@ var Feed = React.createClass({
 
 const styles = StyleSheet.create({
   productFeedItem: {
-    flex: 1,
     marginBottom: 36
   },
   postFeedItem: {

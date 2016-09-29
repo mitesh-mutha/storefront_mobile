@@ -6,7 +6,8 @@ import Storefront from './Storefront';
 
 console.ignoredYellowBox = [
     'Circular indeterminate', 
-    'Warning: Failed prop type: Invalid props.style key `resizeMode` supplied'
+    'Warning: Failed prop type: Invalid props.style key `resizeMode` supplied',
+    'Warning: In next release'
 ]
 
 AppRegistry.registerComponent('Storefront', () => Storefront);

@@ -41,7 +41,7 @@ module.exports = {
         return;
     },
     getSellerLogoUrl(name, logo){
-        if (!logo || logo === "") {
+        if (!logo || logo === "" || logo.length == 0) {
             index = name.indexOf(' ');
             if (index >= 0 && (index+1) < name.length ) {
                 initials =  name.charAt(0) + name.charAt(index+1);
