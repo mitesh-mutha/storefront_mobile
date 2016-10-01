@@ -34,15 +34,29 @@ export default class Storefront extends React.Component {
             // (optional) Called when Token is generated (iOS and Android)
             onRegister: function(token) {
                 console.log( 'TOKEN:', token );
+                // Inform the server about the token for this device
             },
 
             // (required) Called when a remote or local notification is opened or received
             onNotification: function(notification) {
                 console.log( 'NOTIFICATION:', notification );
+                
+                PushNotification.localNotification({
+                    autoCancel: true, // (optional) default: true
+                    largeIcon: "ic_launcher", // (optional) default: "ic_launcher"
+                    vibrate: true, // (optional) default: true
+                    vibration: 300, // vibration length in milliseconds, ignored if vibrate=false, default: 1000
+                    ongoing: false, // (optional) set whether this is an "ongoing" notification
+
+                    title: notification.title, // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
+                    message: notification.body, // (required)
+                    playSound: true, // (optional) default: true
+                    number: '10', // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
+                });                
             },
 
             // ANDROID ONLY: (optional) GCM Sender ID.
-            senderID: "684365864768",
+            senderID: "1023864553038",
 
             // IOS ONLY (optional): default: all - Permissions to register.
             permissions: {
