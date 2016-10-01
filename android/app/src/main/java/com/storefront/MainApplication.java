@@ -48,4 +48,11 @@ public class MainApplication extends Application implements ReactApplication {
   public ReactNativeHost getReactNativeHost() {
       return mReactNativeHost;
   }
+
+  // Add onNewIntent
+  public void onNewIntent(Intent intent) {
+    if ( mReactNativePushNotificationPackage != null ) {
+        mReactNativePushNotificationPackage.newIntent(intent);
+    }
+  }
 }
