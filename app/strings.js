@@ -36,7 +36,7 @@ const Strings = {
   REQUEST_FAILED: "Error",
   REQUEST_FAILED_MSG: "Please try again later.",
 
-  ERROR_STORING_TUTORIAL_SEEN_MSG: "Could not store tutorial access details."
+  ERROR_STORING_TUTORIAL_SEEN_MSG: "Could not store tutorial access details.",
 
   APP_NAME: "Storefront",
 
@@ -57,14 +57,14 @@ const Strings = {
 
   INVITE_FRIENDS_TEXT: "Hey, download Storefront app and discover great new products from exclusive sellers.",
 
-  TUTORIAL: "Tutorial"
+  TUTORIAL: "Tutorial",
 
   TUTORIAL_HEADING_1: "The different sections of the application are explained below",
   FEED_EXPLANATION: "All products and posts, from the sellers you follow, will be shown here.",
   WISHLIST_EXPLANATION: "Wishlist your favourite products and get information directly from the seller.",
   SEARCH_EXPLANATION: "In this section, you can search for sellers who are on Storefront.",
   FOLLOW_EXPLANATION: "The list of sellers you follow can be found here.",
-  PROFILE_EXPLANAION: "You can check your profile here."
+  PROFILE_EXPLANATION: "You can check your profile here.",
 }
 
 module.exports = Strings
