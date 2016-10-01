@@ -16,6 +16,8 @@ var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 var FEED_ITEMS = [];
 var FEED_ITEMS_MAPPING = {};
 
+var _lview;
+
 var Feed = React.createClass({
     getInitialState() {        
         return {
@@ -23,7 +25,9 @@ var Feed = React.createClass({
             spinnerVisible: false,
             shareSpinnerVisible: false,
             pageNumber: 1,
-            appendingInProcess: false
+            appendingInProcess: false,
+            feedTimestamp: Math.floor((new Date()).getTime() / 1000),
+            showNewItemsBox: false
         }
     },
 
@@ -39,7 +43,7 @@ var Feed = React.createClass({
         url = URL.API_URL.CUSTOMER_FEED_URL+"?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token+"&"+
-            "current_time="+Date.now()+
+            "current_time="+this.state.feedTimestamp+
             "page="+this.state.pageNumber;
 
         this.setState({spinnerVisible: true});
@@ -49,7 +53,6 @@ var Feed = React.createClass({
         })
         .then((response) => response.json())
         .then((responseJson) => {
-            this.setState({spinnerVisible: false});
             if ( responseJson.status && responseJson.status === "success") {
         
                 FEED_ITEMS = [];
@@ -66,8 +69,13 @@ var Feed = React.createClass({
                     FEED_ITEMS_MAPPING["post"+responseJson.posts[i].id] = i;
                 }
                 this.updateFeedListViewSource();
+                if ( responseJson.new_products === true || responseJson.new_posts === true ) {
+                    this.setState({showNewItemsBox: true});
+                }
+                this.setState({spinnerVisible: false});
             }
             else if ( responseJson.status && responseJson.status === "Unauthenticated") {
+                this.setState({spinnerVisible: false});
                 utility.clearLoginDetails();
                 utility.showAlertWithOK(Strings.ERROR, Strings.UNAUTHENTICATED);
             }
@@ -373,7 +381,10 @@ var Feed = React.createClass({
             url = URL.API_URL.CUSTOMER_FEED_URL+"?"+
                 "phone="+this.props.phone+"&"+
                 "authentication_token="+this.props.authentication_token+"&"+
-                "page="+currentPage;
+                "page="+currentPage+"&"+
+                "current_time="+this.state.feedTimestamp;
+
+            //utility.showAlertWithOK("URL","page="+currentPage+"&"+"current_time="+this.state.feedTimestamp);
 
             fetch(url,{
                 method: 'GET'
@@ -382,7 +393,7 @@ var Feed = React.createClass({
             .then((responseJson) => {
                 
                 if ( responseJson.status && responseJson.status === "success") {
-                    
+                    feed_changed = false;
                     if (responseJson.products.length != 0) {
                         
                         orig_items_length = FEED_ITEMS.length;
@@ -396,6 +407,10 @@ var Feed = React.createClass({
                                 FEED_ITEMS_MAPPING["product"+responseJson.products[i].id] = (orig_items_length+i);    
                             }                            
                         }
+                        feed_changed = true;
+                    }
+
+                    if (responseJson.posts.length != 0) { 
                         orig_items_length = FEED_ITEMS.length;
                         for (i=0;i<responseJson.posts.length;i++) {
                             responseJson.posts[i].type = "post";
@@ -407,8 +422,18 @@ var Feed = React.createClass({
                                 FEED_ITEMS_MAPPING["post"+responseJson.posts[i].id] = (orig_items_length+i);    
                             }                            
                         }
+                        feed_changed = true;
+                    }
+
+                    if (feed_changed) {
                         this.updateFeedListViewSource();
-                        this.setState({pageNumber: currentPage});                        
+                        this.setState({pageNumber: currentPage});    
+                    }                    
+
+                    if ( responseJson.new_products == true || responseJson.new_posts == true ) {
+                        this.setState({showNewItemsBox: true});
+                    }
+                    else {
                     }
                 }
                 else if ( responseJson.status && responseJson.status === "Unauthenticated") {
@@ -427,7 +452,31 @@ var Feed = React.createClass({
 
     _onEndReached() {
         this.appendDataToList();
-        //this.updateFeedListViewSource();
+    },
+
+    onNewItemsBoxClicked() {
+        if (_lview) {
+            _lview.scrollTo({y: 0, animated: true});
+        }
+        this.setState({feedTimestamp: Math.floor((new Date()).getTime() / 1000), pageNumber: 1, showNewItemsBox: false}, function(){
+            this.getFeed();    
+        });        
+    },
+
+    renderNewItemsBox() {
+        if (this.state.showNewItemsBox) {
+            return (
+                <TouchableOpacity style={styles.newItemsBoxContainer} onPress={()=>this.onNewItemsBoxClicked()} >
+                    <View style={styles.newItemsBox}>
+                        <MaterialIcons name="arrow-upward" size={18} color={'white'}/>
+                        <Text style={styles.newItemsText}>New Items</Text>
+                    </View>                        
+                </TouchableOpacity>
+            );
+        }
+        else {
+            return;
+        }
     },
     
     render() {
@@ -440,7 +489,10 @@ var Feed = React.createClass({
                         style= {{flex:1}}
                         dataSource = {this.state.dataSource}
                         renderRow = {this._renderRow}
-                        onEndReached = {this._onEndReached}/>
+                        onEndReached = {this._onEndReached}
+                        onEndReachedThreshold = {1500}
+                        ref={(lview) => { _lview = lview; }} />
+                    {this.renderNewItemsBox()}
                 </View>
             );
         }
@@ -456,64 +508,86 @@ var Feed = React.createClass({
 });
 
 const styles = StyleSheet.create({
-  productFeedItem: {
-    marginBottom: 36
-  },
-  postFeedItem: {
-    marginBottom: 36
-  },
-  sellerContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    padding: 8
-  },
-  detailContainer: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    marginLeft: 8,
-    paddingLeft: 8
-  },
-  sellerAvatar: {
-    height: 32,
-    borderRadius: 16,
-    width: 32
-  },
-  sellerName: {  
-    fontFamily: 'HelveticaNeueMedium',
-    color: 'black'
-  },
-  productName: {
-    fontFamily: 'HelveticaNeueLight'
-  },
-  feedImageStyle: {
-    flex: 1,
-    width: Dimensions.get('window').width,
-    height: 300,
-    alignSelf: 'center',
-    resizeMode: 'contain'
-  },
-  actionButtonContainer: {
-    marginLeft: 8,
-    marginRight: 8,
-    flexDirection: 'row',
-    flexWrap: 'nowrap',
-    borderStyle:'solid',
-    borderBottomWidth:1,
-    borderBottomColor: 'rgba(79, 79, 79, 0.1)'
-  },
-  postTextContainer: {
-    marginLeft: 8,
-    marginRight: 8,
-    marginBottom:8,
-    flexDirection:'column',
-    flexWrap: 'nowrap'
-  },
-  postText: {
-    fontFamily: 'HelveticaNeueLight'
-  },
-  actionButton: {
-    padding: 8
-  }
+    productFeedItem: {
+        marginBottom: 36
+    },
+    postFeedItem: {
+        marginBottom: 36
+    },
+    sellerContainer: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 8
+    },
+    detailContainer: {
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        marginLeft: 8,
+        paddingLeft: 8
+    },
+    sellerAvatar: {
+        height: 32,
+        borderRadius: 16,
+        width: 32
+    },
+    sellerName: {  
+        fontFamily: 'HelveticaNeueMedium',
+        color: 'black'
+    },
+    productName: {
+        fontFamily: 'HelveticaNeueLight'
+    },
+    feedImageStyle: {
+        flex: 1,
+        width: Dimensions.get('window').width,
+        height: 300,
+        alignSelf: 'center',
+        resizeMode: 'contain'
+    },
+    actionButtonContainer: {
+        marginLeft: 8,
+        marginRight: 8,
+        flexDirection: 'row',
+        flexWrap: 'nowrap',
+        borderStyle:'solid',
+        borderBottomWidth:1,
+        borderBottomColor: 'rgba(79, 79, 79, 0.1)'
+    },
+    postTextContainer: {
+        marginLeft: 8,
+        marginRight: 8,
+        marginBottom:8,
+        flexDirection:'column',
+        flexWrap: 'nowrap'
+    },
+    postText: {
+        fontFamily: 'HelveticaNeueLight'
+    },
+    actionButton: {
+        padding: 8
+    },
+    newItemsBoxContainer: { 
+        position:'absolute', 
+        top: 4, 
+        right: 4, 
+        alignItems: 'center', 
+        flex: 1 
+    },
+    newItemsBox: {
+        height: 24, 
+        width: 116, 
+        borderRadius: 12, 
+        backgroundColor: '#1766f6', 
+        alignItems: 'center', 
+        flex:1, 
+        justifyContent: 'center', 
+        flexDirection: 'row', 
+        flexWrap:'nowrap'
+    },
+    newItemsText: {
+        fontFamily: 'HelveticaNeueMedium', 
+        color:'white'
+    }
 });
 
 module.exports = Feed;

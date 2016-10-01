@@ -60,7 +60,80 @@ var FollowPage = React.createClass({
         });
     },
 
-    
+    followSeller(id){
+        url = URL.API_URL.SELLER_ACTIONS_INITIAL_URL + id + "/follow?"+
+            "phone="+this.props.phone+"&"+
+            "authentication_token="+this.props.authentication_token;
+
+        this.setState({spinnerVisible: true}); 
+
+        fetch(url,{
+            method: 'POST'
+        })
+        .then((response) => {
+          if(response.status === 200) {
+            response.json();
+          } else {
+            utility.showAlertWithOK("Error", "Response "+response.status)
+            return null;
+          }
+        })
+        .then((responseJson) => {
+            if (responseJson === null)
+              return;
+            
+            this.setState({spinnerVisible: false});
+
+            if (responseJson.status === "success") {
+                      SEARCH_ITEM[id].followed = true;        
+                      this.updateListDataSource();
+            }
+            else {
+              // TODO
+            }
+        })
+        .catch((error) =>  {
+            this.setState({spinnerVisible: false});
+            utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+        });
+    },
+
+    unfollowSeller(id) {
+        url = URL.API_URL.SELLER_ACTIONS_INITIAL_URL + id + "/unfollow?"+
+            "phone="+this.props.phone+"&"+
+            "authentication_token="+this.props.authentication_token;
+
+        this.setState({spinnerVisible: true}); 
+        
+        fetch(url,{
+            method: 'POST'
+        })
+        .then((response) => {
+          if(response.status === 200) {
+            response.json();
+          } else {
+            utility.showAlertWithOK("Error", "Response "+response.status)
+            return null;
+          }
+        })
+        .then((responseJson) => {
+            if (responseJson === null)
+              return;
+            
+            this.setState({spinnerVisible: false});
+
+            if (responseJson.status === "success") {
+                SEARCH_ITEM[id].followed = false;        
+                this.updateListDataSource();
+            }
+            else {
+            }
+        })
+        .catch((error) =>  {
+            this.setState({spinnerVisible: false});
+            utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
+        });
+    },
 
     renderFollowButton(id, isFollowing) {
         if (isFollowing) {

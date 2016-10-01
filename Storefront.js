@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View} from 'react-native';
+import {View, BackAndroid} from 'react-native';
 import {Scene, Reducer, Router, Actions, Modal} from 'react-native-router-flux';
 
 import FeedPage from './app/components/FeedPage';
@@ -23,6 +23,9 @@ const reducerCreate = params=>{
 
 export default class Storefront extends React.Component {
   render() {
+    
+    BackAndroid.addEventListener('hardwareBackPress', () => Actions.pop());
+
     return <Router createReducer={reducerCreate}>
       <Scene key="modal" component={Modal} >
         <Scene key="root">

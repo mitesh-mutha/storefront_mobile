@@ -240,9 +240,7 @@ var CatalogPage  = React.createClass({
     _renderRow(feeditem) {
 
         seller_logo_url = utility.getSellerLogoUrl(feeditem.seller.name, feeditem.seller.logo);
-
-        //img_height = Math.ceil((Dimensions.get('window').width/feeditem.aspect_ratio));
-        img_height = 450;
+        img_height = Dimensions.get('window').width/feeditem.aspect_ratio;
 
         return(
             <View style={styles.productFeedItem} >
@@ -405,7 +403,6 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     productFeedItem: {
-        flex: 1,
         marginBottom: 36
     },
     sellerContainer: {

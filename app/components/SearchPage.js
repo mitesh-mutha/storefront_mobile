@@ -26,7 +26,7 @@ var SearchPage  = React.createClass({
     },
 
     followSeller(id){
-        url = URL.API_URL.SELLER_ACTIONS_INTIAL_URL + id + "/follow?"+
+        url = URL.API_URL.SELLER_ACTIONS_INITIAL_URL + id + "/follow?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token;
 
@@ -35,20 +35,26 @@ var SearchPage  = React.createClass({
         fetch(url,{
             method: 'POST'
         })
-        .then((response) => response.json())
+        .then((response) => {
+          if(response.status === 200) {
+            response.json();
+          } else {
+            utility.showAlertWithOK("Error", "Response Code: "+response.status);
+            return null;
+          }
+        })
         .then((responseJson) => {
-
+            if (responseJson === null)
+              return;
+            
             this.setState({spinnerVisible: false});
 
             if (responseJson.status === "success") {
-                productDetails = responseJson.product;
-                this.setState({
-                    product: productDetails,
-                    dataAvailable: true
-                })
+                      SEARCH_ITEM[id].followed = true;        
+                      this.updateListDataSource();
             }
-            else if (responseJson.status === "Error") {
-                utility.showAlertWithOK(Strings.NO_PRODUCT_DETAILS, Strings.NO_PRODUCT_DETAILS_MSG);
+            else {
+              // TODO
             }
         })
         .catch((error) =>  {
@@ -58,7 +64,7 @@ var SearchPage  = React.createClass({
     },
 
     unfollowSeller(id) {
-        url = URL.API_URL.SELLER_ACTIONS_INTIAL_URL + id + "/unfollow?"+
+        url = URL.API_URL.SELLER_ACTIONS_INITIAL_URL + id + "/unfollow?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token;
 
@@ -67,20 +73,25 @@ var SearchPage  = React.createClass({
         fetch(url,{
             method: 'POST'
         })
-        .then((response) => response.json())
+        .then((response) => {
+          if(response.status === 200) {
+            response.json();
+          } else {
+            utility.showAlertWithOK("Error", "Response Code: "+response.status);
+            return null;
+          }
+        })
         .then((responseJson) => {
-
+            if (responseJson === null)
+              return;
+            
             this.setState({spinnerVisible: false});
 
             if (responseJson.status === "success") {
-                productDetails = responseJson.product;
-                this.setState({
-                    product: productDetails,
-                    dataAvailable: true
-                })
+                SEARCH_ITEM[id].followed = false;        
+                this.updateListDataSource();
             }
-            else if (responseJson.status === "Error") {
-                utility.showAlertWithOK(Strings.NO_PRODUCT_DETAILS, Strings.NO_PRODUCT_DETAILS_MSG);
+            else {
             }
         })
         .catch((error) =>  {
@@ -207,6 +218,7 @@ var SearchPage  = React.createClass({
           </View>  
         </View>
 
+        <Spinner visible={this.state.spinnerVisible} />
         <ScrollView style={styles.scrollContainer}  keyboardShouldPersistTaps={true} >
           {this.renderSearchResults()}
         </ScrollView>
