@@ -51,7 +51,6 @@ var OTPLoginPage = React.createClass({
         })
         .then((response) => response.json())
         .then((responseJson) => {
-
             this.setState({spinnerVisible: false});
 
             if (responseJson.status === "success") {
@@ -60,14 +59,10 @@ var OTPLoginPage = React.createClass({
             else if (responseJson.status === "Unauthenticated") {
                 Utility.showAlertWithOK(Strings.OTP_LOGIN_UNAUTHENTICATED, Strings.OTP_LOGIN_UNAUTHENTICATED_MSG);
             }
-
         })
         .catch((error) =>  {
-
             this.setState({spinnerVisible: false});
             Utility.showAlertWithOK(Strings.OTP_LOGIN_REQUEST_FAILED, Strings.OTP_LOGIN_REQUEST_FAILED_MSG);
-            console.error(error)
-
         });
     },
 
@@ -79,11 +74,9 @@ var OTPLoginPage = React.createClass({
 
                 <Spinner visible={this.state.spinnerVisible} />
 
-
                 <View style={styles.appNameContainer}>
                     <Text style={styles.appName}>{Strings.APP_NAME}</Text>
                 </View>
-
 
                 <View style={styles.OTPLoginContainer}>
               

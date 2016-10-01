@@ -67,7 +67,11 @@ var OTPVerificationPage = React.createClass({
             if (responseJson.status === "success") {
                 if (responseJson.authentication_token) {
                     this.saveAuthenticationToken(responseJson.authentication_token);
-                    Actions.feedpage({'phone': this.props.mobileNumber, 'authentication_token': responseJson.authentication_token, type: ActionConst.RESET});
+                    Actions.feedpage({
+                        'phone': this.props.mobileNumber, 
+                        'authentication_token': responseJson.authentication_token, 
+                        type: ActionConst.RESET
+                    });
                 }
                 else {
                     utility.showAlertWithOK(Strings.NO_TOKEN_IN_RESPONSE, Strings.NO_TOKEN_IN_RESPONSE_MSG);  
@@ -110,11 +114,8 @@ var OTPVerificationPage = React.createClass({
 
         })
         .catch((error) =>  {
-
             this.setState({spinnerVisible: false});
             Utility.showAlertWithOK(Strings.OTP_LOGIN_REQUEST_FAILED, Strings.OTP_LOGIN_REQUEST_FAILED_MSG);
-            console.error(error)
-
         });
     },
 
@@ -174,7 +175,6 @@ var OTPVerificationPage = React.createClass({
                 that.setState({otpText: verificationCode});
                 that.onVerifyButtonPress();
             }
-
         });
     
     },
