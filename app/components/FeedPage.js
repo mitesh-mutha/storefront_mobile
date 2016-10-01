@@ -26,6 +26,15 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: 'HelveticaNeueMed',
         color: 'black'
+    },
+    activityIndicatorStyle: {
+        height: 40, 
+        justifyContent: 'center', 
+        flex: 1
+    },
+    activityIndicatorContainer: {
+        flex: 1, 
+        alignItems: 'flex-end'
     }
 });
 
@@ -44,10 +53,10 @@ var FeedPage = React.createClass ({
     renderLoadingMessage() {
         if (this.state.showLoadingSpinner) {
             return ( 
-                <View style={{flex: 1, alignItems: 'flex-end'}}>
+                <View style={styles.activityIndicatorContainer}>
                     <ActivityIndicator
                         animating={true}
-                        style={{height: 40, justifyContent: 'center', flex: 1}}
+                        style={styles.activityIndicatorStyle}
                         size="large" />
                 </View>
             );
@@ -63,7 +72,7 @@ var FeedPage = React.createClass ({
 
                 <View style={styles.header}>
                     <View style={styles.appNameContainer}>
-                        <Text style={styles.appName}>Feed</Text>
+                        <Text style={styles.appName}>{Strings.FEED}</Text>
                     </View>
                     {this.renderLoadingMessage()}
                 </View>
@@ -73,7 +82,9 @@ var FeedPage = React.createClass ({
                     authentication_token={this.props.authentication_token}
                     loadingFunc = {this.setLoadingSpinner} />
             
-                <Footer page='home' phone={this.props.phone} authentication_token={this.props.authentication_token} />
+                <Footer page='home' 
+                    phone={this.props.phone} 
+                    authentication_token={this.props.authentication_token} />
 
             </View>
         );

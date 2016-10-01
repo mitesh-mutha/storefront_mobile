@@ -79,10 +79,10 @@ var FollowPage = React.createClass({
           }
         })
         .then((responseJson) => {
-            if (responseJson === null)
-              return;
-            
             this.setState({spinnerVisible: false});
+
+            if (responseJson === null)
+              return;            
 
             if (responseJson.status === "success") {
                       SEARCH_ITEM[id].followed = true;        

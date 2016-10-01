@@ -49,27 +49,42 @@ var Feed = React.createClass({
         fetch(url,{
             method: 'GET'
         })
-        .then((response) => response.json())
+        .then((response) => {
+            if(response.status === 200) {
+                response.json();
+            } else {
+                utility.showAlertWithOK(Strings.ERROR, Strings.RESPONSE_CODE_IS+response.status)
+                return null;
+            }
+        })
         .then((responseJson) => {
+            if (responseJson === null)
+                return;  
+
             if ( responseJson.status && responseJson.status === "success") {
         
                 FEED_ITEMS = [];
                 FEED_ITEMS_MAPPING ={};
+                
                 for (i=0;i<responseJson.products.length;i++) {
                     responseJson.products[i].type = "product";
                     FEED_ITEMS[i] = responseJson.products[i];
                     FEED_ITEMS_MAPPING["product"+responseJson.products[i].id] = i;
                 }
+                
                 orig_items_length = FEED_ITEMS.length;
                 for (i=0;i<responseJson.posts.length;i++) {
                     responseJson.posts[i].type = "post";
                     FEED_ITEMS[i+orig_items_length] = responseJson.posts[i];
                     FEED_ITEMS_MAPPING["post"+responseJson.posts[i].id] = i;
                 }
+                
                 this.updateFeedListViewSource();
+                
                 if ( responseJson.new_products === true || responseJson.new_posts === true ) {
                     this.setState({showNewItemsBox: true});
-                }
+                }                
+                
                 this.setState({spinnerVisible: false});
             }
             else if ( responseJson.status && responseJson.status === "Unauthenticated") {
@@ -87,15 +102,11 @@ var Feed = React.createClass({
     async checkTutorialNeeded() {
         try {
             value = await AsyncStorage.getItem("tutorial_seen");
-            if (value !== null){
-                // Yes, seen... Continue ... Do nothing !!!   
-            }
-            else {
-                // Not seen .... Let's go show tutorial
-                Actions.tutorialpage();
+            if (value === null){
+                Actions.tutorialpage(); // Not seen .... Let's go show tutorial
             }            
         } catch (error) {
-            Utility.showAlertWithOK("Error", "Could not read the credentials");
+            Utility.showAlertWithOK(Strings.ERROR, Strings.ERROR_READING_TUTORIAL_MSG);
         }
     },
 
@@ -124,8 +135,17 @@ var Feed = React.createClass({
         fetch(url,{
             method: 'POST'
         })
-        .then((response) => response.json())
+        .then((response) => {
+            if(response.status === 200) {
+                response.json();
+            } else {
+                utility.showAlertWithOK(Strings.ERROR, Strings.RESPONSE_CODE_IS+response.status)
+                return null;
+            }
+        })
         .then((responseJson) => {
+            if (responseJson === null)
+                return;  
             if (responseJson.status === 'success') {
                 if (itemtype == 'product') {
                     FEED_ITEMS[FEED_ITEMS_MAPPING["product"+itemid]].liked = true;
@@ -157,8 +177,17 @@ var Feed = React.createClass({
         fetch(url,{
             method: 'POST'
         })
-        .then((response) => response.json())
+        .then((response) => {
+            if(response.status === 200) {
+                response.json();
+            } else {
+                utility.showAlertWithOK(Strings.ERROR, Strings.RESPONSE_CODE_IS+response.status)
+                return null;
+            }
+        })
         .then((responseJson) => {
+            if (responseJson === null)
+                return;  
             if (responseJson.status === 'success') {
                 if (itemtype == 'product') {
                     FEED_ITEMS[FEED_ITEMS_MAPPING["product"+itemid]].liked = false;
@@ -201,8 +230,17 @@ var Feed = React.createClass({
         fetch(url,{
             method: 'POST'
         })
-        .then((response) => response.json())
+        .then((response) => {
+            if(response.status === 200) {
+                response.json();
+            } else {
+                utility.showAlertWithOK(Strings.ERROR, Strings.RESPONSE_CODE_IS+response.status)
+                return null;
+            }
+        })
         .then((responseJson) => {
+            if (responseJson === null)
+                return;  
             if (responseJson.status === 'success') {
                 FEED_ITEMS[FEED_ITEMS_MAPPING["product"+itemid]].wishlisted = true;
                 this.updateFeedListViewSource();
@@ -222,8 +260,17 @@ var Feed = React.createClass({
         fetch(url,{
             method: 'POST'
         })
-        .then((response) => response.json())
+        .then((response) => {
+            if(response.status === 200) {
+                response.json();
+            } else {
+                utility.showAlertWithOK(Strings.ERROR, Strings.RESPONSE_CODE_IS+response.status)
+                return null;
+            }
+        })
         .then((responseJson) => {
+            if (responseJson === null)
+                return;  
             if (responseJson.status === 'success') {
                 FEED_ITEMS[FEED_ITEMS_MAPPING["product"+itemid]].wishlisted = false;
                 this.updateFeedListViewSource();
@@ -261,10 +308,10 @@ var Feed = React.createClass({
         if (!imgLink) {
             Share.open({
                 share_text: imgText,
-                share_URL: "http://storefrontindia.com",
-                title: "Share Product"
+                share_URL: Strings.STOREFRONT_URL,
+                title: Strings.SHARE_PRODUCT
             },(e) => {
-                console.log(e);
+                utility.showAlertWithOK(Strings.ERROR, Strings.COULD_NOT_SHARE);
             });
             return;
         }
@@ -280,18 +327,18 @@ var Feed = React.createClass({
         
             this.setState({shareSpinnerVisible: false});
             Share.open({
-                share_text: imgText+". Find more products on Storefront.",
+                share_text: imgText+Strings.SHARE_APPEND_STRING,
                 share_URL: "http://storefrontindia.com",
                 share_image_path: RNFS.ExternalDirectoryPath+"/share_image.jpg",
-                title: "Share Product"
+                title: Strings.SHARE_PRODUCT
             },(e) => {
-                console.log(e);
+                utility.showAlertWithOK(Strings.ERROR, Strings.COULD_NOT_SHARE);
             });
 
         })
         .catch((err) => {
             this.setState({shareSpinnerVisible: false});
-            console.log(err.message);
+            utility.showAlertWithOK(Strings.ERROR, Strings.COULD_NOT_SHARE);
         });
     },
 
@@ -380,8 +427,7 @@ var Feed = React.createClass({
         else if (feeditem.type == 'post') {
             return this.renderPostFeedItem(feeditem);
         }
-        else {
-            // If we are here there is a problem
+        else { // If we are here there is a problem
             return (
                 <View>
                 </View>
@@ -401,13 +447,24 @@ var Feed = React.createClass({
                 "page="+currentPage+"&"+
                 "current_time="+this.state.feedTimestamp;
 
-            //utility.showAlertWithOK("URL","page="+currentPage+"&"+"current_time="+this.state.feedTimestamp);
-
             fetch(url,{
                 method: 'GET'
             })
-            .then((response) => response.json())
+            .then((response) => {
+                if(response.status === 200) {
+                    response.json();
+                } else {
+                    utility.showAlertWithOK(Strings.ERROR, Strings.RESPONSE_CODE_IS+response.status)
+                    return null;
+                }
+            })
             .then((responseJson) => {
+                if (responseJson === null) {
+                    this.setState({appendingInProcess: false});
+                    this.props.loadingFunc(false);
+                    return;  
+                }
+                    
                 
                 if ( responseJson.status && responseJson.status === "success") {
                     feed_changed = false;
@@ -454,7 +511,7 @@ var Feed = React.createClass({
                     }
                 }
                 else if ( responseJson.status && responseJson.status === "Unauthenticated") {
-                    utility.showAlertWithOK("Error", "Unauthenticated");
+                    utility.showAlertWithOK(Strings.ERROR, Strings.UNAUTHENTICATED_MSG);
                 }
                 this.setState({appendingInProcess: false});
                 this.props.loadingFunc(false);                
@@ -486,7 +543,7 @@ var Feed = React.createClass({
                 <TouchableOpacity style={styles.newItemsBoxContainer} onPress={()=>this.onNewItemsBoxClicked()} >
                     <View style={styles.newItemsBox}>
                         <MaterialIcons name="arrow-upward" size={18} color={'white'}/>
-                        <Text style={styles.newItemsText}>New Items</Text>
+                        <Text style={styles.newItemsText}>{Strings.NEW_ITEMS}</Text>
                     </View>                        
                 </TouchableOpacity>
             );

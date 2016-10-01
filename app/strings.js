@@ -37,6 +37,7 @@ const Strings = {
   REQUEST_FAILED_MSG: "Please try again later.",
 
   ERROR_STORING_TUTORIAL_SEEN_MSG: "Could not store tutorial access details.",
+  ERROR_READING_TUTORIAL_MSG: "Could not read data regarding tutorial access.",
 
   APP_NAME: "Storefront",
 
@@ -54,10 +55,12 @@ const Strings = {
   ERROR: "Error",
   SUCCESS: "Success",
   UNAUTHENTICATED_MSG: "Unauthenticated",
+  RESPONSE_CODE_IS: "Response code is ",
 
   INVITE_FRIENDS_TEXT: "Hey, download Storefront app and discover great new products from exclusive sellers.",
 
   TUTORIAL: "Tutorial",
+  FEED: "Feed",
 
   TUTORIAL_HEADING_1: "The different sections of the application are explained below",
   FEED_EXPLANATION: "All products and posts, from the sellers you follow, will be shown here.",
@@ -65,6 +68,13 @@ const Strings = {
   SEARCH_EXPLANATION: "In this section, you can search for sellers who are on Storefront.",
   FOLLOW_EXPLANATION: "The list of sellers you follow can be found here.",
   PROFILE_EXPLANATION: "You can check your profile here.",
+
+  SHARE_PRODUCT: "Share Product",
+  STOREFRONT_URL: "http://storefrontindia.com",
+  SHARE_APPEND_STRING: ". Find more products on Storefront.",
+  COULD_NOT_SHARE: "Could not share.",
+
+  NEW_ITEMS: "New Items",
 }
 
 module.exports = Strings
