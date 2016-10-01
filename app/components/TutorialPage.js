@@ -14,7 +14,7 @@ var TutorialPage = React.createClass({
             await AsyncStorage.setItem("tutorial_seen", "true");            
         }
         catch (error) {
-            utility.showAlertWithOK(Strings.ERROR_STORING_AUTH_TOKEN, Strings.ERROR_STORING_AUTH_TOKEN_MSG);  
+            utility.showAlertWithOK(Strings.ERROR, Strings.ERROR_STORING_TUTORIAL_SEEN_MSG);  
         }
     },
 
@@ -28,13 +28,13 @@ var TutorialPage = React.createClass({
 
                 <View style={styles.header}>
                     <View style={styles.appNameContainer}>
-                        <Text style={styles.appName}>Tutorial</Text>
+                        <Text style={styles.appName}>{Strings.TUTORIAL}</Text>
                     </View>
                 </View>
 
                 <ScrollView>
                     <View style={styles.headingContainer}>
-                        <Text>The different sections of the application are explained below</Text>
+                        <Text>{Strings.TUTORIAL_HEADING_1}</Text>
                     </View> 
 
                     <View style={styles.iconExplainerContainer}>
@@ -42,7 +42,7 @@ var TutorialPage = React.createClass({
                             <Ionicons name="md-home" size={32} color={'black'} />
                         </View>
                         <View style={styles.explanationContainer}>
-                            <Text style={styles.explanationText}>All products and posts, from the sellers you follow, will be shown here.</Text>
+                            <Text style={styles.explanationText}>{Strings.FEED_EXPLANATION}</Text>
                         </View>
                     </View>
 
@@ -51,7 +51,7 @@ var TutorialPage = React.createClass({
                             <MaterialIcons name="add-shopping-cart" size={32} color={'black'} />
                         </View>
                         <View style={styles.explanationContainer}>
-                            <Text style={styles.explanationText}>Wishlist your favourite products and get information directly from the seller.</Text>
+                            <Text style={styles.explanationText}>{Strings.WISHLIST_EXPLANATION}</Text>
                         </View>
                     </View>
 
@@ -60,7 +60,7 @@ var TutorialPage = React.createClass({
                             <Ionicons name="md-search" size={32} color={'black'} />
                         </View>
                         <View style={styles.explanationContainer}>
-                            <Text style={styles.explanationText}>In this section, you can search for sellers who are on Storefront.</Text>
+                            <Text style={styles.explanationText}>{Strings.SEARCH_EXPLANATION}</Text>
                         </View>
                     </View>
 
@@ -69,7 +69,7 @@ var TutorialPage = React.createClass({
                             <MaterialIcons name="store-mall-directory" size={32} color={'black'} />
                         </View>
                         <View style={styles.explanationContainer}>
-                            <Text style={styles.explanationText}>The list of sellers you follow can be found here.</Text>
+                            <Text style={styles.explanationText}>{Strings.FOLLOW_EXPLANATION}</Text>
                         </View>
                     </View>
 
@@ -78,7 +78,7 @@ var TutorialPage = React.createClass({
                             <Ionicons name="md-person" size={32} color={'black'} />
                         </View>
                         <View style={styles.explanationContainer}>
-                            <Text style={styles.explanationText}>You can check your profile here.</Text>
+                            <Text style={styles.explanationText}>{Strings.PROFILE_EXPLANATION}</Text>
                         </View>
                     </View>
                 </ScrollView>
