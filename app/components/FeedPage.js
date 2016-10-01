@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {View, StyleSheet, Text, ActivityIndicator} from 'react-native';
 import Feed from "./Feed";
 import Footer from "./Footer";
+import Strings from './../strings';
 
 const styles = StyleSheet.create({
     container: {

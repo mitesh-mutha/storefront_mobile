@@ -49,17 +49,8 @@ var Feed = React.createClass({
         fetch(url,{
             method: 'GET'
         })
-        .then((response) => {
-            if(response.status === 200) {
-                response.json();
-            } else {
-                utility.showAlertWithOK(Strings.ERROR, Strings.RESPONSE_CODE_IS+response.status)
-                return null;
-            }
-        })
+        .then((response) => response.json())
         .then((responseJson) => {
-            if (responseJson === null)
-                return;  
 
             if ( responseJson.status && responseJson.status === "success") {
         
@@ -135,17 +126,8 @@ var Feed = React.createClass({
         fetch(url,{
             method: 'POST'
         })
-        .then((response) => {
-            if(response.status === 200) {
-                response.json();
-            } else {
-                utility.showAlertWithOK(Strings.ERROR, Strings.RESPONSE_CODE_IS+response.status)
-                return null;
-            }
-        })
+        .then((response) => response.json())
         .then((responseJson) => {
-            if (responseJson === null)
-                return;  
             if (responseJson.status === 'success') {
                 if (itemtype == 'product') {
                     FEED_ITEMS[FEED_ITEMS_MAPPING["product"+itemid]].liked = true;
@@ -177,17 +159,8 @@ var Feed = React.createClass({
         fetch(url,{
             method: 'POST'
         })
-        .then((response) => {
-            if(response.status === 200) {
-                response.json();
-            } else {
-                utility.showAlertWithOK(Strings.ERROR, Strings.RESPONSE_CODE_IS+response.status)
-                return null;
-            }
-        })
+        .then((response) => response.json())
         .then((responseJson) => {
-            if (responseJson === null)
-                return;  
             if (responseJson.status === 'success') {
                 if (itemtype == 'product') {
                     FEED_ITEMS[FEED_ITEMS_MAPPING["product"+itemid]].liked = false;
@@ -230,17 +203,8 @@ var Feed = React.createClass({
         fetch(url,{
             method: 'POST'
         })
-        .then((response) => {
-            if(response.status === 200) {
-                response.json();
-            } else {
-                utility.showAlertWithOK(Strings.ERROR, Strings.RESPONSE_CODE_IS+response.status)
-                return null;
-            }
-        })
+        .then((response) => response.json())
         .then((responseJson) => {
-            if (responseJson === null)
-                return;  
             if (responseJson.status === 'success') {
                 FEED_ITEMS[FEED_ITEMS_MAPPING["product"+itemid]].wishlisted = true;
                 this.updateFeedListViewSource();
@@ -260,17 +224,8 @@ var Feed = React.createClass({
         fetch(url,{
             method: 'POST'
         })
-        .then((response) => {
-            if(response.status === 200) {
-                response.json();
-            } else {
-                utility.showAlertWithOK(Strings.ERROR, Strings.RESPONSE_CODE_IS+response.status)
-                return null;
-            }
-        })
+        .then((response) => response.json())
         .then((responseJson) => {
-            if (responseJson === null)
-                return;  
             if (responseJson.status === 'success') {
                 FEED_ITEMS[FEED_ITEMS_MAPPING["product"+itemid]].wishlisted = false;
                 this.updateFeedListViewSource();
@@ -450,21 +405,8 @@ var Feed = React.createClass({
             fetch(url,{
                 method: 'GET'
             })
-            .then((response) => {
-                if(response.status === 200) {
-                    response.json();
-                } else {
-                    utility.showAlertWithOK(Strings.ERROR, Strings.RESPONSE_CODE_IS+response.status)
-                    return null;
-                }
-            })
-            .then((responseJson) => {
-                if (responseJson === null) {
-                    this.setState({appendingInProcess: false});
-                    this.props.loadingFunc(false);
-                    return;  
-                }
-                    
+            .then((response) => response.json())
+            .then((responseJson) => {       
                 
                 if ( responseJson.status && responseJson.status === "success") {
                     feed_changed = false;

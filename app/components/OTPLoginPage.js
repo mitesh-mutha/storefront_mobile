@@ -49,19 +49,8 @@ var OTPLoginPage = React.createClass({
         fetch(url,{
             method: 'POST'
         })
-        .then((response) => {
-            if(response.status === 200) {
-                response.json();
-            } else {
-                utility.showAlertWithOK(Strings.ERROR, Strings.RESPONSE_CODE_IS+response.status)
-                return null;
-            }
-        })
-        .then((responseJson) => {
-            this.setState({spinnerVisible: false});
-
-            if (responseJson === null)
-                return;            
+        .then((response) => response.json())
+        .then((responseJson) => {     
 
             if (responseJson.status === "success") {
                 Actions.otpverificationpage({mobileNumber: this.state.mobileInput});
