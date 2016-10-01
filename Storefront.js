@@ -13,6 +13,7 @@ import WishlistPage from './app/components/WishlistPage';
 import OTPLoginPage from './app/components/OTPLoginPage';
 import OTPVerificationPage from './app/components/OTPVerificationPage';
 import SplashPage from './app/components/SplashPage';
+import TutorialPage from './app/components/TutorialPage';
 
 var PushNotification = require('react-native-push-notification');
 
@@ -81,6 +82,7 @@ export default class Storefront extends React.Component {
             <Scene key="modal" component={Modal} >
                 <Scene key="root">
                     <Scene key="splashpage" component={SplashPage} hideNavBar={true} initial={true} />
+                    <Scene key="tutorialpage" component={TutorialPage} hideNavBar={true} />
                     <Scene key="otploginpage" component={OTPLoginPage} hideNavBar={true} />
                     <Scene key="otpverificationpage" component={OTPVerificationPage} hideNavBar={true}/>
                     <Scene key="feedpage" component={FeedPage} hideNavBar={true} />

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ListView, View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, TouchableHighlight} from 'react-native';
+import {ListView, View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, TouchableHighlight, AsyncStorage} from 'react-native';
 import Dimensions from 'Dimensions';
 import {Actions} from "react-native-router-flux";
 import Share from "react-native-share";
@@ -46,8 +46,6 @@ var Feed = React.createClass({
             "current_time="+this.state.feedTimestamp+
             "page="+this.state.pageNumber;
 
-        this.setState({spinnerVisible: true});
-
         fetch(url,{
             method: 'GET'
         })
@@ -86,10 +84,29 @@ var Feed = React.createClass({
         });
     },
 
+    async checkTutorialNeeded() {
+        try {
+            value = await AsyncStorage.getItem("tutorial_seen");
+            if (value !== null){
+                // Yes, seen... Continue ... Do nothing !!!   
+            }
+            else {
+                // Not seen .... Let's go show tutorial
+                Actions.tutorialpage();
+            }            
+        } catch (error) {
+            Utility.showAlertWithOK("Error", "Could not read the credentials");
+        }
+    },
+
     componentDidMount() {
         if ( !this.props.phone || !this.props.authentication_token ) {
             utility.showAlertWithOK(Strings.NO_LOGIN_DETAILS, Strings.NO_LOGIN_DETAILS_MSG);
         }
+
+        this.setState({spinnerVisible: true});
+
+        this.checkTutorialNeeded();
 
         this.getFeed();
     },
@@ -458,7 +475,7 @@ var Feed = React.createClass({
         if (_lview) {
             _lview.scrollTo({y: 0, animated: true});
         }
-        this.setState({feedTimestamp: Math.floor((new Date()).getTime() / 1000), pageNumber: 1, showNewItemsBox: false}, function(){
+        this.setState({feedTimestamp: Math.floor((new Date()).getTime() / 1000), pageNumber: 1, showNewItemsBox: false, spinnerVisible: true}, function(){
             this.getFeed();    
         });        
     },

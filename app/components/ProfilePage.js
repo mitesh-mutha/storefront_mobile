@@ -175,6 +175,10 @@ var ProfilePage = React.createClass({
                     <TouchableOpacity style={styles.profileActions} onPress={()=>this.logoutFromApp()}>
                         <MaterialIcons name='exit-to-app' size={16} color='black' /><Text style={styles.actionLabel}>      Log Out</Text>
                     </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.profileActions} onPress={()=>Actions.tutorialpage()}>
+                        <MaterialIcons name='info' size={16} color='black' /><Text style={styles.actionLabel}>      Tutorial</Text>
+                    </TouchableOpacity>
                 </ScrollView>
 
         
