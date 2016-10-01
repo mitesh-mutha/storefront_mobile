@@ -257,7 +257,7 @@ var VendorPage = React.createClass({
                         <MaterialIcons name="arrow-back" size={24} color={'black'} />
                     </TouchableOpacity>
                     <View style={styles.appNameContainer}>
-                        <Text style={styles.appName}>Storefront</Text>
+                        <Text style={styles.appName}>Seller</Text>
                     </View>
                 </View>
 

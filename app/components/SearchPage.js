@@ -211,7 +211,7 @@ var SearchPage  = React.createClass({
               <Ionicons name="md-search" size={20} />
               <TextInput
                 ref="SearchInput"
-                placeholder="Search"
+                placeholder="Seller Search"
                 style={styles.searchInput}
                 onChangeText={(text) => this.onSearchTextChange(text)}
                 value={this.state.searchString}/>

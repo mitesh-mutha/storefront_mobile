@@ -362,7 +362,7 @@ var WishlistPage  = React.createClass({
 
                 <View style={styles.header}>
                     <View style={styles.appNameContainer}>
-                        <Text style={styles.appName}>Storefront</Text>
+                        <Text style={styles.appName}>Wishlisted Products</Text>
                     </View>
                     {this.renderLoadingMessage()}
                 </View>

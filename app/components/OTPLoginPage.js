@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, AsyncStorage} from 'react-native';
-import {Actions} from "react-native-router-flux";
+import {Actions, ActionConst} from "react-native-router-flux";
 import URL from './../urls';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Utility from './../utilities';
@@ -22,7 +22,7 @@ var OTPLoginPage = React.createClass({
             this.setState({spinnerVisible: false});
             if (value !== null){
                 value = JSON.parse(value);
-                Actions.feedpage({'phone': value.phone, 'authentication_token': value.authentication_token});
+                Actions.feedpage({'phone': value.phone, 'authentication_token': value.authentication_token, type: ActionConst.RESET});
             }
         } catch (error) {
             this.setState({spinnerVisible: false});

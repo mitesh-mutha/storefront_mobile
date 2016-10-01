@@ -192,7 +192,7 @@ var FollowPage = React.createClass({
 
                 <View style={styles.header}>
                     <View style={styles.appNameContainer}>
-                        <Text style={styles.appName}>Storefront</Text>
+                        <Text style={styles.appName}>Sellers Following</Text>
                     </View>
                 </View>
 
