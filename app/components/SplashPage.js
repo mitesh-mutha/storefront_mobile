@@ -24,8 +24,12 @@ var SplashPage = React.createClass({
                 value = JSON.parse(value);
                 this.setState({readyToMove: true})
             }
+            else {
+                this.setState({readyToMove: false});    
+            }            
         } catch (error) {
             Utility.showAlertWithOK("Error", "Could not read the credentials");
+            this.setState({readyToMove: false});
         }    
     },
 

@@ -12,7 +12,7 @@ var OTPLoginPage = React.createClass({
     getInitialState() {
         return {
             mobileInput: "",
-            spinnerVisible: true
+            spinnerVisible: false
         }
     },
     /*
