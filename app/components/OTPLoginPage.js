@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, AsyncStorage} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity} from 'react-native';
 import {Actions, ActionConst} from "react-native-router-flux";
 import URL from './../urls';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -15,7 +15,7 @@ var OTPLoginPage = React.createClass({
             spinnerVisible: true
         }
     },
-
+    /*
     async checkAuthenticationTokenExists() {
         try {
             const value = await AsyncStorage.getItem("login_details");
@@ -33,7 +33,7 @@ var OTPLoginPage = React.createClass({
     componentDidMount() {
         this.checkAuthenticationTokenExists();
     },
-
+    */
     validateMobileNumber() {
 
         if (!this.state.mobileInput) {

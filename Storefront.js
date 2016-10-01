@@ -12,35 +12,37 @@ import CatalogPage from './app/components/CatalogPage';
 import WishlistPage from './app/components/WishlistPage';
 import OTPLoginPage from './app/components/OTPLoginPage';
 import OTPVerificationPage from './app/components/OTPVerificationPage';
+import SplashPage from './app/components/SplashPage';
 
 const reducerCreate = params=>{
-  const defaultReducer = Reducer(params);
-  return (state, action)=>{
-    console.log("ACTION:", action);
-    return defaultReducer(state, action);
-  }
+    const defaultReducer = Reducer(params);
+    return (state, action)=>{
+        console.log("ACTION:", action);
+        return defaultReducer(state, action);
+    }
 };
 
 export default class Storefront extends React.Component {
-  render() {
+    render() {
     
-    BackAndroid.addEventListener('hardwareBackPress', () => Actions.pop());
+        BackAndroid.addEventListener('hardwareBackPress', () => Actions.pop());
 
-    return <Router createReducer={reducerCreate}>
-      <Scene key="modal" component={Modal} >
-        <Scene key="root">
-          <Scene key="otploginpage" component={OTPLoginPage} hideNavBar={true} initial={true} />
-          <Scene key="otpverificationpage" component={OTPVerificationPage} hideNavBar={true}/>
-          <Scene key="feedpage" component={FeedPage} hideNavBar={true} />
-          <Scene key="productpage" component={ProductPage} hideNavBar={true} panHandlers={null} />
-          <Scene key="searchpage" component={SearchPage} hideNavBar={true} />
-          <Scene key="followpage" component={FollowPage} hideNavBar={true} />
-          <Scene key="profilepage" component={ProfilePage} hideNavBar={true} />
-          <Scene key="vendorpage" component={VendorPage} hideNavBar={true} />
-          <Scene key="catalogpage" component={CatalogPage} hideNavBar={true} />
-          <Scene key="wishlistpage" component={WishlistPage} hideNavBar={true} />
-        </Scene>
-      </Scene>
-    </Router>;
-  }
+        return <Router createReducer={reducerCreate}>
+            <Scene key="modal" component={Modal} >
+                <Scene key="root">
+                    <Scene key="splashpage" component={SplashPage} hideNavBar={true} initial={true} />
+                    <Scene key="otploginpage" component={OTPLoginPage} hideNavBar={true} />
+                    <Scene key="otpverificationpage" component={OTPVerificationPage} hideNavBar={true}/>
+                    <Scene key="feedpage" component={FeedPage} hideNavBar={true} />
+                    <Scene key="productpage" component={ProductPage} hideNavBar={true} panHandlers={null} />
+                    <Scene key="searchpage" component={SearchPage} hideNavBar={true} />
+                    <Scene key="followpage" component={FollowPage} hideNavBar={true} />
+                    <Scene key="profilepage" component={ProfilePage} hideNavBar={true} />
+                    <Scene key="vendorpage" component={VendorPage} hideNavBar={true} />
+                    <Scene key="catalogpage" component={CatalogPage} hideNavBar={true} />
+                    <Scene key="wishlistpage" component={WishlistPage} hideNavBar={true} />
+                </Scene>
+            </Scene>
+        </Router>;
+    }
 }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, AsyncStorage} from 'react-native';
-import {Actions} from "react-native-router-flux";
+import {Actions, ActionConst} from "react-native-router-flux";
 import URL from './../urls';
 import Spinner from 'react-native-loading-spinner-overlay';
 import utility from './../utilities';
@@ -67,7 +67,7 @@ var OTPVerificationPage = React.createClass({
             if (responseJson.status === "success") {
                 if (responseJson.authentication_token) {
                     this.saveAuthenticationToken(responseJson.authentication_token);
-                    Actions.feedpage({'phone': this.props.mobileNumber, 'authentication_token': responseJson.authentication_token});
+                    Actions.feedpage({'phone': this.props.mobileNumber, 'authentication_token': responseJson.authentication_token, type: ActionConst.RESET});
                 }
                 else {
                     utility.showAlertWithOK(Strings.NO_TOKEN_IN_RESPONSE, Strings.NO_TOKEN_IN_RESPONSE_MSG);  
