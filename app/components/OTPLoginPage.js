@@ -15,25 +15,7 @@ var OTPLoginPage = React.createClass({
             spinnerVisible: false
         }
     },
-    /*
-    async checkAuthenticationTokenExists() {
-        try {
-            const value = await AsyncStorage.getItem("login_details");
-            this.setState({spinnerVisible: false});
-            if (value !== null){
-                value = JSON.parse(value);
-                Actions.feedpage({'phone': value.phone, 'authentication_token': value.authentication_token, type: ActionConst.RESET});
-            }
-        } catch (error) {
-            this.setState({spinnerVisible: false});
-            console.log("Error "+error);
-        }    
-    },
-
-    componentDidMount() {
-        this.checkAuthenticationTokenExists();
-    },
-    */
+    
     validateMobileNumber() {
 
         if (!this.state.mobileInput) {
