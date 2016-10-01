@@ -28,17 +28,23 @@ var SplashPage = React.createClass({
                 this.setState({readyToMove: false});    
             }            
         } catch (error) {
-            Utility.showAlertWithOK("Error", "Could not read the credentials");
+            Utility.showAlertWithOK(Strings.ERROR, Strings.NO_LOGIN_DETAILS_MSG);
             this.setState({readyToMove: false});
         }    
     },
 
     checkStatus() {
         if (this.state.readyToMove == true) { 
-            Actions.feedpage({'phone': value.phone, 'authentication_token': value.authentication_token, type: ActionConst.RESET}); 
+            Actions.feedpage({
+                'phone': value.phone, 
+                'authentication_token': value.authentication_token, 
+                type: ActionConst.RESET
+            }); 
         } 
         else if ( this.state.readyToMove == false) {
-            Actions.otploginpage({type: ActionConst.RESET});
+            Actions.otploginpage({
+                type: ActionConst.RESET
+            });
         }
         else {
             this.setTimeout(
