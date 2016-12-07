@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, BackAndroid} from 'react-native';
+import {View, BackAndroid, Linking, AsyncStorage} from 'react-native';
 import {Scene, Reducer, Router, Actions, Modal} from 'react-native-router-flux';
 
 import FeedPage from './app/components/FeedPage';
@@ -25,9 +25,36 @@ const reducerCreate = params=>{
     }
 };
 
+/*
 export default class Storefront extends React.Component {
     render() {
     
+        BackAndroid.addEventListener('hardwareBackPress', () => Actions.pop());
+
+        return <Router createReducer={reducerCreate}>
+            <Scene key="modal" component={Modal} >
+                <Scene key="root">
+                    <Scene key="splashpage" component={SplashPage} hideNavBar={true} initial={true} />
+                    <Scene key="tutorialpage" component={TutorialPage} hideNavBar={true} />
+                    <Scene key="otploginpage" component={OTPLoginPage} hideNavBar={true} />
+                    <Scene key="otpverificationpage" component={OTPVerificationPage} hideNavBar={true}/>
+                    <Scene key="feedpage" component={FeedPage} hideNavBar={true} />
+                    <Scene key="productpage" component={ProductPage} hideNavBar={true} panHandlers={null} />
+                    <Scene key="searchpage" component={SearchPage} hideNavBar={true} />
+                    <Scene key="followpage" component={FollowPage} hideNavBar={true} />
+                    <Scene key="profilepage" component={ProfilePage} hideNavBar={true} />
+                    <Scene key="vendorpage" component={VendorPage} hideNavBar={true} />
+                    <Scene key="catalogpage" component={CatalogPage} hideNavBar={true} />
+                    <Scene key="wishlistpage" component={WishlistPage} hideNavBar={true} />
+                </Scene>
+            </Scene>
+        </Router>;
+    }
+}
+*/
+
+var Storefront = React.createClass({
+    componentDidMount() {
         BackAndroid.addEventListener('hardwareBackPress', () => Actions.pop());
 
         PushNotification.configure({
@@ -77,6 +104,10 @@ export default class Storefront extends React.Component {
               */
             requestPermissions: true,
         });
+    },
+
+    render() {
+        
 
         return <Router createReducer={reducerCreate}>
             <Scene key="modal" component={Modal} >
@@ -97,4 +128,6 @@ export default class Storefront extends React.Component {
             </Scene>
         </Router>;
     }
-}
+});
+
+module.exports = Storefront;

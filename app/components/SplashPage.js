@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, Image, AsyncStorage} from 'react-native';
+import {View, StyleSheet, Image, AsyncStorage, Linking} from 'react-native';
 import {Actions, ActionConst} from "react-native-router-flux";
 import TimerMixin from 'react-timer-mixin';
 import Utility from './../utilities';
@@ -35,11 +35,69 @@ var SplashPage = React.createClass({
 
     checkStatus() {
         if (this.state.readyToMove == true) { 
+
+            var url = Linking.getInitialURL().then((url) => {
+                if (url) {
+                    console.log('Initial url is: ' + url);
+                    
+                    var productsRegex = /http:\/\/storefrontindia\.com\/product\/(\d\d*).*/gi
+                    var match = productsRegex.exec(url);
+                    if (match && match[1]) {
+                        Actions.productpage({
+                            'product_id': parseInt(match[1]),
+                            'phone': value.phone, 
+                            'authentication_token': value.authentication_token, 
+                            type: ActionConst.RESET
+                        });    
+                        return;
+                    }
+
+                    var sellersRegex = /http:\/\/storefrontindia\.com\/seller\/(\d\d*).*/gi
+                    var match = sellersRegex.exec(url);
+                    if (match && match[1]) {
+                        Actions.vendorpage({
+                            'seller_id': parseInt(match[1]),
+                            'phone': value.phone, 
+                            'authentication_token': value.authentication_token, 
+                            type: ActionConst.RESET
+                        });    
+                        return;
+                    }
+
+                    var followedRegex = /http:\/\/storefrontindia\.com\/followed[\/]*.*/gi
+                    var match = followedRegex.exec(url);
+                    if (match) {
+                        Actions.followpage({
+                            'phone': value.phone, 
+                            'authentication_token': value.authentication_token, 
+                            type: ActionConst.RESET
+                        });    
+                        return;
+                    }
+
+                    Actions.feedpage({
+                        'phone': value.phone, 
+                        'authentication_token': value.authentication_token, 
+                        type: ActionConst.RESET
+                    });    
+                        
+                }
+                else {
+                    Actions.feedpage({
+                        'phone': value.phone, 
+                        'authentication_token': value.authentication_token, 
+                        type: ActionConst.RESET
+                    }); 
+                }
+            }).catch(err => console.error('An error occurred', err));
+            /*
             Actions.feedpage({
                 'phone': value.phone, 
                 'authentication_token': value.authentication_token, 
                 type: ActionConst.RESET
             }); 
+            */
+
         } 
         else if ( this.state.readyToMove == false) {
             Actions.otploginpage({

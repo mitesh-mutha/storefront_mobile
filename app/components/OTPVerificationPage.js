@@ -165,7 +165,7 @@ var OTPVerificationPage = React.createClass({
         var that = this;
     
         subscription = SmsListener.addListener(function(message){
-            verificationCodeRegex = /Your Storefront verification code: ([\d]{6})/;
+            verificationCodeRegex = /Your Storefront verification code: ([\d]{6})/gi;
       
             if (verificationCodeRegex.test(message.body)) {
                 var verificationCode = message.body.match(verificationCodeRegex)[1];

@@ -266,13 +266,18 @@ var Feed = React.createClass({
                 share_URL: Strings.STOREFRONT_URL,
                 title: Strings.SHARE_PRODUCT
             },(e) => {
-                utility.showAlertWithOK(Strings.ERROR, Strings.COULD_NOT_SHARE);
+                //utility.showAlertWithOK(Strings.ERROR, Strings.COULD_NOT_SHARE);
             });
             return;
         }
 
         this.setState({shareSpinnerVisible: true});               
-
+        
+        if (itemtype == 'product')
+            shareURL = "http://storefrontindia.com/product/"+itemid;
+        else
+            shareURL = "http://storefrontindia.com/";
+        
         RNFS.downloadFile({
             fromUrl: imgLink,
             toFile: RNFS.ExternalDirectoryPath+"/share_image.jpg",
@@ -283,11 +288,11 @@ var Feed = React.createClass({
             this.setState({shareSpinnerVisible: false});
             Share.open({
                 share_text: imgText+Strings.SHARE_APPEND_STRING,
-                share_URL: "http://storefrontindia.com",
+                share_URL: shareURL,
                 share_image_path: RNFS.ExternalDirectoryPath+"/share_image.jpg",
                 title: Strings.SHARE_PRODUCT
             },(e) => {
-                utility.showAlertWithOK(Strings.ERROR, Strings.COULD_NOT_SHARE);
+                //utility.showAlertWithOK(Strings.ERROR, Strings.COULD_NOT_SHARE+": "+e.message);
             });
 
         })
@@ -406,7 +411,7 @@ var Feed = React.createClass({
                 method: 'GET'
             })
             .then((response) => response.json())
-            .then((responseJson) => {       
+            .then((responseJson) => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
                 
                 if ( responseJson.status && responseJson.status === "success") {
                     feed_changed = false;
@@ -558,7 +563,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
         height: 300,
         alignSelf: 'center',
-        resizeMode: 'contain'
+        //resizeMode: 'contain'
     },
     actionButtonContainer: {
         marginLeft: 8,

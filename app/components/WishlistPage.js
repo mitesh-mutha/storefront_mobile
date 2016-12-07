@@ -128,7 +128,12 @@ var WishlistPage  = React.createClass({
             return;
         }
 
-        this.setState({shareSpinnerVisible: true});               
+        this.setState({shareSpinnerVisible: true});    
+
+        if (itemtype == 'product')
+            shareURL = "http://storefrontindia.com/product/"+itemid
+        else
+            shareURL = "http://storefrontindia.com/"           
 
         RNFS.downloadFile({
             fromUrl: imgLink,
@@ -140,7 +145,7 @@ var WishlistPage  = React.createClass({
             this.setState({shareSpinnerVisible: false});
             Share.open({
                 share_text: imgText+". Find more products on Storefront.",
-                share_URL: "http://storefrontindia.com",
+                share_URL: shareURL,
                 share_image_path: RNFS.ExternalDirectoryPath+"/share_image.jpg",
                 title: "Share Product"
             },(e) => {
