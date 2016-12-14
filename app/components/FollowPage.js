@@ -27,6 +27,10 @@ var FollowPage = React.createClass({
     },
 
     componentDidMount() {
+        if (this.props.tracker){
+            this.props.tracker.trackScreenView('FollowPage');
+        }
+        
         url = URL.API_URL.CUSTOMER_SELLERS_URL+"?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token+"&"+
@@ -96,6 +100,8 @@ var FollowPage = React.createClass({
             this.setState({spinnerVisible: false});
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+
+        this.props.tracker.trackEvent('FollowPage','Click - Follow',{label: ''+id});    
     },
 
     unfollowSeller(id) {
@@ -133,6 +139,8 @@ var FollowPage = React.createClass({
             this.setState({spinnerVisible: false});
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+
+        this.props.tracker.trackEvent('FollowPage','Click - Unfollow',{label: ''+id});    
     },
 
     renderFollowButton(id, isFollowing) {

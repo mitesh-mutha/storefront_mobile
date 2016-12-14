@@ -30,6 +30,9 @@ var VendorPage = React.createClass({
     },
 
   componentDidMount() {
+    if (this.props.tracker){
+        this.props.tracker.trackScreenView('VendorPage');
+    }
 
     this.setState({spinnerVisible: true});
 
@@ -92,6 +95,7 @@ var VendorPage = React.createClass({
             return;
         
         Communications.phonecall(this.state.seller.contact_number, false);
+        this.props.tracker.trackEvent('Vendor','Click - Call',{label: 'Seller ID '+this.props.seller_id});    
     },
 
     openAddressLocation() {
@@ -109,6 +113,7 @@ var VendorPage = React.createClass({
             return Linking.openURL(url);
             }
         }).catch(err => console.error('An error occurred', err));
+        this.props.tracker.trackEvent('Vendor','Click - Address',{label: 'Seller ID '+this.props.seller_id});    
     },
 
     renderContactSection() {
@@ -177,6 +182,7 @@ var VendorPage = React.createClass({
                 return Linking.openURL(url);
             }
         }).catch(err => console.error('An error occurred', err));
+        this.props.tracker.trackEvent('Vendor','Click - Fb',{label: 'Seller ID '+this.props.seller_id});    
     },
 
     renderFacebookSection() {
@@ -220,6 +226,7 @@ var VendorPage = React.createClass({
                 return Linking.openURL(url);
             }
         }).catch(err => console.error('An error occurred', err));
+        this.props.tracker.trackEvent('Vendor','Click - Website',{label: 'Seller ID '+this.props.seller_id});    
     },
 
     renderWebsiteSection() {

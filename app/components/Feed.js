@@ -143,6 +143,12 @@ var Feed = React.createClass({
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
 
+        if (this.props.tracker){
+            if (itemtype == 'product') 
+                this.props.tracker.trackEvent('Feed','Click - Like - Product',{label: ''+itemid});
+            else
+                this.props.tracker.trackEvent('Feed','Click - Like - Post',{label: ''+itemid});
+        }
         return;
     },
 
@@ -175,6 +181,14 @@ var Feed = React.createClass({
         .catch((error) =>  {
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+
+                    
+        if (this.props.tracker){
+            if (itemtype == 'product') 
+                this.props.tracker.trackEvent('Feed','Click - Unlike - Product',{label: ''+itemid});
+            else
+                this.props.tracker.trackEvent('Feed','Click - Unlike - Post',{label: ''+itemid});
+        }
         return;
     },
 
@@ -213,6 +227,10 @@ var Feed = React.createClass({
         .catch((error) =>  {
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+
+        if (this.props.tracker){
+            this.props.tracker.trackEvent('Feed','Click - Wishlist',{label: ''+itemid});
+        }
         return;
     },
 
@@ -234,6 +252,10 @@ var Feed = React.createClass({
         .catch((error) =>  {
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+
+        if (this.props.tracker){
+            this.props.tracker.trackEvent('Feed','Click - Unwishlist',{label: ''+itemid});
+        }
         return;
     },
 
@@ -259,6 +281,12 @@ var Feed = React.createClass({
 
     onShare(itemtype, itemid, imgLink, imgText) {
         utility.informServerAboutShare(itemid, itemtype, this.props.phone, this.props.authentication_token);
+        if (this.props.tracker){
+            if (itemtype == 'product')
+                this.props.tracker.trackEvent('Feed','Click - Share - Product',{label: ''+itemid});
+            else
+                this.props.tracker.trackEvent('Feed','Click - Share - Post',{label: ''+itemid});
+        }
 
         if (!imgLink) {
             Share.open({
@@ -448,7 +476,8 @@ var Feed = React.createClass({
 
                     if (feed_changed) {
                         this.updateFeedListViewSource();
-                        this.setState({pageNumber: currentPage});    
+                        this.setState({pageNumber: currentPage});
+                        this.props.tracker.trackEvent('Feed','Feed Page Changed',{label: ''+currentPage});    
                     }                    
 
                     if ( responseJson.new_products == true || responseJson.new_posts == true ) {
@@ -479,6 +508,7 @@ var Feed = React.createClass({
         if (_lview) {
             _lview.scrollTo({y: 0, animated: true});
         }
+        this.props.tracker.trackEvent('Feed','Click - New Items');
         this.setState({feedTimestamp: Math.floor((new Date()).getTime() / 1000), pageNumber: 1, showNewItemsBox: false, spinnerVisible: true}, function(){
             this.getFeed();    
         });        

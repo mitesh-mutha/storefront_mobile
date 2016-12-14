@@ -48,7 +48,8 @@ var SplashPage = React.createClass({
                             'phone': value.phone, 
                             'authentication_token': value.authentication_token, 
                             type: ActionConst.RESET
-                        });    
+                        });
+                        this.props.tracker.trackEvent('SplashPage','Product Redirect',{label: match[1]});    
                         return;
                     }
 
@@ -60,7 +61,8 @@ var SplashPage = React.createClass({
                             'phone': value.phone, 
                             'authentication_token': value.authentication_token, 
                             type: ActionConst.RESET
-                        });    
+                        });
+                        this.props.tracker.trackEvent('SplashPage','Seller Redirect',{label: match[1]});    
                         return;
                     }
 
@@ -72,6 +74,7 @@ var SplashPage = React.createClass({
                             'authentication_token': value.authentication_token, 
                             type: ActionConst.RESET
                         });    
+                        this.props.tracker.trackEvent('SplashPage','Followed Redirect');    
                         return;
                     }
 
@@ -113,6 +116,9 @@ var SplashPage = React.createClass({
     },
 
     componentDidMount() {
+        if (this.props.tracker){
+            this.props.tracker.trackScreenView('SplashPage');
+        }
 
         this.checkAuthenticationTokenExists();
 

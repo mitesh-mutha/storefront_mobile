@@ -37,6 +37,10 @@ var WishlistPage  = React.createClass({
     },
 
     componentDidMount() {
+        if (this.props.tracker){
+            this.props.tracker.trackScreenView('WishlistPage');
+        }
+        
         url = URL.API_URL.CUSTOMER_WISHLISTED_PRODUCTS_URL+"?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token+"&"+
@@ -90,6 +94,12 @@ var WishlistPage  = React.createClass({
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
 
+        if (this.props.tracker){
+            if (itemtype == 'product') 
+                this.props.tracker.trackEvent('WishlistPage','Click - Like - Product',{label: ''+itemid});
+            else
+                this.props.tracker.trackEvent('WishlistPage','Click - Like - Post',{label: ''+itemid});
+        }
         return;
     },
 
@@ -111,12 +121,24 @@ var WishlistPage  = React.createClass({
         .catch((error) =>  {
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+
+        if (this.props.tracker){
+            if (itemtype == 'product') 
+                this.props.tracker.trackEvent('WishlistPage','Click - Unlike - Product',{label: ''+itemid});
+            else
+                this.props.tracker.trackEvent('WishlistPage','Click - Unlike - Post',{label: ''+itemid});
+        }
         return;
     },
 
     onShare(itemtype, itemid, imgLink, imgText) {
         utility.informServerAboutShare(itemid, itemtype, this.props.phone, this.props.authentication_token);
-
+        if (this.props.tracker){
+            if (itemtype == 'product')
+                this.props.tracker.trackEvent('WishlistPage','Click - Share - Product',{label: ''+itemid});
+            else
+                this.props.tracker.trackEvent('WishlistPage','Click - Share - Post',{label: ''+itemid});
+        }
         if (!imgLink) {
             Share.open({
                 share_text: imgText,
@@ -177,6 +199,9 @@ var WishlistPage  = React.createClass({
         .catch((error) =>  {
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+        if (this.props.tracker){
+            this.props.tracker.trackEvent('WishlistPage','Click - Wishlist',{label: ''+itemid});
+        }
         return;
     },
 
@@ -198,6 +223,9 @@ var WishlistPage  = React.createClass({
         .catch((error) =>  {
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+        if (this.props.tracker){
+            this.props.tracker.trackEvent('WishlistPage','Click - Unwishlist',{label: ''+itemid});
+        }
         return;
     },
 
@@ -309,6 +337,7 @@ var WishlistPage  = React.createClass({
                         }
                         this.updateListDataSource();
                         this.setState({pageNumber: currentPage});
+                        this.props.tracker.trackEvent('WishlistPage','Feed Page Changed',{label: ''+currentPage});    
                     }     
 
                 }

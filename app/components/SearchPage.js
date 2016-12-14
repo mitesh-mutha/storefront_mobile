@@ -13,7 +13,8 @@ var Ionicons = require('react-native-vector-icons/Ionicons');
 var SEARCH_ITEM ={};
 
 var SearchPage  = React.createClass({
-    getInitialState() {        
+    getInitialState() {    
+          
         return {
             dataSource: null,
             searchString: "",
@@ -22,6 +23,9 @@ var SearchPage  = React.createClass({
     },
 
     componentDidMount() {
+        if (this.props.tracker){
+            this.props.tracker.trackScreenView('SearchPage');
+        }  
         this.fetchSearchResults("");
     },
 
@@ -61,6 +65,7 @@ var SearchPage  = React.createClass({
             this.setState({spinnerVisible: false});
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+        this.props.tracker.trackEvent('FollowPage','Click - Follow',{label: ''+id});    
     },
 
     unfollowSeller(id) {
@@ -98,6 +103,7 @@ var SearchPage  = React.createClass({
             this.setState({spinnerVisible: false});
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+        this.props.tracker.trackEvent('FollowPage','Click - Unfollow',{label: ''+id});    
     },
 
     renderFollowButton(id, isFollowing) {

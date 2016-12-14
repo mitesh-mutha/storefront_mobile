@@ -45,10 +45,17 @@ var OTPVerificationPage = React.createClass({
         }
     },
 
-    onVerifyButtonPress() {
+    onVerifyButtonPress(autoRead) {
     
         if ( !this.validateOTPInput() )
             return;
+
+        if (this.props.tracker) {
+            if (autoRead)
+                this.props.tracker.trackEvent('OTPVerificationPage','OTP Auto Read');
+            else
+                this.props.tracker.trackEvent('OTPVerificationPage','Click - Verify'); 
+        }
 
         url = URL.API_URL.OTP_VERIFICATION_URL + "?"+
             "phone="+this.props.mobileNumber+
@@ -72,15 +79,25 @@ var OTPVerificationPage = React.createClass({
                     });
                 }
                 else {
+                    this.setState({spinnerVisible: false});
                     utility.showAlertWithOK(Strings.NO_TOKEN_IN_RESPONSE, Strings.NO_TOKEN_IN_RESPONSE_MSG);  
                 }
             }
             else if (responseJson.status === "Unauthenticated") {
+                if (this.props.tracker) {
+                    this.props.tracker.trackEvent('OTPVerificationPage','Incorrect OTP Entered'); 
+                }
+                this.setState({spinnerVisible: false});
                 utility.showAlertWithOK(Strings.OTP_AUTHENTICATE_INCORRECT, Strings.OTP_AUTHENTICATE_INCORRECT_MSG);
+
             }
+            
 
         })
         .catch((error) =>  {
+            if (this.props.tracker) {
+                this.props.tracker.trackEvent('OTPVerificationPage','Authenticate Request Failed',{label:this.state.mobileInput}); 
+            }
 
             this.setState({spinnerVisible: false});
             utility.showAlertWithOK(Strings.OTP_AUTHENTICATE_REQUEST_FAILED, Strings.OTP_AUTHENTICATE_REQUEST_FAILED_MSG);
@@ -94,6 +111,10 @@ var OTPVerificationPage = React.createClass({
         url = URL.API_URL.OTP_RELOGIN_URL+"?phone="+this.props.mobileNumber;
 
         this.setState({spinnerVisible: true});
+
+        if (this.props.tracker) {
+            this.props.tracker.trackEvent('OTPVerificationPage','Resend OTP');   
+        }
 
         fetch(url,{
             method: 'POST'
@@ -115,6 +136,13 @@ var OTPVerificationPage = React.createClass({
             this.setState({spinnerVisible: false});
             Utility.showAlertWithOK(Strings.OTP_LOGIN_REQUEST_FAILED, Strings.OTP_LOGIN_REQUEST_FAILED_MSG);
         });
+    },
+
+    differentNumber() {
+        if (this.props.tracker) {
+            this.props.tracker.trackEvent('OTPVerificationPage','Different Number',{label: this.props.mobileNumber});
+        }
+        Actions.otploginpage()
     },
 
     render(){
@@ -150,7 +178,7 @@ var OTPVerificationPage = React.createClass({
                         <Text style={styles.OTPOptionButton}>{Strings.RESEND_OTP}</Text>
                     </TouchableOpacity>
               
-                    <TouchableOpacity onPress={()=>Actions.otploginpage()}>
+                    <TouchableOpacity onPress={()=>this.differentNumber()}>
                         <Text style={styles.OTPOptionButton}>{Strings.DIFFERENT_NUMBER}</Text>
                     </TouchableOpacity>
 
@@ -161,6 +189,9 @@ var OTPVerificationPage = React.createClass({
     },
 
     componentDidMount() {
+        if (this.props.tracker){
+            this.props.tracker.trackScreenView('OTPVerificationPage');
+        }
     
         var that = this;
     
@@ -168,10 +199,17 @@ var OTPVerificationPage = React.createClass({
             verificationCodeRegex = /Your Storefront verification code: ([\d]{6})/gi;
       
             if (verificationCodeRegex.test(message.body)) {
-                var verificationCode = message.body.match(verificationCodeRegex)[1];
-        
-                that.setState({otpText: verificationCode});
-                that.onVerifyButtonPress();
+                var verificationCode = message.body.match(verificationCodeRegex)[0];
+                
+                if (typeof(verificationCode) !== 'undefined') {
+                    verificationCode = verificationCode.slice(-6);                    
+                    that.setState({otpText: verificationCode},
+                        function(){
+                            that.onVerifyButtonPress(true);        
+                        }
+                    );
+                    
+                }
             }
         });
     

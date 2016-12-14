@@ -21,6 +21,10 @@ var ProfilePage = React.createClass({
     },
 
     componentDidMount() {
+        if (this.props.tracker){
+            this.props.tracker.trackScreenView('ProfilePage');
+        }
+        
         url = URL.API_URL.CUSTOMER_DETAILS_URL+"?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token;
@@ -48,6 +52,7 @@ var ProfilePage = React.createClass({
     },
 
     logoutFromApp() {
+        this.props.tracker.trackEvent('ProfilePage','Click - Logout');    
         utility.clearLoginDetails();
     },
 
@@ -143,6 +148,7 @@ var ProfilePage = React.createClass({
     },
 
     inviteFriends() {
+        this.props.tracker.trackEvent('ProfilePage','Invite Friends');    
         Share.open({
             share_text: Strings.INVITE_FRIENDS_TEXT,
             share_URL: "http://storefrontindia.com",
@@ -151,6 +157,11 @@ var ProfilePage = React.createClass({
             console.log(e);
         });
         return;
+    },
+
+    clickTutorial() {
+        this.props.tracker.trackEvent('ProfilePage','View Tutorial');
+        Actions.tutorialpage()
     },
 
     render(){
@@ -176,7 +187,7 @@ var ProfilePage = React.createClass({
                         <MaterialIcons name='exit-to-app' size={16} color='black' /><Text style={styles.actionLabel}>      Log Out</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.profileActions} onPress={()=>Actions.tutorialpage()}>
+                    <TouchableOpacity style={styles.profileActions} onPress={()=>this.clickTutorial()}>
                         <MaterialIcons name='info' size={16} color='black' /><Text style={styles.actionLabel}>      Tutorial</Text>
                     </TouchableOpacity>
                 </ScrollView>

@@ -19,6 +19,9 @@ var TutorialPage = React.createClass({
     },
 
     componentDidMount() {
+        if (this.props.tracker){
+            this.props.tracker.trackScreenView('TutorialPage');
+        }
         this.saveTutorialSeen();
     },
 

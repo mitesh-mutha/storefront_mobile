@@ -47,6 +47,12 @@ var FeedPage = React.createClass ({
         }
     },
 
+    componentDidMount() {
+        if (this.props.tracker){
+            this.props.tracker.trackScreenView('FeedPage');
+        }
+    },
+
     setLoadingSpinner(value)  {
         this.setState({showLoadingSpinner: value});
     },
@@ -81,7 +87,8 @@ var FeedPage = React.createClass ({
                 <Feed 
                     phone={this.props.phone} 
                     authentication_token={this.props.authentication_token}
-                    loadingFunc = {this.setLoadingSpinner} />
+                    loadingFunc = {this.setLoadingSpinner}
+                    tracker = {this.props.tracker} />
             
                 <Footer page='home' 
                     phone={this.props.phone} 

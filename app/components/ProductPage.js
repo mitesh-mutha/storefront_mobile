@@ -22,7 +22,7 @@ var productDetails;
 
 var ProductPage = React.createClass({
     getInitialState() {
-
+        
         if ( !this.props.phone || !this.props.authentication_token ) {
             utility.showAlertWithOK(Strings.NO_LOGIN_DETAILS, Strings.NO_LOGIN_DETAILS_MSG);
             return;
@@ -36,7 +36,9 @@ var ProductPage = React.createClass({
     },
 
     componentDidMount() {
-
+        if (this.props.tracker){
+            this.props.tracker.trackScreenView('ProductPage');
+        }
         
         if ( !this.props.phone || !this.props.authentication_token ) {
             utility.showAlertWithOK(Strings.NO_LOGIN_DETAILS, Strings.NO_LOGIN_DETAILS_MSG);
@@ -96,6 +98,7 @@ var ProductPage = React.createClass({
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
 
+        this.props.tracker.trackEvent('ProductPage','Click - Unlike - Product',{label: ''+this.state.product.id});    
         return;
     },
 
@@ -117,7 +120,7 @@ var ProductPage = React.createClass({
         .catch((error) =>  {
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
-
+        this.props.tracker.trackEvent('ProductPage','Click - Like - Product',{label: ''+this.state.product.id});    
         return;
     },
 
@@ -130,6 +133,7 @@ var ProductPage = React.createClass({
 
     onShare(itemtype, itemid, imgLink, imgText) {
         utility.informServerAboutShare(itemid, itemtype, this.props.phone, this.props.authentication_token);
+        this.props.tracker.trackEvent('ProductPage','Click - Share - Product',{label: ''+this.state.product.id});    
 
         if (!imgLink) {
             Share.open({
@@ -194,6 +198,7 @@ var ProductPage = React.createClass({
         .catch((error) =>  {
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+        this.props.tracker.trackEvent('ProductPage','Click - Wishlist',{label: ''+this.state.product.id});    
         return;
     },
 
@@ -215,6 +220,7 @@ var ProductPage = React.createClass({
         .catch((error) =>  {
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+        this.props.tracker.trackEvent('ProductPage','Click - Unwishlist',{label: ''+this.state.product.id});    
         return;
     },
 

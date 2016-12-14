@@ -36,6 +36,10 @@ var CatalogPage  = React.createClass({
     },
 
     componentDidMount() {
+        if (this.props.tracker){
+            this.props.tracker.trackScreenView('CatalogPage');
+        }
+
         url = URL.API_URL.SELLER_PRODUCTS_URL+"/"+this.props.seller_id+"/products?"+
             "phone="+this.props.phone+"&"+
             "authentication_token="+this.props.authentication_token+"&"+
@@ -89,6 +93,12 @@ var CatalogPage  = React.createClass({
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
 
+        if (this.props.tracker){
+            if (itemtype == 'product') 
+                this.props.tracker.trackEvent('CatalogPage','Click - Like - Product',{label: ''+itemid});
+            else
+                this.props.tracker.trackEvent('CatalogPage','Click - Like - Post',{label: ''+itemid});
+        }
         return;
     },
 
@@ -110,11 +120,23 @@ var CatalogPage  = React.createClass({
         .catch((error) =>  {
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+        if (this.props.tracker){
+            if (itemtype == 'product') 
+                this.props.tracker.trackEvent('CatalogPage','Click - Unlike - Product',{label: ''+itemid});
+            else
+                this.props.tracker.trackEvent('CatalogPage','Click - Unlike - Post',{label: ''+itemid});
+        }
         return;
     },
 
     onShare(itemtype, itemid, imgLink, imgText) {
         utility.informServerAboutShare(itemid, itemtype, this.props.phone, this.props.authentication_token);
+        if (this.props.tracker){
+            if (itemtype == 'product')
+                this.props.tracker.trackEvent('CatalogPage','Click - Share - Product',{label: ''+itemid});
+            else
+                this.props.tracker.trackEvent('CatalogPage','Click - Share - Post',{label: ''+itemid});
+        }
 
         if (!imgLink) {
             Share.open({
@@ -176,6 +198,9 @@ var CatalogPage  = React.createClass({
         .catch((error) =>  {
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+        if (this.props.tracker){
+            this.props.tracker.trackEvent('CatalogPage','Click - Wishlist',{label: ''+itemid});
+        }
         return;
     },
 
@@ -197,6 +222,9 @@ var CatalogPage  = React.createClass({
         .catch((error) =>  {
             utility.showAlertWithOK(Strings.REQUEST_FAILED, error.message);
         });
+        if (this.props.tracker){
+            this.props.tracker.trackEvent('CatalogPage','Click - Unwishlist',{label: ''+itemid});
+        }
         return;
     },
 
@@ -309,6 +337,7 @@ var CatalogPage  = React.createClass({
                         }
                         this.updateListDataSource();
                         this.setState({pageNumber: currentPage});
+                        this.props.tracker.trackEvent('CatalogPage','Feed Page Changed',{label: ''+currentPage});    
                     }     
 
                 }

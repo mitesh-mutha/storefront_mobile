@@ -8,6 +8,8 @@ import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 
 import com.centaurwarchief.smslistener.SmsListenerPackage; // Added by MM for react-native-android-sms-listener
 
+import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage; // Added by MM for react-native-google-analytics-bridge
+
 import android.app.Application;
 import android.util.Log;
 
@@ -39,7 +41,8 @@ public class MainApplication extends Application implements ReactApplication {
           new RNFSPackage(),  // Added by MM for react-native-fs
           new RNSharePackage(), // Added by MM for react-native-share(mm)
           new SmsListenerPackage(), // Added by MM for react-native-android-sms-listener
-          mReactNativePushNotificationPackage // Added by MM for react-native-push-notification
+          mReactNativePushNotificationPackage, // Added by MM for react-native-push-notification
+          new GoogleAnalyticsBridgePackage() // Added by MM for react-native-google-analytics-bridge
       );
     }
   };

@@ -15,6 +15,12 @@ var OTPLoginPage = React.createClass({
             spinnerVisible: false
         }
     },
+
+    componentDidMount() {
+        if (this.props.tracker){
+            this.props.tracker.trackScreenView('OTPLoginPage');
+        }
+    },
     
     validateMobileNumber() {
 
@@ -36,7 +42,11 @@ var OTPLoginPage = React.createClass({
         return true;
     },
 
-    onLoginPress() {   
+    onLoginPress() {
+
+        if (this.props.tracker) {
+            this.props.tracker.trackEvent('LoginPage','Login'); 
+        }  
 
         if ( !this.validateMobileNumber() ) {
             return;
@@ -56,10 +66,17 @@ var OTPLoginPage = React.createClass({
                 Actions.otpverificationpage({mobileNumber: this.state.mobileInput});
             }
             else if (responseJson.status === "Unauthenticated") {
+                if (this.props.tracker) {
+                    this.props.tracker.trackEvent('LoginPage','Incorrect Mobile Number Login'); 
+                }
                 Utility.showAlertWithOK(Strings.OTP_LOGIN_UNAUTHENTICATED, Strings.OTP_LOGIN_UNAUTHENTICATED_MSG);
             }
+            this.setState({spinnerVisible: false});
         })
         .catch((error) =>  {
+            if (this.props.tracker) {
+                this.props.tracker.trackEvent('LoginPage','Login Request Failed'); 
+            }
             this.setState({spinnerVisible: false});
             Utility.showAlertWithOK(Strings.OTP_LOGIN_REQUEST_FAILED, Strings.OTP_LOGIN_REQUEST_FAILED_MSG);
         });
