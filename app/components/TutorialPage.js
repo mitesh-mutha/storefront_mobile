@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, Image, AsyncStorage, Text, ScrollView} from 'react-native';
+import {View, StyleSheet, Image, AsyncStorage, Text, ScrollView, TouchableOpacity} from 'react-native';
 import {Actions, ActionConst} from "react-native-router-flux";
 import Utility from './../utilities';
 import Strings from './../strings';
@@ -30,6 +30,9 @@ var TutorialPage = React.createClass({
             <View style={styles.container}>
 
                 <View style={styles.header}>
+                    <TouchableOpacity style={styles.appNameContainer} onPress={()=>Actions.pop()}>
+                        <MaterialIcons name="close" size={24} color={'black'} />
+                    </TouchableOpacity>
                     <View style={styles.appNameContainer}>
                         <Text style={styles.appName}>{Strings.TUTORIAL}</Text>
                     </View>
