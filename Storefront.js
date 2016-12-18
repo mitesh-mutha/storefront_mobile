@@ -15,6 +15,9 @@ import OTPLoginPage from './app/components/OTPLoginPage';
 import OTPVerificationPage from './app/components/OTPVerificationPage';
 import SplashPage from './app/components/SplashPage';
 import TutorialPage from './app/components/TutorialPage';
+import utility from './app/utilities';
+import Strings from './app/strings';
+import URL from './app/urls';
 
 const GANALYTICS_TRACKER_DEV = 'UA-88748793-1';
 const GANALYTICS_TRACKER_PROD = 'UA-88748793-2';
@@ -31,25 +34,43 @@ const reducerCreate = params=>{
 
 var Storefront = React.createClass({
     getInitialState() {
-        //if (__DEV__) {
+        if (__DEV__) {
             return {
                 tracker: new GoogleAnalyticsTracker(GANALYTICS_TRACKER_DEV)
             };
-        //}
-        //else {
-        //    return {
-        //        tracker: new GoogleAnalyticsTracker(GANALYTICS_TRACKER_PROD)
-        //    };   
-        //}        
+        }
+        else {
+            return {
+                tracker: new GoogleAnalyticsTracker(GANALYTICS_TRACKER_PROD)
+            };   
+        }        
     },
     componentDidMount() {
         BackAndroid.addEventListener('hardwareBackPress', () => Actions.pop());
 
         PushNotification.configure({
             onRegister: function(token) { // (optional) Called when Token is generated (iOS and Android)
-                console.log( 'TOKEN:', token );
-                // Inform the server about the token for this device
+                console.log( 'TOKEN:', token.token );
+
+                if (token.token) {
+                    
+                    notif_token = utility.getNotifToken();
+                    
+                    if (notif_token && notif_token !== token.token) {
+                        url = URL.API_URL.GCM_TOKEN_URL+"?notification_id="+token.token;
+                        console.log("Sending token - "+token.token)
+                        fetch(url,{
+                            method: 'POST'
+                        })
+                        .then((response) => response.json())
+                        .then((responseJson) => {})
+                        .catch((error) =>  {});
+
+                        utility.saveNotificationToken(token.token);    
+                    }
+                }
             },
+
             onNotification: function(notification) { // (required) Called when a remote or local notification is opened or received
                 console.log( 'NOTIFICATION:', notification );
                 PushNotification.localNotification({

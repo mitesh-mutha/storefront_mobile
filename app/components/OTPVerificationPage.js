@@ -45,7 +45,7 @@ var OTPVerificationPage = React.createClass({
         }
     },
 
-    onVerifyButtonPress(autoRead) {
+    async onVerifyButtonPress(autoRead) {
     
         if ( !this.validateOTPInput() )
             return;
@@ -57,9 +57,18 @@ var OTPVerificationPage = React.createClass({
                 this.props.tracker.trackEvent('OTPVerificationPage','Click - Verify'); 
         }
 
-        url = URL.API_URL.OTP_VERIFICATION_URL + "?"+
+        notifToken = await utility.getNotifToken();
+        if (notifToken) {
+            url = URL.API_URL.OTP_VERIFICATION_URL + "?"+
+            "phone="+this.props.mobileNumber+
+            "&otp="+this.state.otpText+
+            "&notification_id="+notifToken;
+        }
+        else {
+            url = URL.API_URL.OTP_VERIFICATION_URL + "?"+
             "phone="+this.props.mobileNumber+
             "&otp="+this.state.otpText;
+        }        
 
         this.setState({spinnerVisible: true});
 

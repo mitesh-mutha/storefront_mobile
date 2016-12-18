@@ -1,5 +1,5 @@
 import {Alert, AsyncStorage} from 'react-native';
-import {Actions} from "react-native-router-flux";
+import {Actions, ActionConst} from "react-native-router-flux";
 import Strings from './strings';
 import URL from './urls';
 
@@ -14,7 +14,7 @@ module.exports = {
     async clearLoginDetails() {
         try {
             await AsyncStorage.removeItem("login_details"); 
-            Actions.otploginpage();    
+            Actions.otploginpage({type: ActionConst.RESET});    
         }
         catch (error) {
             this.showAlertWithOK(Strings.ERROR_STORING_AUTH_TOKEN, Strings.ERROR_STORING_AUTH_TOKEN_MSG);  
@@ -57,5 +57,26 @@ module.exports = {
         else {
             return logo;
         }
+    },
+
+    async saveNotificationToken(token) {
+        //console.log("In saveNotificationToken - "+token)
+        try {
+            await AsyncStorage.setItem("notif_token", token);
+        }
+        catch (error) {
+            //console.log("Error in saveNotificationToken "+error)
+        }
+    },
+
+    async getNotifToken() {
+        try {
+            value = await AsyncStorage.getItem("notif_token");
+            //console.log("In getNotifToken - "+value)    
+        }
+        catch(error){
+            //console.log("Error in saveNotificationToken "+error)
+        }        
+        return value;
     },
 }
