@@ -40,12 +40,12 @@ var SearchPage  = React.createClass({
             method: 'POST'
         })
         .then((response) => {
-          if(response.status === 200) {
+          //if(response.status === 200) {
             response.json();
-          } else {
-            utility.showAlertWithOK("Error", "Response Code: "+response.status);
-            return null;
-          }
+          //} else {
+          //  utility.showAlertWithOK("Error", "Response "+response.status)
+          //  return null;
+          //}
         })
         .then((responseJson) => {
             if (responseJson === null)
@@ -79,12 +79,12 @@ var SearchPage  = React.createClass({
             method: 'POST'
         })
         .then((response) => {
-          if(response.status === 200) {
+          //if(response.status === 200) {
             response.json();
-          } else {
-            utility.showAlertWithOK("Error", "Response Code: "+response.status);
-            return null;
-          }
+          //} else {
+          //  utility.showAlertWithOK("Error", "Response "+response.status)
+          //  return null;
+          //}
         })
         .then((responseJson) => {
             if (responseJson === null)
