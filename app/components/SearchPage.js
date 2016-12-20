@@ -39,14 +39,7 @@ var SearchPage  = React.createClass({
         fetch(url,{
             method: 'POST'
         })
-        .then((response) => {
-          //if(response.status === 200) {
-            response.json();
-          //} else {
-          //  utility.showAlertWithOK("Error", "Response "+response.status)
-          //  return null;
-          //}
-        })
+        .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson === null)
               return;
@@ -78,14 +71,7 @@ var SearchPage  = React.createClass({
         fetch(url,{
             method: 'POST'
         })
-        .then((response) => {
-          //if(response.status === 200) {
-            response.json();
-          //} else {
-          //  utility.showAlertWithOK("Error", "Response "+response.status)
-          //  return null;
-          //}
-        })
+        .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson === null)
               return;
