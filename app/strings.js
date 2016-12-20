@@ -75,6 +75,9 @@ const Strings = {
   COULD_NOT_SHARE: "Could not share.",
 
   NEW_ITEMS: "New Items",
+
+  EMPTY_FEED: "Empty Feed",
+  EMPTY_FEED_MSG: "You have not followed any sellers. Head to the search page and follow a seller to see their posts and product in the feed."
 }
 
 module.exports = Strings

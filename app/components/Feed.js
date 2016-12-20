@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {ListView, View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, TouchableHighlight, AsyncStorage} from 'react-native';
 import Dimensions from 'Dimensions';
-import {Actions} from "react-native-router-flux";
+import {Actions, ActionConst} from "react-native-router-flux";
 import Share from "react-native-share";
 import utility from './../utilities';
 import Strings from './../strings';
@@ -56,6 +56,12 @@ var Feed = React.createClass({
         
                 FEED_ITEMS = [];
                 FEED_ITEMS_MAPPING ={};
+
+                if (this.state.pageNumber == 1 && 
+                    responseJson.products.length == 0 && 
+                    responseJson.posts.length == 0) {
+                    utility.showAlertWithOK(Strings.EMPTY_FEED, Strings.EMPTY_FEED_MSG);
+                }
                 
                 for (i=0;i<responseJson.products.length;i++) {
                     responseJson.products[i].type = "product";
