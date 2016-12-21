@@ -82,7 +82,7 @@ var FollowPage = React.createClass({
               return;            
 
             if (responseJson.status === "success") {
-                      SEARCH_ITEM[id].followed = true;        
+                      FOLLOW_ITEMS[id].followed = true;        
                       this.updateListDataSource();
             }
             else {
@@ -115,7 +115,7 @@ var FollowPage = React.createClass({
             this.setState({spinnerVisible: false});
 
             if (responseJson.status === "success") {
-                SEARCH_ITEM[id].followed = false;        
+                FOLLOW_ITEMS[id].followed = false;        
                 this.updateListDataSource();
             }
             else {
